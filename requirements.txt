@@ -1,0 +1,24 @@
+# Suryafool — Python Dependencies
+#
+# Install: pip install -r requirements.txt
+#
+# Note: On Windows, most of these run inside WSL (Ubuntu).
+#       The Bootstrap Agent (bootstrap/) handles environment setup.
+#       See bootstrap/manifest.yaml for the full dependency chain.
+
+# ── Agent framework ────────────────────────────────────────────────────────────
+langchain>=0.3.0
+langgraph>=0.2.0
+
+# ── LLM providers ──────────────────────────────────────────────────────────────
+langchain-nvidia-ai-endpoints>=0.3.0   # NVIDIA NIM (primary)
+langchain-groq>=0.2.0                  # Groq (fallback)
+
+# ── Wireless / packet capture ───────────────────────────────────────────────────
+scapy>=2.5.0
+
+# ── Config / serialization ──────────────────────────────────────────────────────
+pyyaml>=6.0
+
+# ── Terminal UI ─────────────────────────────────────────────────────────────────
+rich>=13.0.0

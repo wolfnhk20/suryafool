@@ -1,0 +1,158 @@
+# Suryafool — Bootstrap Dependency Manifest
+#
+# IMPORTANT: This file is human-authored and version-controlled.
+# The Bootstrap Agent LLM is NOT permitted to modify this file at runtime.
+# Every install_cmd listed here is the ONLY remediation allowed for its dependency.
+#
+# ── Platform-conditional fields ───────────────────────────────────────────────
+#
+#   platforms        — list of OS names this entry applies to.
+#                      Valid values: windows | linux | macos
+#                      Omit to apply on ALL platforms.
+#
+#   check_cmd        — can be a plain string (same on all platforms) OR a dict:
+#                        check_cmd:
+#                          windows: "..."
+#                          linux:   "..."
+#                          macos:   "..."
+#                      The loader picks the key matching the current OS.
+#
+#   install_cmd      — same dict-or-string rule as check_cmd.
+#
+#   depends_on       — can be a plain list (same on all platforms) OR a dict:
+#                        depends_on:
+#                          windows: [dep-a, dep-b]
+#                          linux:   []
+#                          macos:   [homebrew]
+#
+# ── Other fields ──────────────────────────────────────────────────────────────
+#
+#   expect_contains  — string that must appear in stdout for check to pass
+#   expect_exit_code — exit code that indicates success (default: 0)
+#   requires_elevation — if true, always pause for explicit human confirmation
+
+dependencies:
+
+  # ── macOS only: Homebrew ────────────────────────────────────────────────────
+  - name: homebrew
+    platforms: [macos]
+    check_cmd: "which brew"
+    expect_exit_code: 0
+    install_cmd: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    requires_elevation: false
+    depends_on: []
+
+  # ── Windows only: WSL2 ──────────────────────────────────────────────────────
+  - name: wsl2
+    platforms: [windows]
+    check_cmd: "wsl --status"
+    expect_contains: "Default Version: 2"
+    install_cmd: "wsl --install"
+    requires_elevation: true
+    depends_on: []
+
+  # ── Windows only: WSL Ubuntu distro ─────────────────────────────────────────
+  - name: wsl-ubuntu
+    platforms: [windows]
+    check_cmd: "wsl -l -v"
+    expect_contains: "Ubuntu"
+    install_cmd: "wsl --install -d Ubuntu"
+    requires_elevation: true
+    depends_on:
+      - wsl2
+
+  # ── Windows only: USB/IP daemon for hardware passthrough ────────────────────
+  - name: usbipd
+    platforms: [windows]
+    check_cmd: "usbipd list"
+    expect_exit_code: 0
+    install_cmd: "winget install --id dorssel.usbipd-win -e"
+    requires_elevation: true
+    depends_on: []
+
+  # ── Windows only: attach USB adapter into WSL ───────────────────────────────
+  - name: usb-passthrough
+    # On Linux/macOS, USB hardware is natively accessible — no passthrough needed.
+    # Update expect_contains to match your adapter's VID:PID once known.
+    platforms: [windows]
+    check_cmd: "wsl -d Ubuntu -- lsusb"
+    expect_contains: "Bus"
+    install_cmd: "usbipd attach --wsl Ubuntu"
+    requires_elevation: false
+    depends_on:
+      - wsl-ubuntu
+      - usbipd
+
+  # ── Wireless capture tools: aircrack-ng ─────────────────────────────────────
+  - name: aircrack-ng
+    platforms: [windows, linux, macos]
+    check_cmd:
+      windows: "wsl -d Ubuntu -- which airmon-ng"
+      linux:   "which airmon-ng"
+      macos:   "which airmon-ng"
+    expect_exit_code: 0
+    install_cmd:
+      windows: "wsl -d Ubuntu -- sudo apt install -y aircrack-ng"
+      linux:   "sudo apt install -y aircrack-ng"
+      macos:   "brew install aircrack-ng"
+    requires_elevation: true
+    depends_on:
+      windows: [wsl-ubuntu]
+      linux:   []
+      macos:   [homebrew]
+
+  # ── Python 3 runtime ────────────────────────────────────────────────────────
+  - name: python3
+    platforms: [windows, linux, macos]
+    check_cmd:
+      windows: "wsl -d Ubuntu -- python3 --version"
+      linux:   "python3 --version"
+      macos:   "python3 --version"
+    expect_contains: "Python 3"
+    install_cmd:
+      windows: "wsl -d Ubuntu -- sudo apt install -y python3 python3-pip"
+      linux:   "sudo apt install -y python3 python3-pip"
+      macos:   "brew install python3"
+    requires_elevation: true
+    depends_on:
+      windows: [wsl-ubuntu]
+      linux:   []
+      macos:   [homebrew]
+
+  # ── Scapy: packet capture and crafting ──────────────────────────────────────
+  - name: scapy
+    platforms: [windows, linux, macos]
+    check_cmd:
+      windows: "wsl -d Ubuntu -- python3 -c \"import scapy; print('ok')\""
+      linux:   "python3 -c \"import scapy; print('ok')\""
+      macos:   "python3 -c \"import scapy; print('ok')\""
+    expect_contains: "ok"
+    install_cmd:
+      windows: "wsl -d Ubuntu -- pip install scapy --break-system-packages"
+      linux:   "pip install scapy --break-system-packages"
+      macos:   "pip3 install scapy"
+    requires_elevation: false
+    depends_on:
+      windows: [python3]
+      linux:   [python3]
+      macos:   [python3]
+
+  # ── Core Python agent dependencies ──────────────────────────────────────────
+  # LLM providers: NVIDIA NIM (primary), Groq (fallback).
+  # Provider selection controlled via SURYAFOOL_LLM_PROVIDER env var.
+  - name: python-deps
+    platforms: [windows, linux, macos]
+    check_cmd:
+      windows: "wsl -d Ubuntu -- python3 -c \"import langchain, langgraph, langchain_nvidia_ai_endpoints, yaml, rich; print('ok')\""
+      linux:   "python3 -c \"import langchain, langgraph, langchain_nvidia_ai_endpoints, yaml, rich; print('ok')\""
+      macos:   "python3 -c \"import langchain, langgraph, langchain_nvidia_ai_endpoints, yaml, rich; print('ok')\""
+    expect_contains: "ok"
+    install_cmd:
+      windows: "wsl -d Ubuntu -- pip install langchain langgraph langchain-nvidia-ai-endpoints langchain-groq pyyaml rich --break-system-packages"
+      linux:   "pip install langchain langgraph langchain-nvidia-ai-endpoints langchain-groq pyyaml rich --break-system-packages"
+      macos:   "pip3 install langchain langgraph langchain-nvidia-ai-endpoints langchain-groq pyyaml rich"
+    requires_elevation: false
+    depends_on:
+      windows: [python3]
+      linux:   [python3]
+      macos:   [python3]
