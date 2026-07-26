@@ -22,9 +22,10 @@ It gives autonomous AI agents the ability to perceive, explore, investigate and 
 | OS detection | ✅ Done | [`bootstrap/platform.py`](bootstrap/platform.py) |
 | Dependency manifest | ✅ Done | [`bootstrap/manifest.yaml`](bootstrap/manifest.yaml) |
 | Check runner | ✅ Done | [`bootstrap/checks.py`](bootstrap/checks.py) |
-| Remediation runner | 🔲 TODO | `bootstrap/remediate.py` |
-| Provisioning Guardian | 🔲 TODO | `bootstrap/provisioning_guardian.py` |
-| Bootstrap agent loop | 🔲 TODO | `bootstrap/agent.py` |
+| Remediation runner | ✅ Done | [`bootstrap/remediate.py`](bootstrap/remediate.py) |
+| Provisioning Guardian | ✅ Done | [`bootstrap/provisioning_guardian.py`](bootstrap/provisioning_guardian.py) |
+| Bootstrap agent loop | ✅ Done | [`bootstrap/agent.py`](bootstrap/agent.py) |
+| LLM factory + rate limiter | ✅ Done | [`core/llm.py`](core/llm.py) |
 | Capability Registry | 🔲 TODO | `capability_registry/` |
 | Hardware Abstraction Layer | 🔲 TODO | `hal/` |
 | Mission data model | 🔲 TODO | `core/mission.py` |
@@ -66,8 +67,9 @@ suryafool/
 │   ├── provisioning_guardian.py
 │   └── agent.py
 │
-├── core/                        # shared data models
+├── core/                        # shared utilities for all agents
 │   ├── CONTEXT.md
+│   ├── llm.py                   # LLM factory + rate limiter (32 req/min)
 │   ├── mission.py               # Mission dataclass
 │   ├── observation.py           # Observation, Signal, Device types
 │   └── confidence.py            # CONFIRMED/LIKELY/POSSIBLE/UNKNOWN enum
@@ -134,3 +136,14 @@ Work in this sequence to respect dependency layers:
 - Passive observation is the default mode for all wireless operations.
 - All agent actions are logged with provenance.
 - Confidence levels (`CONFIRMED / LIKELY / POSSIBLE / UNKNOWN`) are never collapsed to bool.
+
+## LLM Provider Stack
+
+| Provider | Package | Env var | Priority |
+|---|---|---|---|
+| OpenRouter | `langchain-openai` | `OPENROUTER_API_KEY` | Primary |
+| OpenCode Zen | `langchain-openai` | `OPENCODE_API_KEY` | Fallback |
+
+Provider selection is automatic with fallback: OpenRouter (10s timeout) → OpenCode Zen (10s timeout) → graceful "LLM unavailable".
+
+Model: NVIDIA Nemotron 3 Ultra (free tier) on both endpoints.

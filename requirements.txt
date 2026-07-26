@@ -14,6 +14,9 @@ langgraph>=0.2.0
 langchain-nvidia-ai-endpoints>=0.3.0   # NVIDIA NIM (primary)
 langchain-groq>=0.2.0                  # Groq (fallback)
 
+# ── Environment / config ────────────────────────────────────────────────────────
+python-dotenv>=1.0.0                   # loads .env at startup
+
 # ── Wireless / packet capture ───────────────────────────────────────────────────
 scapy>=2.5.0
 

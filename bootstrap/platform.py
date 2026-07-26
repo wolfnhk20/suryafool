@@ -12,6 +12,7 @@ Usage:
 
 from __future__ import annotations
 
+import os
 import sys
 from enum import Enum
 
@@ -48,6 +49,26 @@ def current_os() -> OS:
 def current_os_name() -> str:
     """Return the lowercase string name of the current OS (e.g. 'windows')."""
     return current_os().value
+
+
+def is_admin() -> bool:
+    """
+    Check if the current process has elevated/admin privileges.
+
+    On Windows: uses ctypes to call IsUserAnAdmin().
+    On Linux/macOS: checks if effective UID is 0 (root).
+    """
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        except Exception:
+            return False
+    else:
+        try:
+            return os.geteuid() == 0
+        except AttributeError:
+            return False
 
 
 def assert_supported() -> OS:

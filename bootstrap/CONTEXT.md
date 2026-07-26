@@ -25,12 +25,13 @@ It runs with OS-level access (installing packages, enabling WSL) — a different
 
 | File | Status | Purpose |
 |---|---|---|
+| `__init__.py` | ✅ Done | Makes `bootstrap` a Python package |
 | `manifest.yaml` | ✅ Done | Human-authored dependency list — the ground truth for "ready" |
 | `platform.py` | ✅ Done | OS detection — `current_os()` → `windows / linux / macos` |
 | `checks.py` | ✅ Done | Read-only `check()` per dependency, platform-aware |
-| `remediate.py` | 🔲 TODO | `remediate()` — executes manifest `install_cmd` entries only |
-| `provisioning_guardian.py` | 🔲 TODO | Elevation gate — always pauses for human OK on privileged commands |
-| `agent.py` | 🔲 TODO | LangGraph agent loop wiring all tools together |
+| `remediate.py` | ✅ Done | `remediate()` — executes manifest `install_cmd` entries, never invents commands |
+| `provisioning_guardian.py` | ✅ Done | Elevation gate — always pauses for human OK on privileged commands |
+| `agent.py` | ✅ Done | Full remediation loop with Rich UI and dependency-aware ordering |
 
 ---
 
@@ -41,18 +42,30 @@ It runs with OS-level access (installing packages, enabling WSL) — a different
 Fields per entry:
 
 ```yaml
-- name: <str>                   # unique dependency identifier
+- name: <str>                      # unique dependency identifier
   platforms: [windows|linux|macos]  # omit = all platforms
-  check_cmd: <str|{os: str}>    # read-only, always safe to run
-  expect_contains: <str>        # OR
-  expect_exit_code: <int>       # success criteria
-  install_cmd: <str|{os: str}>  # ONLY remediation allowed for this dep
-  requires_elevation: <bool>    # if true → always show command + wait for human
-  depends_on: <list|{os: list}> # ordering constraint
+  check_cmd: <str|{os: str}>        # read-only, always safe to run
+  expect_contains: <str>            # OR
+  expect_exit_code: <int>           # success criteria
+  install_cmd: <str|{os: str}>      # ONLY remediation allowed for this dep
+  requires_elevation: none|windows_admin|wsl_sudo  # elevation type
+  depends_on: <list|{os: list}>     # ordering constraint
 ```
 
 `check_cmd`, `install_cmd`, and `depends_on` can be plain strings/lists (all platforms)
 or dicts keyed by OS name for platform-specific variants.
+
+---
+
+## Elevation Types
+
+| Type | When used | Example commands |
+|---|---|---|
+| `none` | No elevation needed | `pip install`, `which`, `python -c` |
+| `windows_admin` | Elevated Windows shell (Run as Administrator) | `wsl --install`, `winget install`, `dism` |
+| `wsl_sudo` | sudo inside WSL (interactive password prompt) | `apt install`, `sudo apt update` |
+
+The Provisioning Guardian keys off the manifest entry — the LLM cannot bypass this.
 
 ---
 
@@ -73,29 +86,29 @@ OS detection is centralized in `platform.py`. Never use `sys.platform` directly.
 
 ---
 
-## Provisioning Guardian Rules
-
-Mirrors the Scope Guardian pattern but for system provisioning:
-
-- `requires_elevation: true` → **always** show the exact command to the human and wait for explicit approval before running — every single time, not just the first.
-- `requires_elevation: false` → may run automatically (read-only or non-privileged).
-- The gate keys off the **manifest entry**, not the LLM's stated justification. The model cannot bypass this by rephrasing.
-
----
-
-## Agent Loop (to implement in `agent.py`)
+## Agent Loop (implemented in `agent.py`)
 
 ```
-1. Detect OS via platform.py
-2. Load manifest.yaml
-3. filter_manifest() for current OS
-4. For each dependency in dependency order:
-   a. check()
-   b. If failed → propose_remediation()
-   c. If requires_elevation → request_elevation() — stop if denied
-   d. remediate()
-   e. verify() — if still failing, surface raw output to user, do not silently retry
-5. When all pass → report "environment ready" → hand off to Mission Orchestrator
+1. Detect OS via platform.py → assert_supported()
+2. Load and filter manifest.yaml for current OS
+3. Run check_all() — print initial status table (Rich)
+4. If all pass → report "environment ready", exit 0
+5. Remediation phase (in manifest order):
+   a. Skip entries whose depends_on are not yet satisfied (blocked)
+   b. Resolve install command:
+        - In manifest → use manifest install_cmd (known, zero LLM)
+        - Not in manifest → call LLM to propose fix (unknown)
+   c. Display EXACT command in Panel, route through Provisioning Guardian:
+        - requires_elevation: windows_admin → Windows Admin prompt
+        - requires_elevation: wsl_sudo → WSL sudo prompt
+        - requires_elevation: none → soft auto-install prompt
+   d. If approved → remediate() with show_output=True (live streaming)
+   e. verify() — re-run check(); update live results so dependents see new state
+   f. If still failing → report, continue (no silent retry)
+6. Final report:
+   - Resolved via manifest (count + list)
+   - Resolved via LLM (count + list + provider breakdown)
+   - Skipped / Failed
 ```
 
 ---
@@ -104,15 +117,14 @@ Mirrors the Scope Guardian pattern but for system provisioning:
 
 **The model does:**
 - Parse noisy check command output (e.g. distinguish `docker-desktop` from `Ubuntu` in `wsl -l -v`)
-- Decide dependency order when a check fails unexpectedly
+- Propose remediation commands for **unknown** dependencies (not in manifest)
 - Explain to the user in plain language what is missing and why
-- Select which manifest entry's `install_cmd` to propose next
 - Confirm success after `verify()`
 - Produce a final "environment ready" / "environment blocked, here's why" report
 
 **The model does NOT:**
-- Invent or edit shell commands
-- Run `requires_elevation: true` entries without explicit human confirmation
+- Invent or edit shell commands for known dependencies
+- Run elevation-gated commands without explicit human confirmation
 - Modify `manifest.yaml`
 
 ---
@@ -120,15 +132,13 @@ Mirrors the Scope Guardian pattern but for system provisioning:
 ## Dependencies (Python packages)
 
 ```
-pyyaml                          # parse manifest.yaml
-rich                            # terminal UI (tables, spinners, prompts)
-langchain                       # LLM tool-calling backbone
-langgraph                       # agent state machine / loop
-langchain-nvidia-ai-endpoints   # NVIDIA NIM (primary LLM provider)
-langchain-groq                  # Groq (fallback LLM provider)
+langchain-openai          # OpenAI-compatible client for OpenRouter + OpenCode Zen
+python-dotenv             # loads .env at startup
+pyyaml                    # parse manifest.yaml
+rich                      # terminal UI (tables, spinners, prompts)
 ```
 
-Install: `pip install pyyaml rich langchain langgraph langchain-nvidia-ai-endpoints langchain-groq`
+Install: `pip install langchain-openai python-dotenv pyyaml rich`
 
 ---
 
@@ -138,8 +148,13 @@ Install: `pip install pyyaml rich langchain langgraph langchain-nvidia-ai-endpoi
 # Check environment status (read-only, no changes)
 python -m bootstrap.agent --check-only
 
-# Full doctor run (may prompt for elevation)
+# Full doctor run — asks user per failure, prompts for elevation on privileged installs
 python -m bootstrap.agent
+
+# Standalone check script (no agent loop, developer shortcut)
+python check_env.py
 ```
+
+> Run from the project root (`suryafool/`) so the default manifest path `bootstrap/manifest.yaml` resolves correctly.
 
 This module is **never invoked mid-mission** by any of the wireless agents.

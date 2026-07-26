@@ -23,20 +23,29 @@ Bootstrap architecture: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 suryafool/
 ├── AGENTS.md                  ← you are here
 ├── CONTEXT.md                 ← root project context
+├── README.md                  ← setup + usage guide
+├── requirements.txt
+├── .env.example
+├── check_env.py               ← standalone read-only check script
 │
 ├── docs/
 │   ├── CONTEXT.md             ← docs directory context
 │   ├── PRD.md                 ← full product requirements
 │   └── ARCHITECTURE.md        ← bootstrap agent design spec
 │
-└── bootstrap/
-    ├── CONTEXT.md             ← bootstrap module context
-    ├── manifest.yaml          ← dependency manifest (human-authored, never LLM-generated)
-    ├── platform.py            ← OS detection (windows / linux / macos)
-    ├── checks.py              ← read-only check() per dependency
-    ├── remediate.py           ← remediate() per dependency  [TODO]
-    ├── provisioning_guardian.py ← elevation gate            [TODO]
-    └── agent.py               ← LangGraph agent loop        [TODO]
+├── bootstrap/               ← ✅ COMPLETE
+│   ├── CONTEXT.md             ← bootstrap module context
+│   ├── __init__.py            ← Python package marker
+│   ├── manifest.yaml          ← dependency manifest (human-authored, never LLM-generated)
+│   ├── platform.py            ← OS detection (windows / linux / macos)
+│   ├── checks.py              ← read-only check() per dependency
+│   ├── remediate.py           ← remediate() — runs manifest install_cmd only
+│   ├── provisioning_guardian.py ← elevation gate (always shows command + waits for human)
+│   └── agent.py               ← full remediation loop with Rich UI
+│
+└── core/                    ← ✅ COMPLETE (llm.py)
+    ├── CONTEXT.md             ← core module context
+    └── llm.py                 ← LLM factory + sliding-window rate limiter (32 req/min)
 ```
 
 Each directory has a `CONTEXT.md`. **Read it before editing files in that directory.**
@@ -49,7 +58,7 @@ Each directory has a `CONTEXT.md`. **Read it before editing files in that direct
 
 | Agent | Module | Status |
 |---|---|---|
-| **Bootstrap / Environment Agent** | `/bootstrap` | 🟡 In progress |
+| **Bootstrap / Environment Agent** | `/bootstrap` | 🟢 Complete |
 
 ### Planned (from PRD §9)
 
@@ -76,10 +85,12 @@ Each directory has a `CONTEXT.md`. **Read it before editing files in that direct
 
 | Provider | Package | Env var | Priority |
 |---|---|---|---|
-| NVIDIA NIM | `langchain-nvidia-ai-endpoints` | `NVIDIA_API_KEY` | Primary |
-| Groq | `langchain-groq` | `GROQ_API_KEY` | Fallback |
+| OpenRouter | `langchain-openai` | `OPENROUTER_API_KEY` | Primary |
+| OpenCode Zen | `langchain-openai` | `OPENCODE_API_KEY` | Fallback |
 
-Provider selection: `SURYAFOOL_LLM_PROVIDER=nim|groq`
+Provider selection is automatic with fallback: OpenRouter (10s timeout) → OpenCode Zen (10s timeout) → graceful "LLM unavailable".
+
+Model: NVIDIA Nemotron 3 Ultra (free tier) on both endpoints.
 
 ---
 
@@ -121,7 +132,7 @@ The LLM never generates shell commands from scratch. Every command that mutates 
 The Scope Guardian for wireless missions is **not** a prompt or advisory layer. It is a deterministic code gate. An LLM cannot reason its way past it.
 
 ### 3. Provisioning Guardian mirrors this for bootstrap
-The Provisioning Guardian in `/bootstrap` applies the same principle to system setup: any `requires_elevation: true` entry always pauses and shows the exact command to the human before execution.
+The Provisioning Guardian in `/bootstrap` applies the same principle to system setup: any `requires_elevation: windows_admin|wsl_sudo` entry always pauses and shows the exact command to the human before execution.
 
 ### 4. Passive is the default
 Agents default to passive observation. Active interactions require explicit mission scope. Security testing requires Lab Mode with explicit authorized targets.

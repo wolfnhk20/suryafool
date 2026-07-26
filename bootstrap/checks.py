@@ -45,7 +45,7 @@ def _run(cmd: str, timeout: int = 30) -> tuple[int, str]:
     """
     Run a shell command and return (exit_code, combined_output).
     Always uses shell=True because check_cmd strings may be composite
-    (e.g. 'wsl -d Ubuntu -- python3 -c ...')
+    (e.g. 'wsl -d Ubuntu -- python3 -c ...').
     """
     try:
         result = subprocess.run(
@@ -56,6 +56,14 @@ def _run(cmd: str, timeout: int = 30) -> tuple[int, str]:
             timeout=timeout,
         )
         combined = (result.stdout + result.stderr).strip()
+
+        # Windows WSL may emit UTF-16LE (lots of NULL bytes). Detect and decode.
+        if '\x00' in combined and combined.count('\x00') > len(combined) / 3:
+            try:
+                combined = combined.encode('latin1').decode('utf-16le')
+            except Exception:
+                pass  # Keep original if decode fails
+
         return result.returncode, combined
     except subprocess.TimeoutExpired:
         return -1, f"[timeout after {timeout}s]"
@@ -154,21 +162,25 @@ def check(entry: dict, os_name: str | None = None) -> CheckResult:
     # ── Evaluate success ──────────────────────────────────────────────────────
 
     if "expect_contains" in entry:
-        needle: str = entry["expect_contains"]
-        passed = needle in raw_output
-        reason = (
-            None
-            if passed
-            else f"Expected {needle!r} in output but got:\n{raw_output}"
-        )
-        return CheckResult(
-            dependency=name,
-            passed=passed,
-            raw_output=raw_output,
-            exit_code=exit_code,
-            platform=os_name,
-            reason=reason,
-        )
+        needle = entry["expect_contains"]
+        if needle is None:
+            # Treat missing/None as check not applicable, fall through to exit code
+            pass
+        else:
+            passed = needle in raw_output
+            reason = (
+                None
+                if passed
+                else f"Expected {needle!r} in output but got:\n{raw_output}"
+            )
+            return CheckResult(
+                dependency=name,
+                passed=passed,
+                raw_output=raw_output,
+                exit_code=exit_code,
+                platform=os_name,
+                reason=reason,
+            )
 
     if "expect_exit_code" in entry:
         expected: int = entry["expect_exit_code"]
