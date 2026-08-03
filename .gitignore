@@ -26,3 +26,16 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Research cache (firecrawl)
+.firecrawl/
+
+# Node
+node_modules/
+
+# CLI build artifacts (rebuilt by `npm run build` / prepare)
+suryafool-cli/dist/
+suryafool-cli/src/bin/
+
+# Graphify regenerable AST cache (keep graph.json + reports)
+graphify-out/cache/

@@ -25,7 +25,49 @@ Suryafool sits between autonomous AI agents and heterogeneous wireless hardware 
 | Provisioning Guardian | ✅ Done |
 | Bootstrap agent loop (`agent.py`) | ✅ Done |
 | LLM factory + rate limiter (`core/llm.py`) | ✅ Done |
+| **Cyberpunk CLI** (`suryafool-cli/`) | ✅ Done (v0.1.0) |
 | Mission agents (12 planned) | 🔲 TODO |
+
+---
+
+## Cyberpunk CLI (`suryafool-cli/`)
+
+An interactive Ink/React terminal front-end for the Suryafool platform.
+
+### Features
+
+| Feature | Status |
+|---|---|
+| CLI commands (`scan`, `audit`, `explore`, `agents`, `config`, `doctor`) | ✅ |
+| Interactive REPL mode (`--interactive`, `-i`) | ✅ |
+| Cyberpunk + clean themes (`--clean`, `--hacker-mode`) | ✅ |
+| Animated boot sequence (matrix rain, glitch, typewriter) | ✅ |
+| Live scan panel with progress + severity-colored findings | ✅ |
+| Agent status board (11 planned agents) | ✅ |
+| Binary manager (auto-download, platform detection) | ✅ |
+| Output parser (JSON event stream → panels) | ✅ |
+| esbuild bundling to `dist/index.mjs` | ✅ |
+
+### Install & run
+
+```bash
+cd suryafool-cli
+npm install        # runs prepare → builds dist/index.mjs
+npm run build      # rebuild bundle after editing src/
+
+# Run
+node bin/suryafool.js --help
+node bin/suryafool.js --clean agents
+node bin/suryafool.js -i          # interactive REPL
+```
+
+> Requires Node 18+ (Node 22 tested). The CLI spawns the Python bootstrap agent (`python -m bootstrap.agent`) for `doctor` commands.
+
+### Known limitations
+
+- `--interactive` needs a real TTY (Ink raw mode fails in piped/non-TTY shells).
+- `doctor`/`agents` commands expect the Python environment to have `rich` installed (`pip install -r requirements.txt`).
+- `ink-gradient` was removed (CJS `require("ink")` is incompatible with Ink 4 + Node 22 ESM); the logo now uses plain colored text.
 
 ---
 

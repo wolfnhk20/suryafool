@@ -26,6 +26,7 @@ It gives autonomous AI agents the ability to perceive, explore, investigate and 
 | Provisioning Guardian | ✅ Done | [`bootstrap/provisioning_guardian.py`](bootstrap/provisioning_guardian.py) |
 | Bootstrap agent loop | ✅ Done | [`bootstrap/agent.py`](bootstrap/agent.py) |
 | LLM factory + rate limiter | ✅ Done | [`core/llm.py`](core/llm.py) |
+| Cyberpunk CLI (Ink/React TUI) | ✅ Done (v0.1.0) | [`suryafool-cli/`](suryafool-cli/) |
 | Capability Registry | 🔲 TODO | `capability_registry/` |
 | Hardware Abstraction Layer | 🔲 TODO | `hal/` |
 | Mission data model | 🔲 TODO | `core/mission.py` |
@@ -73,6 +74,15 @@ suryafool/
 │   ├── mission.py               # Mission dataclass
 │   ├── observation.py           # Observation, Signal, Device types
 │   └── confidence.py            # CONFIRMED/LIKELY/POSSIBLE/UNKNOWN enum
+│
+├── suryafool-cli/               # ✅ Ink/React terminal front-end (v0.1.0)
+│   ├── bin/suryafool.js         # CLI entry (yargs) → forks bin/run.mjs
+│   ├── bin/run.mjs              # Ink render entry (reads SURYAFOOL_ARGS)
+│   ├── src/app.js               # Main App component (single command + REPL)
+│   ├── src/components/          # Logo, ScanPanel, AgentStatus, REPL, ...
+│   ├── src/animations/          # matrix rain, glitch, typewriter, scanner
+│   ├── src/backend/             # BinaryManager, OutputParser
+│   └── src/styles/theme.js      # cyberpunk + clean themes
 │
 ├── capability_registry/         # hardware → capability mapping
 │   ├── CONTEXT.md

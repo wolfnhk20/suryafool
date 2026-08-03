@@ -1,5 +1,35 @@
 # Changelog
 
+## CLI v0.1.0 — Cyberpunk TUI (Ink/React)
+
+### Features Implemented
+
+#### ✅ Working CLI binary
+- `bin/suryafool.js` — yargs entry with commands: `scan`, `audit`, `explore`, `agents`, `config`, `doctor`
+- Flags: `--interactive/-i`, `--clean` (clean theme), `--hacker-mode` (cyberpunk default), `--no-animation`
+- Forks `bin/run.mjs` which renders the Ink `<App>` (reads args via `SURYAFOOL_ARGS` env)
+- Fixed `--clean` flag (was reading `cli.argv.clean` from the wrong yargs return value)
+
+#### ✅ Fixed ESM/CJS build chain (Node 22 + Ink 4)
+- **Root cause**: Ink 4 is ESM-only with top-level await; esbuild CJS bundles and `require()` of Ink both fail
+- **Solution**: bundle as ESM (`dist/index.mjs`, `--format=esm`), externalize `ink`, `react`, `chalk`, `gradient-string`, `yargs`, `adm-zip`
+- Removed `ink-gradient` (its CJS `require("ink")` is incompatible with Ink 4's TLA) — logo now uses plain colored text
+- Externalized `react-devtools-core` (browser-only, was breaking Node runtime)
+- Added `"type": "module"` to `suryafool-cli/package.json`
+- `dist/run.mjs` → moved to `bin/run.mjs` (tracked, not a build artifact)
+
+#### ✅ Verified working
+- `node bin/suryafool.js --help` — full usage output
+- `node bin/suryafool.js --clean agents` — renders logo + executes command
+- Interactive mode renders panels (raw-mode error only in non-TTY shells)
+
+### Known Issues / Remaining
+- `doctor`/`agents` need Python env with `rich` (`pip install -r requirements.txt`)
+- Interactive REPL requires a real TTY
+- Real wireless backend (HAL, Scope Guardian, mission agents) — not yet implemented
+
+---
+
 ## Bootstrap Agent - Initial Implementation
 
 ### Features Implemented

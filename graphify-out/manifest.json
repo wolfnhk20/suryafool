@@ -1,0 +1,252 @@
+{
+  ".opencode/index.ts": {
+    "mtime": 1785170234.457786,
+    "ast_hash": "841a745239f0a903bc36ffa7e51ce208",
+    "semantic_hash": "841a745239f0a903bc36ffa7e51ce208"
+  },
+  ".opencode/opencode.json": {
+    "mtime": 1785249653.2005582,
+    "ast_hash": "42a57f0bd82f13e4026e439c24d2df3f",
+    "semantic_hash": "42a57f0bd82f13e4026e439c24d2df3f"
+  },
+  ".opencode/plugins/ecc-hooks.ts": {
+    "mtime": 1785170234.458786,
+    "ast_hash": "f8a31013d8a88c0fa25a259c18a6d12e",
+    "semantic_hash": "f8a31013d8a88c0fa25a259c18a6d12e"
+  },
+  ".opencode/plugins/index.ts": {
+    "mtime": 1785170234.458786,
+    "ast_hash": "8ae21b60632bf47abc068825e22615d6",
+    "semantic_hash": "8ae21b60632bf47abc068825e22615d6"
+  },
+  ".opencode/plugins/lib/changed-files-store.ts": {
+    "mtime": 1785170234.459779,
+    "ast_hash": "4aeb8083f1e193e4633f6a0cef4d8a68",
+    "semantic_hash": "4aeb8083f1e193e4633f6a0cef4d8a68"
+  },
+  ".opencode/tools/changed-files.ts": {
+    "mtime": 1785170234.4647791,
+    "ast_hash": "de6d01303d586670f1ecda26ba726a06",
+    "semantic_hash": "de6d01303d586670f1ecda26ba726a06"
+  },
+  ".opencode/tools/check-coverage.ts": {
+    "mtime": 1785170234.4647791,
+    "ast_hash": "c8a4cb8febe5f02b7ec72d2bf00dd51a",
+    "semantic_hash": "c8a4cb8febe5f02b7ec72d2bf00dd51a"
+  },
+  ".opencode/tools/dependency-analyzer.ts": {
+    "mtime": 1785170234.4647791,
+    "ast_hash": "aed37b3d7d3633d17f416151a6d9c610",
+    "semantic_hash": "aed37b3d7d3633d17f416151a6d9c610"
+  },
+  ".opencode/tools/format-code.ts": {
+    "mtime": 1785170234.4657788,
+    "ast_hash": "364de3dedf80249b50cf751966096f04",
+    "semantic_hash": "364de3dedf80249b50cf751966096f04"
+  },
+  ".opencode/tools/git-summary.ts": {
+    "mtime": 1785170234.4657788,
+    "ast_hash": "0f61ddad17bdca0ee9d69dd428fb58a4",
+    "semantic_hash": "0f61ddad17bdca0ee9d69dd428fb58a4"
+  },
+  ".opencode/tools/index.ts": {
+    "mtime": 1785170234.4657788,
+    "ast_hash": "0cf9f0423deb1bf46853c8951e2513c9",
+    "semantic_hash": "0cf9f0423deb1bf46853c8951e2513c9"
+  },
+  ".opencode/tools/lint-check.ts": {
+    "mtime": 1785170234.4657788,
+    "ast_hash": "b0298a92aa062bff161167920183fbdf",
+    "semantic_hash": "b0298a92aa062bff161167920183fbdf"
+  },
+  ".opencode/tools/run-tests.ts": {
+    "mtime": 1785170234.4657788,
+    "ast_hash": "ddad69c80c43b832e373b74952d457be",
+    "semantic_hash": "ddad69c80c43b832e373b74952d457be"
+  },
+  ".opencode/tools/security-audit.ts": {
+    "mtime": 1785170234.466779,
+    "ast_hash": "bd94c5775205be4b82f8123dff966e83",
+    "semantic_hash": "bd94c5775205be4b82f8123dff966e83"
+  },
+  ".opencode/tsconfig.json": {
+    "mtime": 1785170234.466779,
+    "ast_hash": "ae066aa14a9a1098383cded86be0b7e1",
+    "semantic_hash": "ae066aa14a9a1098383cded86be0b7e1"
+  },
+  "bootstrap/__init__.py": {
+    "mtime": 1784913072.2948747,
+    "ast_hash": "68d230e45410104eecb0e12e51319a20",
+    "semantic_hash": "68d230e45410104eecb0e12e51319a20"
+  },
+  "bootstrap/agent.py": {
+    "mtime": 1785056858.8650503,
+    "ast_hash": "f5ce53a2527b366fb58662cb1e0d6bb7",
+    "semantic_hash": "f5ce53a2527b366fb58662cb1e0d6bb7"
+  },
+  "bootstrap/checks.py": {
+    "mtime": 1785054627.645943,
+    "ast_hash": "43951eef60a6222ea69751f955cf4038",
+    "semantic_hash": "43951eef60a6222ea69751f955cf4038"
+  },
+  "bootstrap/platform.py": {
+    "mtime": 1785041160.8101823,
+    "ast_hash": "b819250e9b04e05eb9242178675fcffa",
+    "semantic_hash": "b819250e9b04e05eb9242178675fcffa"
+  },
+  "bootstrap/provisioning_guardian.py": {
+    "mtime": 1785056516.2612112,
+    "ast_hash": "381a9697966bcba11d2d09f519fb42b7",
+    "semantic_hash": "381a9697966bcba11d2d09f519fb42b7"
+  },
+  "bootstrap/remediate.py": {
+    "mtime": 1785041256.0419211,
+    "ast_hash": "c952c084a577fdf3b15c14bec5e91c53",
+    "semantic_hash": "c952c084a577fdf3b15c14bec5e91c53"
+  },
+  "check_env.py": {
+    "mtime": 1784912887.824943,
+    "ast_hash": "b95d0e7c08ea9469448f16b39634c101",
+    "semantic_hash": "b95d0e7c08ea9469448f16b39634c101"
+  },
+  "core/__init__.py": {
+    "mtime": 1784913657.504869,
+    "ast_hash": "590e810e6ab95234a0876f1d4d7c393f",
+    "semantic_hash": "590e810e6ab95234a0876f1d4d7c393f"
+  },
+  "core/llm.py": {
+    "mtime": 1785056480.1129918,
+    "ast_hash": "027c48956982c996252c147cc1f5f2a1",
+    "semantic_hash": "027c48956982c996252c147cc1f5f2a1"
+  },
+  "pyproject.toml": {
+    "mtime": 1784917477.6257029,
+    "ast_hash": "d7e287b2dc9f0a920f73d1817524a2f1",
+    "semantic_hash": "d7e287b2dc9f0a920f73d1817524a2f1"
+  },
+  "suryafool-cli/bin/suryafool.js": {
+    "mtime": 1785062359.6238947,
+    "ast_hash": "dae9df01372b76495411ea42eaa98b43",
+    "semantic_hash": "dae9df01372b76495411ea42eaa98b43"
+  },
+  "suryafool-cli/fix_imports.py": {
+    "mtime": 1785062177.3424437,
+    "ast_hash": "fa47c489bbf09f622d88c4a626ab345e",
+    "semantic_hash": "fa47c489bbf09f622d88c4a626ab345e"
+  },
+  "suryafool-cli/package.json": {
+    "mtime": 1785168148.7080743,
+    "ast_hash": "3c8ba2bb53d91268d798702d038b967d",
+    "semantic_hash": "3c8ba2bb53d91268d798702d038b967d"
+  },
+  "suryafool-cli/scripts/fetch-binary.cjs": {
+    "mtime": 1785062289.058402,
+    "ast_hash": "8f8b07919ca2db21228480c58203d6f6",
+    "semantic_hash": "8f8b07919ca2db21228480c58203d6f6"
+  },
+  "suryafool-cli/src/animations/engine.js": {
+    "mtime": 1785068697.3481715,
+    "ast_hash": "97cf617d18adde7126498f8472fd020d",
+    "semantic_hash": "97cf617d18adde7126498f8472fd020d"
+  },
+  "suryafool-cli/src/animations/glitch.js": {
+    "mtime": 1785069857.7007294,
+    "ast_hash": "8b5070614102cfc7e258640689c102c7",
+    "semantic_hash": "8b5070614102cfc7e258640689c102c7"
+  },
+  "suryafool-cli/src/animations/index.js": {
+    "mtime": 1785068820.5718684,
+    "ast_hash": "f87dba69e4f243970664168f5b493c5e",
+    "semantic_hash": "f87dba69e4f243970664168f5b493c5e"
+  },
+  "suryafool-cli/src/animations/matrix.js": {
+    "mtime": 1785068746.6882272,
+    "ast_hash": "8951a3d400d9b6eb3dd0bee7a9697860",
+    "semantic_hash": "8951a3d400d9b6eb3dd0bee7a9697860"
+  },
+  "suryafool-cli/src/animations/neon.js": {
+    "mtime": 1785167013.5529337,
+    "ast_hash": "5252195d2bafc8a22b44e13a46bf2325",
+    "semantic_hash": "5252195d2bafc8a22b44e13a46bf2325"
+  },
+  "suryafool-cli/src/animations/scanner.js": {
+    "mtime": 1785068791.0658126,
+    "ast_hash": "740f22bec3b46e2f7caa69eac147c863",
+    "semantic_hash": "740f22bec3b46e2f7caa69eac147c863"
+  },
+  "suryafool-cli/src/animations/typewriter.js": {
+    "mtime": 1785166018.0059764,
+    "ast_hash": "8a62ada864b345ed32dcf1e7886cb733",
+    "semantic_hash": "8a62ada864b345ed32dcf1e7886cb733"
+  },
+  "suryafool-cli/src/app.js": {
+    "mtime": 1785066059.4437537,
+    "ast_hash": "c54cec6865a8769c866dcfcc5f150b63",
+    "semantic_hash": "c54cec6865a8769c866dcfcc5f150b63"
+  },
+  "suryafool-cli/src/backend/binary.js": {
+    "mtime": 1785167775.4244277,
+    "ast_hash": "5b25b381a8f9188c58dc8fc75c5ff4e5",
+    "semantic_hash": "5b25b381a8f9188c58dc8fc75c5ff4e5"
+  },
+  "suryafool-cli/src/backend/parser.js": {
+    "mtime": 1785065878.3953328,
+    "ast_hash": "2ac3a31c140fc90b0293ddda2b9c41b6",
+    "semantic_hash": "2ac3a31c140fc90b0293ddda2b9c41b6"
+  },
+  "suryafool-cli/src/components/AgentStatus.js": {
+    "mtime": 1785066007.4858181,
+    "ast_hash": "ebaef3013470c69922dc1394db088567",
+    "semantic_hash": "ebaef3013470c69922dc1394db088567"
+  },
+  "suryafool-cli/src/components/BootSequence.js": {
+    "mtime": 1785068846.867222,
+    "ast_hash": "4038640af0f643e11e9f4685217e552f",
+    "semantic_hash": "4038640af0f643e11e9f4685217e552f"
+  },
+  "suryafool-cli/src/components/InputPrompt.js": {
+    "mtime": 1785066027.268795,
+    "ast_hash": "c5ac35358d3718c97a986716afa3a8cf",
+    "semantic_hash": "c5ac35358d3718c97a986716afa3a8cf"
+  },
+  "suryafool-cli/src/components/Logo.js": {
+    "mtime": 1785065918.7133949,
+    "ast_hash": "320d9d1c8fc6ebc9a0c04e876f11b2ed",
+    "semantic_hash": "320d9d1c8fc6ebc9a0c04e876f11b2ed"
+  },
+  "suryafool-cli/src/components/ProgressWidget.js": {
+    "mtime": 1785066018.6339111,
+    "ast_hash": "07fdabde06255f38b98b3b0ec3125bc5",
+    "semantic_hash": "07fdabde06255f38b98b3b0ec3125bc5"
+  },
+  "suryafool-cli/src/components/REPL.js": {
+    "mtime": 1785166991.3918128,
+    "ast_hash": "b64fab6c6b26e3f0b4a491760e7ca184",
+    "semantic_hash": "b64fab6c6b26e3f0b4a491760e7ca184"
+  },
+  "suryafool-cli/src/components/ScanPanel.js": {
+    "mtime": 1785065996.802865,
+    "ast_hash": "06fa333e216bd945a239b55bea3b840a",
+    "semantic_hash": "06fa333e216bd945a239b55bea3b840a"
+  },
+  "suryafool-cli/src/styles/theme.js": {
+    "mtime": 1785062374.0414972,
+    "ast_hash": "eeff4c40270cd622dc75c02e7f93c36d",
+    "semantic_hash": "eeff4c40270cd622dc75c02e7f93c36d"
+  },
+  "suryafool-cli/src/utils/config.js": {
+    "mtime": 1785062642.6660054,
+    "ast_hash": "b1ea7429d527c8ea41b448dc7843de46",
+    "semantic_hash": "b1ea7429d527c8ea41b448dc7843de46"
+  },
+  "suryafool-cli/src/utils/index.js": {
+    "mtime": 1785062658.7220912,
+    "ast_hash": "3a3cc506f70bbd39c269e7ba5437d64a",
+    "semantic_hash": "3a3cc506f70bbd39c269e7ba5437d64a"
+  },
+  "suryafool-cli/src/utils/platform.js": {
+    "mtime": 1785062583.022822,
+    "ast_hash": "edac80a3b06f4b1001fdab5a9941743d",
+    "semantic_hash": "edac80a3b06f4b1001fdab5a9941743d"
+  }
+}

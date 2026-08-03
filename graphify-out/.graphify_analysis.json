@@ -1,0 +1,960 @@
+{
+  "communities": {
+    "0": [
+      "bootstrap_agent",
+      "bootstrap_agent_deps_satisfied",
+      "bootstrap_agent_load_manifest",
+      "bootstrap_agent_main",
+      "bootstrap_agent_print_results_table",
+      "bootstrap_agent_propose_remediation_llm",
+      "bootstrap_agent_rationale_1",
+      "bootstrap_agent_rationale_136",
+      "bootstrap_agent_rationale_178",
+      "bootstrap_agent_rationale_200",
+      "bootstrap_agent_rationale_62",
+      "bootstrap_agent_rationale_87",
+      "bootstrap_agent_remediationrecord",
+      "bootstrap_agent_run_check_only",
+      "bootstrap_agent_run_full_agent",
+      "bootstrap_checks",
+      "bootstrap_checks_check",
+      "bootstrap_checks_check_all",
+      "bootstrap_checks_checkresult",
+      "bootstrap_checks_checkresult_repr",
+      "bootstrap_checks_filter_manifest",
+      "bootstrap_checks_rationale_1",
+      "bootstrap_checks_rationale_103",
+      "bootstrap_checks_rationale_125",
+      "bootstrap_checks_rationale_142",
+      "bootstrap_checks_rationale_222",
+      "bootstrap_checks_rationale_28",
+      "bootstrap_checks_rationale_45",
+      "bootstrap_checks_rationale_75",
+      "bootstrap_checks_resolve_entry",
+      "bootstrap_checks_resolve_field",
+      "bootstrap_checks_run",
+      "bootstrap_platform",
+      "bootstrap_platform_assert_supported",
+      "bootstrap_platform_current_os",
+      "bootstrap_platform_current_os_name",
+      "bootstrap_platform_is_admin",
+      "bootstrap_platform_os",
+      "bootstrap_platform_py_enum",
+      "bootstrap_platform_py_str",
+      "bootstrap_platform_rationale_1",
+      "bootstrap_platform_rationale_28",
+      "bootstrap_platform_rationale_50",
+      "bootstrap_platform_rationale_55",
+      "bootstrap_platform_rationale_75",
+      "bootstrap_provisioning_guardian",
+      "bootstrap_provisioning_guardian_check_and_prompt",
+      "bootstrap_provisioning_guardian_elevationtype",
+      "bootstrap_provisioning_guardian_is_windows_admin_required",
+      "bootstrap_provisioning_guardian_is_wsl_sudo_required",
+      "bootstrap_provisioning_guardian_py_enum",
+      "bootstrap_provisioning_guardian_py_str",
+      "bootstrap_provisioning_guardian_rationale_1",
+      "bootstrap_provisioning_guardian_rationale_117",
+      "bootstrap_provisioning_guardian_rationale_142",
+      "bootstrap_provisioning_guardian_rationale_49",
+      "bootstrap_provisioning_guardian_rationale_83",
+      "bootstrap_provisioning_guardian_request_auto",
+      "bootstrap_provisioning_guardian_request_windows_admin",
+      "bootstrap_provisioning_guardian_request_wsl_sudo",
+      "bootstrap_remediate",
+      "bootstrap_remediate_decode_utf16le_if_needed",
+      "bootstrap_remediate_rationale_1",
+      "bootstrap_remediate_rationale_23",
+      "bootstrap_remediate_rationale_37",
+      "bootstrap_remediate_rationale_50",
+      "bootstrap_remediate_remediate",
+      "bootstrap_remediate_remediationresult",
+      "bootstrap_remediate_remediationresult_repr",
+      "check_env",
+      "check_env_main",
+      "check_env_rationale_1",
+      "core_llm_llm_call",
+      "core_llm_llmresult",
+      "core_llm_rationale_116",
+      "core_llm_rationale_243"
+    ],
+    "1": [
+      "suryafool_cli_bin_suryafool",
+      "suryafool_cli_bin_suryafool_cli",
+      "suryafool_cli_bin_suryafool_main",
+      "suryafool_cli_src_animations_engine",
+      "suryafool_cli_src_animations_engine_animationengine",
+      "suryafool_cli_src_animations_engine_animationengine_addlayer",
+      "suryafool_cli_src_animations_engine_animationengine_constructor",
+      "suryafool_cli_src_animations_engine_animationengine_fadein",
+      "suryafool_cli_src_animations_engine_animationengine_fadeout",
+      "suryafool_cli_src_animations_engine_animationengine_glitch",
+      "suryafool_cli_src_animations_engine_animationengine_removelayer",
+      "suryafool_cli_src_animations_engine_animationengine_sleep",
+      "suryafool_cli_src_animations_engine_animationengine_slidein",
+      "suryafool_cli_src_animations_engine_animationengine_start",
+      "suryafool_cli_src_animations_engine_animationengine_stop",
+      "suryafool_cli_src_animations_engine_animationengine_typewrite",
+      "suryafool_cli_src_animations_glitch",
+      "suryafool_cli_src_animations_glitch_glitchlines",
+      "suryafool_cli_src_animations_glitch_glitchtext",
+      "suryafool_cli_src_animations_index",
+      "suryafool_cli_src_animations_matrix",
+      "suryafool_cli_src_animations_matrix_matrixrain",
+      "suryafool_cli_src_animations_matrix_matrixrain_animate",
+      "suryafool_cli_src_animations_matrix_matrixrain_constructor",
+      "suryafool_cli_src_animations_matrix_matrixrain_render",
+      "suryafool_cli_src_animations_neon",
+      "suryafool_cli_src_animations_neon_neonflicker",
+      "suryafool_cli_src_animations_neon_neonpulse",
+      "suryafool_cli_src_animations_scanner",
+      "suryafool_cli_src_animations_scanner_scanline",
+      "suryafool_cli_src_animations_scanner_scanner",
+      "suryafool_cli_src_animations_scanner_scanner_animate",
+      "suryafool_cli_src_animations_scanner_scanner_constructor",
+      "suryafool_cli_src_animations_scanner_scanner_render",
+      "suryafool_cli_src_animations_scanner_scanner_start",
+      "suryafool_cli_src_animations_scanner_scanner_stop",
+      "suryafool_cli_src_animations_typewriter",
+      "suryafool_cli_src_animations_typewriter_typewrite",
+      "suryafool_cli_src_animations_typewriter_typewritelines",
+      "suryafool_cli_src_animations_typewriter_typewritewithcursor",
+      "suryafool_cli_src_app",
+      "suryafool_cli_src_app_app",
+      "suryafool_cli_src_backend_parser",
+      "suryafool_cli_src_backend_parser_outputparser",
+      "suryafool_cli_src_backend_parser_outputparser_constructor",
+      "suryafool_cli_src_backend_parser_outputparser_mapevent",
+      "suryafool_cli_src_backend_parser_outputparser_parse",
+      "suryafool_cli_src_components_agentstatus",
+      "suryafool_cli_src_components_agentstatus_agents",
+      "suryafool_cli_src_components_agentstatus_agentstatus",
+      "suryafool_cli_src_components_bootsequence",
+      "suryafool_cli_src_components_bootsequence_bootsequence",
+      "suryafool_cli_src_components_inputprompt",
+      "suryafool_cli_src_components_inputprompt_inputprompt",
+      "suryafool_cli_src_components_logo",
+      "suryafool_cli_src_components_logo_logo",
+      "suryafool_cli_src_components_progresswidget",
+      "suryafool_cli_src_components_progresswidget_progressbar",
+      "suryafool_cli_src_components_progresswidget_spinner",
+      "suryafool_cli_src_components_repl",
+      "suryafool_cli_src_components_repl_commands",
+      "suryafool_cli_src_components_repl_repl",
+      "suryafool_cli_src_components_scanpanel",
+      "suryafool_cli_src_components_scanpanel_scanpanel",
+      "suryafool_cli_src_styles_theme",
+      "suryafool_cli_src_styles_theme_applytheme",
+      "suryafool_cli_src_styles_theme_gettheme",
+      "suryafool_cli_src_styles_theme_themes"
+    ],
+    "2": [
+      "chalk",
+      "esbuild",
+      "gradient_string",
+      "ink",
+      "ink_box",
+      "ink_gradient",
+      "ink_text_input",
+      "meow",
+      "ref_agentic",
+      "ref_cli",
+      "ref_cyberpunk",
+      "ref_security",
+      "ref_wireless",
+      "suryafool_cli_package",
+      "suryafool_cli_package_author",
+      "suryafool_cli_package_bin",
+      "suryafool_cli_package_bin_suryafool",
+      "suryafool_cli_package_dependencies",
+      "suryafool_cli_package_dependencies_chalk",
+      "suryafool_cli_package_dependencies_gradient_string",
+      "suryafool_cli_package_dependencies_ink",
+      "suryafool_cli_package_dependencies_ink_box",
+      "suryafool_cli_package_dependencies_ink_gradient",
+      "suryafool_cli_package_dependencies_ink_text_input",
+      "suryafool_cli_package_dependencies_meow",
+      "suryafool_cli_package_description",
+      "suryafool_cli_package_devdependencies",
+      "suryafool_cli_package_devdependencies_esbuild",
+      "suryafool_cli_package_engines",
+      "suryafool_cli_package_engines_node",
+      "suryafool_cli_package_keywords",
+      "suryafool_cli_package_license",
+      "suryafool_cli_package_main",
+      "suryafool_cli_package_name",
+      "suryafool_cli_package_scripts",
+      "suryafool_cli_package_scripts_build",
+      "suryafool_cli_package_scripts_dev",
+      "suryafool_cli_package_scripts_postinstall",
+      "suryafool_cli_package_scripts_prepare",
+      "suryafool_cli_package_type",
+      "suryafool_cli_package_version"
+    ],
+    "3": [
+      "opencode_index",
+      "opencode_index_metadata",
+      "opencode_plugins_ecc_hooks",
+      "opencode_plugins_ecc_hooks_ecchooksplugin",
+      "opencode_plugins_ecc_hooks_ecchookspluginfn",
+      "opencode_plugins_ecc_hooks_fileevent",
+      "opencode_plugins_ecc_hooks_geteccversion",
+      "opencode_plugins_ecc_hooks_permissionevent",
+      "opencode_plugins_ecc_hooks_todoevent",
+      "opencode_plugins_ecc_hooks_toolargs",
+      "opencode_plugins_ecc_hooks_toolinput",
+      "opencode_plugins_index",
+      "opencode_plugins_lib_changed_files_store",
+      "opencode_plugins_lib_changed_files_store_addtotree",
+      "opencode_plugins_lib_changed_files_store_buildtree",
+      "opencode_plugins_lib_changed_files_store_changes",
+      "opencode_plugins_lib_changed_files_store_changetype",
+      "opencode_plugins_lib_changed_files_store_clearchanges",
+      "opencode_plugins_lib_changed_files_store_getchangedpaths",
+      "opencode_plugins_lib_changed_files_store_getchanges",
+      "opencode_plugins_lib_changed_files_store_haschanges",
+      "opencode_plugins_lib_changed_files_store_initstore",
+      "opencode_plugins_lib_changed_files_store_recordchange",
+      "opencode_plugins_lib_changed_files_store_torelative",
+      "opencode_plugins_lib_changed_files_store_treenode",
+      "opencode_tools_changed_files",
+      "opencode_tools_changed_files_changedfilestool",
+      "opencode_tools_changed_files_indicators",
+      "opencode_tools_changed_files_rendertree",
+      "opencode_tools_dependency_analyzer",
+      "opencode_tools_dependency_analyzer_analysisresult",
+      "opencode_tools_dependency_analyzer_analyzedependencies",
+      "opencode_tools_dependency_analyzer_dependencyanalyzertool",
+      "opencode_tools_dependency_analyzer_dependencyinfo",
+      "opencode_tools_dependency_analyzer_detectpackagemanager",
+      "opencode_tools_dependency_analyzer_generaterecommendations",
+      "opencode_tools_dependency_analyzer_generatesummary"
+    ],
+    "4": [
+      "opencode_tools_check_coverage",
+      "opencode_tools_check_coverage_checkcoveragetool",
+      "opencode_tools_check_coverage_coverageresult",
+      "opencode_tools_check_coverage_coveragesummary",
+      "opencode_tools_check_coverage_parsecoveragedata",
+      "opencode_tools_format_code",
+      "opencode_tools_format_code_buildformattercommand",
+      "opencode_tools_format_code_detectformatter",
+      "opencode_tools_format_code_formatcodetool",
+      "opencode_tools_format_code_formatresult",
+      "opencode_tools_format_code_formatter",
+      "opencode_tools_git_summary",
+      "opencode_tools_git_summary_gitsummarytool",
+      "opencode_tools_git_summary_issafedepth",
+      "opencode_tools_git_summary_issaferef",
+      "opencode_tools_git_summary_runargs",
+      "opencode_tools_index",
+      "opencode_tools_lint_check",
+      "opencode_tools_lint_check_buildlintcommand",
+      "opencode_tools_lint_check_detectlinter",
+      "opencode_tools_lint_check_lintchecktool",
+      "opencode_tools_lint_check_linter",
+      "opencode_tools_lint_check_lintresult",
+      "opencode_tools_run_tests",
+      "opencode_tools_run_tests_detectpackagemanager",
+      "opencode_tools_run_tests_detecttestframework",
+      "opencode_tools_run_tests_runteststool",
+      "opencode_tools_security_audit",
+      "opencode_tools_security_audit_auditcheck",
+      "opencode_tools_security_audit_auditresults",
+      "opencode_tools_security_audit_generaterecommendations",
+      "opencode_tools_security_audit_rationale_7",
+      "opencode_tools_security_audit_scancodesecurity",
+      "opencode_tools_security_audit_scandirectory",
+      "opencode_tools_security_audit_scanfile",
+      "opencode_tools_security_audit_scanforsecrets",
+      "opencode_tools_security_audit_securityaudittool"
+    ],
+    "5": [
+      "core_llm",
+      "core_llm_build_default_limiter",
+      "core_llm_build_openai_compatible",
+      "core_llm_get_llm",
+      "core_llm_get_rate_limiter",
+      "core_llm_providerconfig",
+      "core_llm_ratelimitedllm",
+      "core_llm_ratelimitedllm_ainvoke",
+      "core_llm_ratelimitedllm_astream",
+      "core_llm_ratelimitedllm_batch",
+      "core_llm_ratelimitedllm_bind",
+      "core_llm_ratelimitedllm_bind_tools",
+      "core_llm_ratelimitedllm_getattr",
+      "core_llm_ratelimitedllm_init",
+      "core_llm_ratelimitedllm_invoke",
+      "core_llm_ratelimitedllm_repr",
+      "core_llm_ratelimitedllm_stream",
+      "core_llm_ratelimitedllm_with_structured_output",
+      "core_llm_rationale_1",
+      "core_llm_rationale_126",
+      "core_llm_rationale_182",
+      "core_llm_rationale_211",
+      "core_llm_rationale_36",
+      "core_llm_slidingwindowratelimiter",
+      "core_llm_slidingwindowratelimiter_acquire",
+      "core_llm_slidingwindowratelimiter_current_usage",
+      "core_llm_slidingwindowratelimiter_init",
+      "core_llm_slidingwindowratelimiter_repr"
+    ],
+    "6": [
+      "opencode_tsconfig",
+      "opencode_tsconfig_compileroptions",
+      "opencode_tsconfig_compileroptions_declaration",
+      "opencode_tsconfig_compileroptions_declarationmap",
+      "opencode_tsconfig_compileroptions_esmoduleinterop",
+      "opencode_tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "opencode_tsconfig_compileroptions_isolatedmodules",
+      "opencode_tsconfig_compileroptions_lib",
+      "opencode_tsconfig_compileroptions_module",
+      "opencode_tsconfig_compileroptions_moduleresolution",
+      "opencode_tsconfig_compileroptions_outdir",
+      "opencode_tsconfig_compileroptions_resolvejsonmodule",
+      "opencode_tsconfig_compileroptions_rootdir",
+      "opencode_tsconfig_compileroptions_skiplibcheck",
+      "opencode_tsconfig_compileroptions_sourcemap",
+      "opencode_tsconfig_compileroptions_strict",
+      "opencode_tsconfig_compileroptions_target",
+      "opencode_tsconfig_compileroptions_types",
+      "opencode_tsconfig_compileroptions_verbatimmodulesyntax",
+      "opencode_tsconfig_exclude",
+      "opencode_tsconfig_include",
+      "ref_dist",
+      "ref_es2022",
+      "ref_index_ts",
+      "ref_node",
+      "ref_node_modules",
+      "ref_plugins_ts",
+      "ref_tools_ts"
+    ],
+    "7": [
+      "opencode_opencode",
+      "opencode_opencode_default_agent",
+      "opencode_opencode_instructions",
+      "opencode_opencode_permission",
+      "opencode_opencode_permission_mcp",
+      "opencode_opencode_plugin",
+      "opencode_opencode_schema",
+      "opencode_opencode_skills",
+      "opencode_opencode_skills_paths",
+      "ref_agents_md",
+      "ref_contributing_md",
+      "ref_instructions_instructions_md",
+      "ref_plugins",
+      "ref_skills",
+      "ref_skills_api_design_skill_md",
+      "ref_skills_backend_patterns_skill_md",
+      "ref_skills_coding_standards_skill_md",
+      "ref_skills_e2e_testing_skill_md",
+      "ref_skills_eval_harness_skill_md",
+      "ref_skills_frontend_patterns_skill_md",
+      "ref_skills_frontend_slides_skill_md",
+      "ref_skills_security_review_skill_md",
+      "ref_skills_strategic_compact_skill_md",
+      "ref_skills_tdd_workflow_skill_md",
+      "ref_skills_verification_loop_skill_md"
+    ],
+    "8": [
+      "adm_zip",
+      "suryafool_cli_package_dependencies_adm_zip",
+      "suryafool_cli_scripts_fetch_binary",
+      "suryafool_cli_scripts_fetch_binary_binarymanager",
+      "suryafool_cli_scripts_fetch_binary_chalk",
+      "suryafool_cli_scripts_fetch_binary_postinstall",
+      "suryafool_cli_scripts_fetch_binary_spinnerframes",
+      "suryafool_cli_scripts_fetch_binary_startspinner",
+      "suryafool_cli_scripts_fetch_binary_stopspinner",
+      "suryafool_cli_src_backend_binary",
+      "suryafool_cli_src_backend_binary_binarymanager",
+      "suryafool_cli_src_backend_binary_binarymanager_constructor",
+      "suryafool_cli_src_backend_binary_binarymanager_detectplatform",
+      "suryafool_cli_src_backend_binary_binarymanager_downloadbinary",
+      "suryafool_cli_src_backend_binary_binarymanager_fetchbinary",
+      "suryafool_cli_src_backend_binary_binarymanager_getbinarypath",
+      "suryafool_cli_src_backend_binary_binarymanager_isinstalled",
+      "suryafool_cli_src_backend_binary_binarymanager_run",
+      "suryafool_cli_src_backend_binary_dirname",
+      "suryafool_cli_src_backend_binary_filename"
+    ],
+    "9": [
+      "suryafool_cli_src_utils_config",
+      "suryafool_cli_src_utils_config_config_dir",
+      "suryafool_cli_src_utils_config_config_file",
+      "suryafool_cli_src_utils_config_default_config",
+      "suryafool_cli_src_utils_config_getconfig",
+      "suryafool_cli_src_utils_config_getconfigpath",
+      "suryafool_cli_src_utils_config_loadconfig",
+      "suryafool_cli_src_utils_config_saveconfig",
+      "suryafool_cli_src_utils_config_setconfig",
+      "suryafool_cli_src_utils_index",
+      "suryafool_cli_src_utils_platform",
+      "suryafool_cli_src_utils_platform_getarch",
+      "suryafool_cli_src_utils_platform_getplatform",
+      "suryafool_cli_src_utils_platform_islinux",
+      "suryafool_cli_src_utils_platform_ismacos",
+      "suryafool_cli_src_utils_platform_iswindows"
+    ],
+    "10": [
+      "opencode_opencode_checkpoint_description",
+      "opencode_opencode_checkpoint_template",
+      "opencode_opencode_command",
+      "opencode_opencode_command_checkpoint",
+      "opencode_opencode_command_instinct_export",
+      "opencode_opencode_command_instinct_status",
+      "opencode_opencode_command_promote",
+      "opencode_opencode_instinct_export_description",
+      "opencode_opencode_instinct_export_template",
+      "opencode_opencode_instinct_status_description",
+      "opencode_opencode_instinct_status_template",
+      "opencode_opencode_promote_description",
+      "opencode_opencode_promote_template"
+    ],
+    "11": [
+      "opencode_opencode_agent",
+      "opencode_opencode_agent_build",
+      "opencode_opencode_agent_rust_build_resolver",
+      "opencode_opencode_build_description",
+      "opencode_opencode_build_mode",
+      "opencode_opencode_rust_build_resolver_description",
+      "opencode_opencode_rust_build_resolver_mode",
+      "opencode_opencode_rust_build_resolver_prompt",
+      "opencode_opencode_rust_build_resolver_tools"
+    ],
+    "12": [
+      "opencode_opencode_agent_kotlin_build_resolver",
+      "opencode_opencode_build_tools",
+      "opencode_opencode_kotlin_build_resolver_description",
+      "opencode_opencode_kotlin_build_resolver_mode",
+      "opencode_opencode_kotlin_build_resolver_prompt",
+      "opencode_opencode_kotlin_build_resolver_tools",
+      "opencode_opencode_tools_changed_files",
+      "opencode_opencode_tools_edit"
+    ],
+    "13": [
+      "opencode_opencode_agent_architect",
+      "opencode_opencode_architect_description",
+      "opencode_opencode_architect_mode",
+      "opencode_opencode_architect_prompt",
+      "opencode_opencode_architect_tools",
+      "opencode_opencode_tools_write"
+    ],
+    "14": [
+      "opencode_opencode_agent_harness_optimizer",
+      "opencode_opencode_harness_optimizer_description",
+      "opencode_opencode_harness_optimizer_mode",
+      "opencode_opencode_harness_optimizer_prompt",
+      "opencode_opencode_harness_optimizer_tools",
+      "opencode_opencode_tools_bash"
+    ],
+    "15": [
+      "opencode_opencode_agent_loop_operator",
+      "opencode_opencode_loop_operator_description",
+      "opencode_opencode_loop_operator_mode",
+      "opencode_opencode_loop_operator_prompt",
+      "opencode_opencode_loop_operator_tools",
+      "opencode_opencode_tools_read"
+    ],
+    "16": [
+      "opencode_opencode_agent_build_error_resolver",
+      "opencode_opencode_build_error_resolver_description",
+      "opencode_opencode_build_error_resolver_mode",
+      "opencode_opencode_build_error_resolver_prompt",
+      "opencode_opencode_build_error_resolver_tools"
+    ],
+    "17": [
+      "opencode_opencode_agent_code_reviewer",
+      "opencode_opencode_code_reviewer_description",
+      "opencode_opencode_code_reviewer_mode",
+      "opencode_opencode_code_reviewer_prompt",
+      "opencode_opencode_code_reviewer_tools"
+    ],
+    "18": [
+      "opencode_opencode_agent_cpp_build_resolver",
+      "opencode_opencode_cpp_build_resolver_description",
+      "opencode_opencode_cpp_build_resolver_mode",
+      "opencode_opencode_cpp_build_resolver_prompt",
+      "opencode_opencode_cpp_build_resolver_tools"
+    ],
+    "19": [
+      "opencode_opencode_agent_cpp_reviewer",
+      "opencode_opencode_cpp_reviewer_description",
+      "opencode_opencode_cpp_reviewer_mode",
+      "opencode_opencode_cpp_reviewer_prompt",
+      "opencode_opencode_cpp_reviewer_tools"
+    ],
+    "20": [
+      "opencode_opencode_agent_database_reviewer",
+      "opencode_opencode_database_reviewer_description",
+      "opencode_opencode_database_reviewer_mode",
+      "opencode_opencode_database_reviewer_prompt",
+      "opencode_opencode_database_reviewer_tools"
+    ],
+    "21": [
+      "opencode_opencode_agent_doc_updater",
+      "opencode_opencode_doc_updater_description",
+      "opencode_opencode_doc_updater_mode",
+      "opencode_opencode_doc_updater_prompt",
+      "opencode_opencode_doc_updater_tools"
+    ],
+    "22": [
+      "opencode_opencode_agent_docs_lookup",
+      "opencode_opencode_docs_lookup_description",
+      "opencode_opencode_docs_lookup_mode",
+      "opencode_opencode_docs_lookup_prompt",
+      "opencode_opencode_docs_lookup_tools"
+    ],
+    "23": [
+      "opencode_opencode_agent_e2e_runner",
+      "opencode_opencode_e2e_runner_description",
+      "opencode_opencode_e2e_runner_mode",
+      "opencode_opencode_e2e_runner_prompt",
+      "opencode_opencode_e2e_runner_tools"
+    ],
+    "24": [
+      "opencode_opencode_agent_go_build_resolver",
+      "opencode_opencode_go_build_resolver_description",
+      "opencode_opencode_go_build_resolver_mode",
+      "opencode_opencode_go_build_resolver_prompt",
+      "opencode_opencode_go_build_resolver_tools"
+    ],
+    "25": [
+      "opencode_opencode_agent_go_reviewer",
+      "opencode_opencode_go_reviewer_description",
+      "opencode_opencode_go_reviewer_mode",
+      "opencode_opencode_go_reviewer_prompt",
+      "opencode_opencode_go_reviewer_tools"
+    ],
+    "26": [
+      "opencode_opencode_agent_java_build_resolver",
+      "opencode_opencode_java_build_resolver_description",
+      "opencode_opencode_java_build_resolver_mode",
+      "opencode_opencode_java_build_resolver_prompt",
+      "opencode_opencode_java_build_resolver_tools"
+    ],
+    "27": [
+      "opencode_opencode_agent_java_reviewer",
+      "opencode_opencode_java_reviewer_description",
+      "opencode_opencode_java_reviewer_mode",
+      "opencode_opencode_java_reviewer_prompt",
+      "opencode_opencode_java_reviewer_tools"
+    ],
+    "28": [
+      "opencode_opencode_agent_kotlin_reviewer",
+      "opencode_opencode_kotlin_reviewer_description",
+      "opencode_opencode_kotlin_reviewer_mode",
+      "opencode_opencode_kotlin_reviewer_prompt",
+      "opencode_opencode_kotlin_reviewer_tools"
+    ],
+    "29": [
+      "opencode_opencode_agent_php_reviewer",
+      "opencode_opencode_php_reviewer_description",
+      "opencode_opencode_php_reviewer_mode",
+      "opencode_opencode_php_reviewer_prompt",
+      "opencode_opencode_php_reviewer_tools"
+    ],
+    "30": [
+      "opencode_opencode_agent_planner",
+      "opencode_opencode_planner_description",
+      "opencode_opencode_planner_mode",
+      "opencode_opencode_planner_prompt",
+      "opencode_opencode_planner_tools"
+    ],
+    "31": [
+      "opencode_opencode_agent_python_reviewer",
+      "opencode_opencode_python_reviewer_description",
+      "opencode_opencode_python_reviewer_mode",
+      "opencode_opencode_python_reviewer_prompt",
+      "opencode_opencode_python_reviewer_tools"
+    ],
+    "32": [
+      "opencode_opencode_agent_refactor_cleaner",
+      "opencode_opencode_refactor_cleaner_description",
+      "opencode_opencode_refactor_cleaner_mode",
+      "opencode_opencode_refactor_cleaner_prompt",
+      "opencode_opencode_refactor_cleaner_tools"
+    ],
+    "33": [
+      "opencode_opencode_agent_rust_reviewer",
+      "opencode_opencode_rust_reviewer_description",
+      "opencode_opencode_rust_reviewer_mode",
+      "opencode_opencode_rust_reviewer_prompt",
+      "opencode_opencode_rust_reviewer_tools"
+    ],
+    "34": [
+      "opencode_opencode_agent_security_reviewer",
+      "opencode_opencode_security_reviewer_description",
+      "opencode_opencode_security_reviewer_mode",
+      "opencode_opencode_security_reviewer_prompt",
+      "opencode_opencode_security_reviewer_tools"
+    ],
+    "35": [
+      "opencode_opencode_agent_tdd_guide",
+      "opencode_opencode_tdd_guide_description",
+      "opencode_opencode_tdd_guide_mode",
+      "opencode_opencode_tdd_guide_prompt",
+      "opencode_opencode_tdd_guide_tools"
+    ],
+    "36": [
+      "opencode_opencode_build_fix_agent",
+      "opencode_opencode_build_fix_description",
+      "opencode_opencode_build_fix_subtask",
+      "opencode_opencode_build_fix_template",
+      "opencode_opencode_command_build_fix"
+    ],
+    "37": [
+      "opencode_opencode_code_review_agent",
+      "opencode_opencode_code_review_description",
+      "opencode_opencode_code_review_subtask",
+      "opencode_opencode_code_review_template",
+      "opencode_opencode_command_code_review"
+    ],
+    "38": [
+      "opencode_opencode_command_e2e",
+      "opencode_opencode_e2e_agent",
+      "opencode_opencode_e2e_description",
+      "opencode_opencode_e2e_subtask",
+      "opencode_opencode_e2e_template"
+    ],
+    "39": [
+      "opencode_opencode_command_go_build",
+      "opencode_opencode_go_build_agent",
+      "opencode_opencode_go_build_description",
+      "opencode_opencode_go_build_subtask",
+      "opencode_opencode_go_build_template"
+    ],
+    "40": [
+      "opencode_opencode_command_go_review",
+      "opencode_opencode_go_review_agent",
+      "opencode_opencode_go_review_description",
+      "opencode_opencode_go_review_subtask",
+      "opencode_opencode_go_review_template"
+    ],
+    "41": [
+      "opencode_opencode_command_go_test",
+      "opencode_opencode_go_test_agent",
+      "opencode_opencode_go_test_description",
+      "opencode_opencode_go_test_subtask",
+      "opencode_opencode_go_test_template"
+    ],
+    "42": [
+      "opencode_opencode_command_orchestrate",
+      "opencode_opencode_orchestrate_agent",
+      "opencode_opencode_orchestrate_description",
+      "opencode_opencode_orchestrate_subtask",
+      "opencode_opencode_orchestrate_template"
+    ],
+    "43": [
+      "opencode_opencode_command_plan",
+      "opencode_opencode_plan_agent",
+      "opencode_opencode_plan_description",
+      "opencode_opencode_plan_subtask",
+      "opencode_opencode_plan_template"
+    ],
+    "44": [
+      "opencode_opencode_command_refactor_clean",
+      "opencode_opencode_refactor_clean_agent",
+      "opencode_opencode_refactor_clean_description",
+      "opencode_opencode_refactor_clean_subtask",
+      "opencode_opencode_refactor_clean_template"
+    ],
+    "45": [
+      "opencode_opencode_command_security",
+      "opencode_opencode_security_agent",
+      "opencode_opencode_security_description",
+      "opencode_opencode_security_subtask",
+      "opencode_opencode_security_template"
+    ],
+    "46": [
+      "opencode_opencode_command_tdd",
+      "opencode_opencode_tdd_agent",
+      "opencode_opencode_tdd_description",
+      "opencode_opencode_tdd_subtask",
+      "opencode_opencode_tdd_template"
+    ],
+    "47": [
+      "opencode_opencode_command_test_coverage",
+      "opencode_opencode_test_coverage_agent",
+      "opencode_opencode_test_coverage_description",
+      "opencode_opencode_test_coverage_subtask",
+      "opencode_opencode_test_coverage_template"
+    ],
+    "48": [
+      "opencode_opencode_command_update_codemaps",
+      "opencode_opencode_update_codemaps_agent",
+      "opencode_opencode_update_codemaps_description",
+      "opencode_opencode_update_codemaps_subtask",
+      "opencode_opencode_update_codemaps_template"
+    ],
+    "49": [
+      "opencode_opencode_command_update_docs",
+      "opencode_opencode_update_docs_agent",
+      "opencode_opencode_update_docs_description",
+      "opencode_opencode_update_docs_subtask",
+      "opencode_opencode_update_docs_template"
+    ],
+    "50": [
+      "opencode_opencode_command_eval",
+      "opencode_opencode_eval_description",
+      "opencode_opencode_eval_template"
+    ],
+    "51": [
+      "opencode_opencode_command_evolve",
+      "opencode_opencode_evolve_description",
+      "opencode_opencode_evolve_template"
+    ],
+    "52": [
+      "opencode_opencode_command_instinct_import",
+      "opencode_opencode_instinct_import_description",
+      "opencode_opencode_instinct_import_template"
+    ],
+    "53": [
+      "opencode_opencode_command_learn",
+      "opencode_opencode_learn_description",
+      "opencode_opencode_learn_template"
+    ],
+    "54": [
+      "opencode_opencode_command_projects",
+      "opencode_opencode_projects_description",
+      "opencode_opencode_projects_template"
+    ],
+    "55": [
+      "opencode_opencode_command_setup_pm",
+      "opencode_opencode_setup_pm_description",
+      "opencode_opencode_setup_pm_template"
+    ],
+    "56": [
+      "opencode_opencode_command_skill_create",
+      "opencode_opencode_skill_create_description",
+      "opencode_opencode_skill_create_template"
+    ],
+    "57": [
+      "opencode_opencode_command_verify",
+      "opencode_opencode_verify_description",
+      "opencode_opencode_verify_template"
+    ],
+    "58": [
+      "bootstrap_init"
+    ],
+    "59": [
+      "core_init"
+    ],
+    "60": [
+      "pkg_suryafool"
+    ],
+    "61": [
+      "suryafool_cli_fix_imports"
+    ]
+  },
+  "cohesion": {
+    "0": 0.051929824561403506,
+    "1": 0.061018437225636525,
+    "2": 0.04878048780487805,
+    "3": 0.08258258258258258,
+    "4": 0.06006006006006006,
+    "5": 0.09523809523809523,
+    "6": 0.07142857142857142,
+    "7": 0.08,
+    "8": 0.13157894736842105,
+    "9": 0.15,
+    "10": 0.15384615384615385,
+    "11": 0.2222222222222222,
+    "12": 0.25,
+    "13": 0.3333333333333333,
+    "14": 0.3333333333333333,
+    "15": 0.3333333333333333,
+    "16": 0.4,
+    "17": 0.4,
+    "18": 0.4,
+    "19": 0.4,
+    "20": 0.4,
+    "21": 0.4,
+    "22": 0.4,
+    "23": 0.4,
+    "24": 0.4,
+    "25": 0.4,
+    "26": 0.4,
+    "27": 0.4,
+    "28": 0.4,
+    "29": 0.4,
+    "30": 0.4,
+    "31": 0.4,
+    "32": 0.4,
+    "33": 0.4,
+    "34": 0.4,
+    "35": 0.4,
+    "36": 0.4,
+    "37": 0.4,
+    "38": 0.4,
+    "39": 0.4,
+    "40": 0.4,
+    "41": 0.4,
+    "42": 0.4,
+    "43": 0.4,
+    "44": 0.4,
+    "45": 0.4,
+    "46": 0.4,
+    "47": 0.4,
+    "48": 0.4,
+    "49": 0.4,
+    "50": 0.6666666666666666,
+    "51": 0.6666666666666666,
+    "52": 0.6666666666666666,
+    "53": 0.6666666666666666,
+    "54": 0.6666666666666666,
+    "55": 0.6666666666666666,
+    "56": 0.6666666666666666,
+    "57": 0.6666666666666666,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0
+  },
+  "gods": [
+    {
+      "id": "opencode_opencode_agent",
+      "label": "agent",
+      "degree": 27
+    },
+    {
+      "id": "opencode_opencode_command",
+      "label": "command",
+      "degree": 27
+    },
+    {
+      "id": "opencode_opencode_tools_edit",
+      "label": "edit",
+      "degree": 26
+    },
+    {
+      "id": "opencode_opencode_tools_bash",
+      "label": "bash",
+      "degree": 26
+    },
+    {
+      "id": "opencode_opencode_tools_read",
+      "label": "read",
+      "degree": 26
+    },
+    {
+      "id": "opencode_opencode_tools_write",
+      "label": "write",
+      "degree": 24
+    },
+    {
+      "id": "opencode_tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 18
+    },
+    {
+      "id": "opencode_opencode_instructions",
+      "label": "instructions",
+      "degree": 15
+    },
+    {
+      "id": "bootstrap_checks_resolve_entry",
+      "label": "resolve_entry()",
+      "degree": 15
+    },
+    {
+      "id": "bootstrap_agent_run_full_agent",
+      "label": "run_full_agent()",
+      "degree": 14
+    }
+  ],
+  "surprises": [
+    {
+      "source": "RemediationRecord",
+      "target": "LLMResult",
+      "source_files": [
+        "bootstrap/agent.py",
+        "core/llm.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "propose_remediation_llm()",
+      "target": "llm_call()",
+      "source_files": [
+        "bootstrap/agent.py",
+        "core/llm.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "main()",
+      "target": "check_all()",
+      "source_files": [
+        "check_env.py",
+        "bootstrap/checks.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "main()",
+      "target": "assert_supported()",
+      "source_files": [
+        "check_env.py",
+        "bootstrap/platform.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories"
+    },
+    {
+      "source": "CheckResult",
+      "target": "OS",
+      "source_files": [
+        "bootstrap/checks.py",
+        "bootstrap/platform.py"
+      ],
+      "confidence": "INFERRED",
+      "relation": "uses",
+      "why": "inferred connection - not explicitly stated in source"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `agent` connect `Community 11` to `Community 7`, `Community 12`, `Community 13`, `Community 14`, `Community 15`, `Community 16`, `Community 17`, `Community 18`, `Community 19`, `Community 20`, `Community 21`, `Community 22`, `Community 23`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 29`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 34`, `Community 35`?",
+      "why": "High betweenness centrality (0.121) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `command` connect `Community 10` to `Community 7`, `Community 36`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 42`, `Community 43`, `Community 44`, `Community 45`, `Community 46`, `Community 47`, `Community 48`, `Community 49`, `Community 50`, `Community 51`, `Community 52`, `Community 53`, `Community 54`, `Community 55`, `Community 56`, `Community 57`?",
+      "why": "High betweenness centrality (0.116) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `BinaryManager` connect `Community 8` to `Community 1`?",
+      "why": "High betweenness centrality (0.021) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `metadata`, `$schema`, `default_agent` to the rest of the system?",
+      "why": "264 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.051929824561403506 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.061018437225636525 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
