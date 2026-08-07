@@ -23,11 +23,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@inkjs/ui": "^1.0.0",
+    "@pppp606/ink-chart": "0.2.0",
     "adm-zip": "^0.5.10",
     "chalk": "^4.1.2",
+    "fullscreen-ink": "^0.1.0",
     "gradient-string": "^2.0.2",
     "ink": "^4.4.1",
     "ink-box": "^2.0.0",
+    "ink-table": "^3.1.0",
     "ink-text-input": "^5.0.1",
     "yargs": "^17.7.2"
   },
