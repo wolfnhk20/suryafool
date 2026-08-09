@@ -6,7 +6,7 @@ import TextInput from 'ink-text-input';
 import { Text, Box } from 'ink';
 import { themes } from '../styles/theme.js';
 
-function InputPrompt({ onSubmit, placeholder = 'Enter command...', theme = 'cyberpunk', prefix = '⚡' }) {
+function InputPrompt({ onSubmit, placeholder = 'Enter command...', theme = 'cyberpunk', prefix = '��⚡' }) {
   const t = themes[theme] || themes.cyberpunk;
   const [value, setValue] = useState('');
 
@@ -18,7 +18,7 @@ function InputPrompt({ onSubmit, placeholder = 'Enter command...', theme = 'cybe
   };
 
   return (
-    <Box borderStyle="single" borderColor={t.primary} padding={1}>
+    <Box padding={1}>
       <Text color={t.primary} bold>{prefix} </Text>
       <TextInput
         value={value}

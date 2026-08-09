@@ -1,89 +1,54 @@
 // src/app.js
-// Main Ink application - pure library, no CLI parsing
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { FullScreenBox } from 'fullscreen-ink';
 import { Text, Box } from 'ink';
-import Logo from './components/Logo.js';
-import ScanPanel from './components/ScanPanel.js';
-import AgentStatus from './components/AgentStatus.js';
-import REPL from './components/REPL.js';
+import { StateProvider, useState, useDispatch } from './state/context.js';
+import Header from './components/Header.js';
+import Footer from './components/Footer.js';
+import TabPanel from './components/TabPanel.js';
+import CommandBar from './components/CommandBar.js';
+import HelpOverlay from './components/HelpOverlay.js';
+import ModalLayer from './components/ModalLayer.js';
+import Console from './components/Console.js';
 import { themes } from './styles/theme.js';
 import BinaryManager from './backend/binary.js';
-import OutputParser from './backend/parser.js';
-import { bootSequence } from './components/BootSequence.js';
+import BackendManager from './backend/backend.js';
 
-function App({ command, args, flags, theme: themeName, onCommand }) {
-  const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState(null);
+function AppContent({ command, args, flags, theme: themeName }) {
   const theme = themes[themeName] || themes.cyberpunk;
-  const binary = new BinaryManager();
-  const parser = new OutputParser();
+  const state = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!command) {
-      setLoading(false);
-      return;
+    if (command) {
+      dispatch({ type: 'PUSH_HISTORY', payload: { command, args, time: new Date() } });
     }
+  }, [command, args, dispatch]);
 
-    // Single command mode
-    const runCommand = async () => {
-      try {
-        const output = await binary.run([command, ...args], {
-          onOutput: (line) => {
-            const events = parser.parse(line);
-            // Handle real-time events
-          }
-        });
-        setResult({ success: true, output });
-      } catch (err) {
-        setResult({ success: false, error: err.message });
-      }
-      setLoading(false);
-    };
-
-    runCommand();
-  }, [command, args]);
-
-  // Interactive REPL mode
-  if (!command) {
-    return React.createElement(REPL, { 
-      theme: themeName, 
-      onCommand: async (cmd, args) => {
-        try {
-          const output = await binary.run([cmd, ...args], {
-            onOutput: (line) => {
-              const events = parser.parse(line);
-              // Could emit events for real-time UI updates
-            }
-          });
-          return output;
-        } catch (err) {
-          throw err;
-        }
-      } 
-    });
-  }
-
-  // Loading state
-  if (loading) {
     return (
-      <Box flexDirection="column" padding={1}>
-        <Logo compact theme={themeName} />
-        <Text color={theme.muted}>Executing: {command} {args.join(' ')}</Text>
-      </Box>
+      <FullScreenBox flexDirection="column">
+        <Header theme={themeName} />
+        <Box flexGrow={1} flexDirection="row">
+          <Box flexGrow={2} flexDirection="column">
+            <TabPanel theme={themeName} />
+          </Box>
+          <Box flexGrow={1}>
+            <Console theme={themeName} />
+          </Box>
+        </Box>
+        <Footer theme={themeName} />
+        <CommandBar theme={themeName} />
+        {state.modal && state.modal?.type === 'help' && <HelpOverlay theme={themeName} />}
+        {state.modal && state.modal?.type !== 'help' && <ModalLayer theme={themeName} />}
+      </FullScreenBox>
     );
-  }
+}
 
-  // Result state
+function App(props) {
   return (
-    <Box flexDirection="column" padding={1}>
-      <Logo compact theme={themeName} />
-      {result?.success ? (
-        <Text color={theme.success}>{result.output}</Text>
-      ) : (
-        <Text color={theme.error}>✗ {result?.error}</Text>
-      )}
-    </Box>
+    <StateProvider>
+      <AppContent {...props} />
+    </StateProvider>
   );
 }
 

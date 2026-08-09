@@ -3,12 +3,13 @@
 import { hideBin } from 'yargs/helpers';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 async function main() {
   const yargs = (await import('yargs')).default;
-  const argv = yargs(hideBin(process.argv))
+  const yargInstance = yargs(hideBin(process.argv))
     .scriptName('suryafool')
     .usage('Usage: $0 <command> [options]')
     .command('scan <target>', 'Scan wireless environment')
@@ -17,14 +18,31 @@ async function main() {
     .command('agents', 'List all mission agents')
     .command('config [get|set] [key] [value]', 'View or set configuration')
     .command('doctor', 'Check environment setup')
+    .help(false)
+    .version(false)
+    .exitProcess(false)
+    .strict()
     .option('interactive', { type: 'boolean', default: false, alias: 'i', desc: 'Enter interactive REPL mode' })
     .option('clean', { type: 'boolean', default: false, desc: 'Use clean/minimal theme' })
     .option('hacker-mode', { type: 'boolean', default: true, desc: 'Use cyberpunk theme (default)' })
     .option('no-animation', { type: 'boolean', default: false, alias: 'no-anim', desc: 'Disable animations' })
-    .help('help')
-    .version('version')
-    .strict()
-    .argv;
+    .option('help', { type: 'boolean', alias: 'h', desc: 'Show help' })
+    .option('version', { type: 'boolean', alias: 'v', desc: 'Show version number' });
+  const argv = yargInstance.argv;
+
+  console.log('DEBUG: argv =', argv);
+
+  if (argv.help) {
+    yargInstance.showHelp();
+    process.exit(0);
+  }
+
+  if (argv.version) {
+    const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+    console.log('DEBUG: pkg =', pkg);
+    console.log(pkg.version);
+    process.exit(0);
+  }
 
   // Spawn the bundled app with --experimental-require-module flag
   const child = fork(
