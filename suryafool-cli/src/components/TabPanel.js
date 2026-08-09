@@ -1,7 +1,7 @@
 // src/components/TabPanel.js
 import React from 'react';
 import { Box, Text } from 'ink';
-import { useState } from '../state/context.js';
+import { useState, useDispatch } from '../state/context.js';
 
 function TabPanel({ theme = 'cyberpunk' }) {
   const themes = {
@@ -10,9 +10,14 @@ function TabPanel({ theme = 'cyberpunk' }) {
   };
   const t = themes[theme] || themes.cyberpunk;
   const state = useState();
+  const dispatch = useDispatch();
 
   const tabs = ['dashboard', 'agents', 'findings'];
   const activeTab = state.activeTab || 'dashboard';
+
+  const handleTabClick = (tab) => {
+    dispatch({ type: 'SET_TAB', payload: tab });
+  };
 
   return (
     <Box flexGrow={1} flexDirection="column" padding={1}>
@@ -23,6 +28,7 @@ function TabPanel({ theme = 'cyberpunk' }) {
             marginRight={1}
             paddingX={2}
             backgroundColor={activeTab === tab ? t.background : 'transparent'}
+            onClick={() => handleTabClick(tab)}
           >
             <Text color={activeTab === tab ? t.primary : t.muted} bold={activeTab === tab}>
               {tab.toUpperCase()}
@@ -37,7 +43,7 @@ function TabPanel({ theme = 'cyberpunk' }) {
             <Text color={t.primary} bold>FINDINGS:</Text>
             {state.dashboard?.findings?.length > 0 ? (
               state.dashboard.findings.map((f, i) => (
-                <Text key={i} color={t.success}>  � ✓ {f}</Text>
+                <Text key={i} color={t.success}>  ���� ��� �� � {f}</Text>
               ))
             ) : (
               <Text color={t.muted}>  No findings yet</Text>
@@ -50,7 +56,7 @@ function TabPanel({ theme = 'cyberpunk' }) {
             <Text color={t.primary} bold>ACTIVE AGENTS:</Text>
             {state.agents?.length > 0 ? (
               state.agents.map((a, i) => (
-                <Text key={i} color={t.accent}>  � ► {a}</Text>
+                <Text key={i} color={t.accent}>  ���� ��� �� �-�� {a}</Text>
               ))
             ) : (
               <Text color={t.muted}>  No active agents</Text>
