@@ -6,6 +6,6 @@ export default {
   },
   esbuild: {
     loader: 'jsx',
-    include: ['**/*.js'],
+    include: ['**/*.js', '**/*.jsx'],
   },
 };
