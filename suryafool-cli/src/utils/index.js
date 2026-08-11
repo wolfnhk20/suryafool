@@ -3,3 +3,4 @@
 
 export * from './platform.js';
 export * from './config.js';
+export * from './repo-root.js';
