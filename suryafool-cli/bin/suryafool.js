@@ -4,6 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import { fork } from 'child_process';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
+import { findRepoRoot } from '../src/utils/repo-root.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -30,8 +31,6 @@ async function main() {
     .option('version', { type: 'boolean', alias: 'v', desc: 'Show version number' });
   const argv = yargInstance.argv;
 
-  console.log('DEBUG: argv =', argv);
-
   if (argv.help) {
     yargInstance.showHelp();
     process.exit(0);
@@ -39,12 +38,16 @@ async function main() {
 
   if (argv.version) {
     const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-    console.log('DEBUG: pkg =', pkg);
     console.log(pkg.version);
     process.exit(0);
   }
 
-  // Spawn the bundled app with --experimental-require-module flag
+  // Locate the Suryafool repo root so the child process can chdir into it
+  // before importing dist/index.mjs. This lets `python -m bootstrap.agent`
+  // resolve its manifest regardless of the user's current directory.
+  const repoRoot = findRepoRoot(__dirname) || process.cwd();
+
+  // Spawn the bundled UI in a child process so yargs doesn't interfere with Ink
   const child = fork(
     fileURLToPath(new URL('./run.mjs', import.meta.url)),
     [],
@@ -52,13 +55,16 @@ async function main() {
       env: {
         ...process.env,
         SURYAFOOL_ARGS: JSON.stringify(argv),
+        SURYAFOOL_REPO_ROOT: repoRoot,
       },
-      execArgv: ['--experimental-require-module'],
       stdio: 'inherit',
     }
   );
 
-  child.on('exit', (code) => process.exit(code));
+  child.on('exit', (code) => process.exit(code ?? 0));
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error('Error:', err.message);
+  process.exit(1);
+});
