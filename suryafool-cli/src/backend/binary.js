@@ -5,19 +5,19 @@ import { execFileSync, spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
-import https from 'https';
-import { pipeline } from 'stream';
-import { promisify } from 'util';
-import AdmZip from 'adm-zip';
+import { fileURLToPath } from 'url';
+import { OutputParser } from './parser.js';
+import { EventType, commandOutput, commandProgress, findingCreated, agentStatus, vulnFound, logEvent, errorEvent, commandStarted, commandCompleted, commandFailed } from './events.js';
+import { getRepoRoot } from '../utils/repo-root.js';
 
-const __dirname = path.dirname(process.argv[1]);
-
-const pipelineAsync = promisify(pipeline);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class BinaryManager {
   constructor() {
     this.platform = this.detectPlatform();
     this.binaryPath = this.getBinaryPath();
+    this.parser = new OutputParser();
   }
 
   detectPlatform() {
@@ -48,80 +48,114 @@ export class BinaryManager {
       execFileSync('python', ['-m', 'bootstrap.agent', '--help'], { stdio: 'ignore' });
       return 'python -m bootstrap.agent';
     } catch {
-      // Try to download from GitHub releases
-      return await this.downloadBinary(version);
+      // Binary download not implemented - Python module is the primary path
+      throw new Error('Binary download not configured. Please ensure the Python bootstrap.agent module is available.');
     }
-  }
-
-  async downloadBinary(version = 'latest') {
-    const url = `https://github.com/your-username/suryafool/releases/download/${version}/suryafool-${this.platform}.zip`;
-    const zipPath = path.join(__dirname, '..', 'bin', `${this.platform}.zip`);
-
-    // Ensure bin directory exists
-    fs.mkdirSync(path.dirname(zipPath), { recursive: true });
-
-    // Download zip
-    await new Promise((resolve, reject) => {
-      const file = fs.createWriteStream(zipPath);
-      https.get(url, (response) => {
-        if (response.statusCode === 302 || response.statusCode === 301) {
-          // Follow redirect
-          https.get(response.headers.location, (res) => {
-            res.pipe(file);
-            file.on('finish', () => { file.close(); resolve(); });
-          }).on('error', reject);
-        } else {
-          response.pipe(file);
-          file.on('finish', () => { file.close(); resolve(); });
-        }
-      }).on('error', reject);
-    });
-
-    // Extract zip
-    const zip = new AdmZip(zipPath);
-    zip.extractAllTo(path.dirname(zipPath), true);
-
-    // Cleanup
-    fs.unlinkSync(zipPath);
-
-    // Make executable on Unix
-    if (!this.platform.startsWith('windows')) {
-      fs.chmodSync(this.binaryPath, 0o755);
-    }
-
-    return this.binaryPath;
   }
 
   run(args = [], options = {}) {
+    const { onEvent, timeout = 0, ...spawnOptions } = options;
+    
     return new Promise((resolve, reject) => {
-      // Try Python module first
-      const cmd = this.isInstalled() ? this.binaryPath : 'python';
-      const argsToUse = this.isInstalled() ? args : ['-m', 'bootstrap.agent', ...args];
+      // Try Python module first (primary path)
+      const useBinary = this.isInstalled();
+      const cmd = useBinary ? this.binaryPath : 'python';
+      const argsToUse = useBinary ? args : ['-m', 'bootstrap.agent', ...args];
       
-      const proc = spawn(cmd, argsToUse, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, ...options.env },
-      });
+      let proc;
+      try {
+        proc = spawn(cmd, argsToUse, {
+          cwd: getRepoRoot(),
+          stdio: ['pipe', 'pipe', 'pipe'],
+          env: { ...process.env, ...spawnOptions.env },
+        });
+      } catch (spawnError) {
+        reject(new Error(`Failed to spawn process: ${spawnError.message}`));
+        return;
+      }
 
       let stdout = '';
       let stderr = '';
+      let timeoutId = null;
+      let resolved = false;
+
+      // Set up timeout if specified
+      if (timeout > 0) {
+        timeoutId = setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            proc.kill('SIGTERM');
+            // Give it a moment to terminate gracefully
+            setTimeout(() => {
+              if (!proc.killed) proc.kill('SIGKILL');
+            }, 1000);
+            reject(new Error(`Command timed out after ${timeout}ms`));
+          }
+        }, timeout);
+      }
+
+      const cleanup = () => {
+        if (timeoutId) clearTimeout(timeoutId);
+        // Remove listeners to prevent memory leaks
+        proc.stdout.removeAllListeners();
+        proc.stderr.removeAllListeners();
+        proc.removeAllListeners();
+      };
+
+      // Emit command started event
+      if (onEvent) {
+        onEvent(commandStarted(argsToUse[0] || 'unknown', argsToUse.slice(1)));
+      }
 
       proc.stdout.on('data', (data) => {
-        const line = data.toString();
-        stdout += line;
-        if (options.onOutput) options.onOutput(line);
+        const chunk = data.toString();
+        stdout += chunk;
+        
+        // Parse structured events from output
+        const events = this.parser.parse(chunk);
+        for (const event of events) {
+          if (onEvent) onEvent(event);
+        }
       });
 
       proc.stderr.on('data', (data) => {
-        stderr += data.toString();
+        const chunk = data.toString();
+        stderr += chunk;
+        // Also parse stderr for structured events
+        const events = this.parser.parse(chunk);
+        for (const event of events) {
+          if (onEvent) onEvent(event);
+        }
       });
 
       proc.on('close', (code) => {
-        if (code === 0) resolve(stdout);
-        else reject(new Error(stderr || `Exit code ${code}`));
+        if (resolved) return;
+        resolved = true;
+        cleanup();
+        
+        // Flush any remaining buffered output
+        const flushEvents = this.parser.flush();
+        for (const event of flushEvents) {
+          if (onEvent) onEvent(event);
+        }
+
+        if (code === 0) {
+          if (onEvent) onEvent(commandCompleted(argsToUse[0] || 'unknown', stdout));
+          resolve(stdout);
+        } else {
+          const error = stderr || `Exit code ${code}`;
+          if (onEvent) onEvent(commandFailed(argsToUse[0] || 'unknown', error));
+          reject(new Error(error));
+        }
       });
 
-      proc.on('error', reject);
+      proc.on('error', (err) => {
+        if (resolved) return;
+        resolved = true;
+        cleanup();
+        if (onEvent) onEvent(commandFailed(argsToUse[0] || 'unknown', err.message));
+        reject(new Error(`Process error: ${err.message}`));
+      });
     });
   }
 }
