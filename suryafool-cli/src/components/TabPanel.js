@@ -2,79 +2,73 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { useState, useDispatch } from '../state/context.js';
+import { themes } from '../styles/theme.js';
+import ScanDashboard from './ScanDashboard.js';
+import AgentsBoard from './AgentsBoard.js';
+import ConfigView from './ConfigView.js';
 
 function TabPanel({ theme = 'cyberpunk' }) {
-  const themes = {
-    cyberpunk: { primary: '#00ffff', text: '#e0e0ff', muted: '#444466', border: '#1a1a3a', background: '#0a0a1a' },
-    clean: { primary: '#4a9eff', text: '#d0d0e0', muted: '#7f8c8d', border: '#3a3a5a', background: '#1e1e2e' },
-  };
   const t = themes[theme] || themes.cyberpunk;
   const state = useState();
   const dispatch = useDispatch();
 
-  const tabs = ['dashboard', 'agents', 'findings'];
+  const tabs = [
+    { id: 'dashboard', label: 'Main' },
+    { id: 'agents',    label: 'Agents' },
+    { id: 'findings',  label: 'Findings' },
+    { id: 'config',    label: 'Config' },
+  ];
+
   const activeTab = state.activeTab || 'dashboard';
 
-  const handleTabClick = (tab) => {
-    dispatch({ type: 'SET_TAB', payload: tab });
+  const handleTabClick = (tabId) => {
+    dispatch({ type: 'SET_TAB', payload: tabId });
   };
 
-  return (
-    <Box flexGrow={1} flexDirection="column" padding={1}>
-      <Box flexDirection="row" marginBottom={1}>
-        {tabs.map(tab => (
-          <Box
-            key={tab}
-            marginRight={1}
-            paddingX={2}
-            backgroundColor={activeTab === tab ? t.background : 'transparent'}
-            onClick={() => handleTabClick(tab)}
-          >
-            <Text color={activeTab === tab ? t.primary : t.muted} bold={activeTab === tab}>
-              {tab.toUpperCase()}
-            </Text>
-          </Box>
-        ))}
+  const renderFindings = () => (
+    <Box flexDirection="column" paddingX={1}>
+      <Text color={t.textDim} dimColor>FINDINGS</Text>
+      <Box marginTop={1} flexDirection="column">
+        {state.dashboard?.findings && state.dashboard.findings.length > 0 ? (
+          state.dashboard.findings.map((finding, i) => (
+            <Box key={i} flexDirection="row" marginBottom={0}>
+              <Text color={t.accent}>{'  '}{String(i + 1).padStart(3, '0')}{' '}</Text>
+              <Text color={t.text}>{typeof finding === 'string' ? finding : JSON.stringify(finding)}</Text>
+            </Box>
+          ))
+        ) : (
+          <>
+            <Text color={t.muted}>  No findings recorded</Text>
+            <Text color={t.textDim}>  </Text>
+            <Text color={t.textDim}>  Findings appear here after running discovery.</Text>
+          </>
+        )}
       </Box>
-      <Box flexGrow={1} padding={1}>
-        <Text color={t.text}>Tab: {activeTab}</Text>
-        {activeTab === 'dashboard' && (
-          <Box flexDirection="column" marginTop={1}>
-            <Text color={t.primary} bold>FINDINGS:</Text>
-            {state.dashboard?.findings?.length > 0 ? (
-              state.dashboard.findings.map((f, i) => (
-                <Text key={i} color={t.success}>  ���� ��� �� � {f}</Text>
-              ))
-            ) : (
-              <Text color={t.muted}>  No findings yet</Text>
-            )}
-            <Text color={t.primary} bold marginTop={1}>PROGRESS: {state.dashboard?.progress || 0}%</Text>
-          </Box>
-        )}
-        {activeTab === 'agents' && (
-          <Box flexDirection="column" marginTop={1}>
-            <Text color={t.primary} bold>ACTIVE AGENTS:</Text>
-            {state.agents?.length > 0 ? (
-              state.agents.map((a, i) => (
-                <Text key={i} color={t.accent}>  ���� ��� �� �-�� {a}</Text>
-              ))
-            ) : (
-              <Text color={t.muted}>  No active agents</Text>
-            )}
-          </Box>
-        )}
-        {activeTab === 'findings' && (
-          <Box flexDirection="column" marginTop={1}>
-            <Text color={t.primary} bold>ALL FINDINGS:</Text>
-            {state.dashboard?.findings?.length > 0 ? (
-              state.dashboard.findings.map((f, i) => (
-                <Text key={i} color={t.text}>  {i + 1}. {f}</Text>
-              ))
-            ) : (
-              <Text color={t.muted}>  No findings recorded</Text>
-            )}
-          </Box>
-        )}
+    </Box>
+  );
+
+  return (
+    <Box flexDirection="column" flexGrow={1}>
+      <Box flexDirection="row" paddingX={1} height={3} alignItems="center">
+        <Text>
+          {tabs.map((tab, idx) => {
+            const isActive = activeTab === tab.id;
+            const color = isActive ? t.primary : t.textDim;
+            const bold = isActive;
+            return (
+              <React.Fragment key={tab.id}>
+                {idx > 0 && <Text color={t.border}>{'  '}</Text>}
+                <Text color={color} bold={bold}>{tab.label}</Text>
+              </React.Fragment>
+            );
+          })}
+        </Text>
+      </Box>
+      <Box flexDirection="column" flexGrow={1} paddingY={1} borderStyle="single" borderColor={t.border}>
+        {activeTab === 'dashboard' && <ScanDashboard theme={theme} />}
+        {activeTab === 'agents' && <AgentsBoard theme={theme} />}
+        {activeTab === 'findings' && renderFindings()}
+        {activeTab === 'config' && <ConfigView theme={theme} />}
       </Box>
     </Box>
   );
