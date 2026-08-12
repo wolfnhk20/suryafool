@@ -58,5 +58,3 @@ export async function scanLine(width = 60, duration = 2000, theme = 'cyberpunk')
   scanner.stop();
   process.stdout.write('\r' + ' '.repeat(width) + '\r');
 }
-
-export { Scanner, scanLine };
