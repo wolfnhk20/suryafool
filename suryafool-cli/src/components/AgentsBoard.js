@@ -1,4 +1,5 @@
 // src/components/AgentsBoard.js
+import React from 'react';
 import { Box, Text } from 'ink';
 import { useState } from '../state/context.js';
 import { themes } from '../styles/theme.js';

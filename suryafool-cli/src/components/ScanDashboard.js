@@ -1,11 +1,17 @@
 // src/components/ScanDashboard.js
-import { Box, Text, ProgressBar } from 'ink';
+import React from 'react';
+import { Box, Text } from 'ink';
 import { useState } from '../state/context.js';
 import { themes } from '../styles/theme.js';
 
 function ScanDashboard({ theme = 'cyberpunk' }) {
   const t = themes[theme] || themes.cyberpunk;
   const state = useState();
+
+  const progress = Math.max(0, Math.min(100, state.dashboard?.progress || 0));
+  const width = 30;
+  const filled = Math.round((progress / 100) * width);
+  const empty = width - filled;
 
   return (
     <Box flexGrow={1} flexDirection="column" padding={1}>
@@ -25,13 +31,10 @@ function ScanDashboard({ theme = 'cyberpunk' }) {
           <Text color={t.muted}>  No findings yet</Text>
         )}
         <Box marginTop={1}>
-          <Text color={t.text}>PROGRESS:</Text>
-          <ProgressBar
-            value={state.dashboard?.progress || 0}
-            width={30}
-            completedColor={t.success}
-            uncompletedColor={t.border}
-          />
+          <Text color={t.text}>PROGRESS: </Text>
+          <Text color={t.success}>{'█'.repeat(filled)}</Text>
+          <Text color={t.border}>{'░'.repeat(empty)}</Text>
+          <Text color={t.text}> {String(progress).padStart(3, ' ')}%</Text>
         </Box>
       </Box>
     </Box>

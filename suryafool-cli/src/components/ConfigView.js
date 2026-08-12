@@ -1,4 +1,5 @@
 // src/components/ConfigView.js
+import React from 'react';
 import { Box, Text } from 'ink';
 import { useState, useDispatch } from '../state/context.js';
 import { themes } from '../styles/theme.js';
