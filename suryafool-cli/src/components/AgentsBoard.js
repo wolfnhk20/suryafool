@@ -13,8 +13,8 @@ function AgentsBoard({ theme = 'cyberpunk' }) {
       <Box marginBottom={1}>
         <Text color={t.primary} bold>AGENTS BOARD</Text>
       </Box>
-      <Box flexGrow={1} borderStyle="single" borderColor={t.border} padding={1}>
-        <Text color={t.text} marginBottom={1}>ACTIVE AGENTS:</Text>
+      <Box flexGrow={1} flexDirection="column" borderStyle="single" borderColor={t.border} padding={1}>
+        <Text color={t.text}>ACTIVE AGENTS:</Text>
         {state.agents?.length > 0 ? (
           state.agents.map((agent, i) => (
             <Box key={i} flexDirection="row" marginBottom={0.5}>
@@ -23,7 +23,9 @@ function AgentsBoard({ theme = 'cyberpunk' }) {
             </Box>
           ))
         ) : (
-          <Text color={t.muted}>  No active agents</Text>
+          <Box marginTop={1}>
+            <Text color={t.muted}>  No active agents</Text>
+          </Box>
         )}
       </Box>
     </Box>

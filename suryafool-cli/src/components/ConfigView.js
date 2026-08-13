@@ -19,7 +19,7 @@ function ConfigView({ theme = 'cyberpunk' }) {
       <Box marginBottom={1}>
         <Text color={t.primary} bold>CONFIGURATION</Text>
       </Box>
-      <Box flexGrow={1} borderStyle="single" borderColor={t.border} padding={1}>
+      <Box flexGrow={1} flexDirection="column" borderStyle="single" borderColor={t.border} padding={1}>
         <Text color={t.text}>Current theme: {state.theme}</Text>
         <Box marginTop={1}>
           <Text

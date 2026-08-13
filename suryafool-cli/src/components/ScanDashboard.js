@@ -18,8 +18,8 @@ function ScanDashboard({ theme = 'cyberpunk' }) {
       <Box marginBottom={1}>
         <Text color={t.primary} bold>SCAN DASHBOARD</Text>
       </Box>
-      <Box flexGrow={1} borderStyle="single" borderColor={t.border} padding={1}>
-        <Text color={t.text} marginBottom={1}>FINDINGS:</Text>
+      <Box flexGrow={1} flexDirection="column" borderStyle="single" borderColor={t.border} padding={1}>
+        <Text color={t.text}>FINDINGS:</Text>
         {state.dashboard?.findings?.length > 0 ? (
           state.dashboard.findings.map((f, i) => (
             <Box key={i} flexDirection="row" marginBottom={0.5}>
@@ -28,7 +28,9 @@ function ScanDashboard({ theme = 'cyberpunk' }) {
             </Box>
           ))
         ) : (
-          <Text color={t.muted}>  No findings yet</Text>
+          <Box marginTop={1}>
+            <Text color={t.muted}>  No findings yet</Text>
+          </Box>
         )}
         <Box marginTop={1}>
           <Text color={t.text}>PROGRESS: </Text>
