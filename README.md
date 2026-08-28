@@ -18,16 +18,16 @@ Suryafool sits between autonomous AI agents and heterogeneous wireless hardware 
 
 | Component | Status |
 |---|---|
-| OS detection (`platform.py`) | ✅ Done |
-| Dependency manifest (`manifest.yaml`) | ✅ Done |
-| Check runner (`checks.py`) | ✅ Done |
-| Remediation runner (`remediate.py`) | ✅ Done |
-| Provisioning Guardian | ✅ Done |
-| Bootstrap agent loop (`agent.py`) | ✅ Done |
+| OS detection / manifest / checks / remediation / Provisioning Guardian / bootstrap (`bootstrap/`) | ✅ Done |
 | LLM factory + rate limiter (`core/llm.py`) | ✅ Done |
 | **Cyberpunk CLI** (`suryafool-cli/`) | ✅ Done (v0.1.0) |
 | **Phase 2 deterministic core** (`capabilities/`, `simulator/`, `policy/`, `engine/`, `reports/`, `cli/`) | ✅ Done |
-| **Phase 2.5 Marauder hardware backend** | 🟡 Architectural reference only (removed in Phase 2.7.4) |
+| **Phase 2.7 stateful active simulator + evidence** (Wi-Fi capture, BLE GATT, evidence pipeline, TUI feed) | ✅ Done |
+| **Phase 2.8.0 multi-domain foundation** (catalogue 23: wifi, ble, subghz, nfc, infrared, ethernet, usb) | ✅ Done |
+| **Phase 2.8.1 Sub-GHz/RF capture slice** | ✅ Done |
+| **Phase 2.8.2 NFC/RFID read slice** | ✅ Done |
+| Phase 2.8.3–2.8.8 (Infrared / Ethernet / USB / cross-domain workflows / evidence generalization / freeze) | 🔲 TODO |
+| Phase 2.5 Marauder hardware backend | 🟡 Architectural reference only (removed in Phase 2.7.4) |
 | Mission agents (12 planned) | 🔲 TODO |
 
 ---
@@ -38,7 +38,7 @@ Run the full mission loop **without hardware or an LLM**:
 
 ```bash
 # From the repo root
-python -m cli.phase2 capabilities            # capability catalogue
+python -m cli.phase2 capabilities            # capability catalogue (23 entries)
 python -m cli.phase2 providers                # list backends (simulator only)
 python -m cli.phase2 scenarios               # simulator scenarios
 python -m cli.phase2 run --scenario home     # deterministic run → logs + report
@@ -57,11 +57,26 @@ events.jsonl    # append-only JSONL audit trail
 report.html     # standalone HTML report
 ```
 
-Tests (stdlib-only runner, no pytest needed):
+### Current capability surface (Phase 2.8)
+
+The catalogue exposes **23 entries** across 7 domains — Wi-Fi (discovery + capture), BLE (discovery + GATT), Sub-GHz (discovery + capture), NFC/RFID (discovery), Infrared (capture/analyze/transmit), Ethernet, and USB. Implemented, stateful, evidence-producing slices:
+
+- **Wi-Fi capture**: `wifi.capture.handshake` → `wifi_eapol_handshake`, `wifi.capture.pmkid` → `wifi_pmkid`
+- **BLE GATT**: `ble.gatt.pair` → `ble_pairing`, `ble.gatt.write` → `ble_secure_write`
+- **Sub-GHz**: `subghz.capture.signal` → `subghz_capture`, `subghz.discovery.analyze` → `subghz_analysis`
+- **NFC/RFID**: `nfc.discovery.select` + `nfc.discovery.read` → `nfc_read`
+
+Deterministic plans selectable via `--plan`: `exploration` (default), `active_inspection`, `wifi_capture`, `ble_gatt_workflow`, `subghz_capture`, `nfc_workflow`.
+
+Evidence flows end-to-end: simulation success → `EvidenceRecord` → `run.json`/`events.jsonl` (`evidence.created`) → HTML report EVIDENCE section → live TUI `Evidence` tab. All failure and policy-rejected paths produce **zero evidence** and no environment mutation.
+
+### Tests (stdlib-only runner, no pytest needed)
 
 ```bash
 python -m tests.test_phase2_core
 ```
+
+All **13 Python suites (431 tests)** + **55 Node tests** + 2 Node smokes + esbuild build are green.
 
 ---
 
@@ -278,10 +293,37 @@ suryafool/
 │   ├── provisioning_guardian.py # Elevation gate (3 types)
 │   └── agent.py                 # Main agent loop
 │
-└── core/                        # Shared utilities for all agents
-    ├── CONTEXT.md               # core module context
-    ├── llm.py                   # LLM factory + rate limiter (32 req/min)
-    └── __init__.py
+├── core/                        # Shared utilities + platform data model
+│   ├── CONTEXT.md, llm.py, confidence.py, observation.py
+│   ├── mission.py, evidence.py, events.py
+│
+├── capabilities/                # Capability catalogue + registry (Phase 2.8: 23 entries)
+│   ├── base.py                  # Capability dataclass + DEFAULT_CAPABILITIES
+│   └── registry.py              # CapabilityRegistry + provider binding
+│
+├── simulator/                   # Deterministic wireless simulator
+│   ├── entities.py              # WifiNetwork/BleDevice/NfcTag/SubGhzSignal/IrSignal/...
+│   ├── environment.py, rng.py, scenarios.py
+│   └── simulator.py             # Action handlers → Observations (+ evidence)
+│
+├── policy/                      # Deterministic Scope-Guardian policy gate
+│   └── policy.py                # RiskDeclarationRule, RiskTierAuthorizedRule
+│
+├── engine/                      # Deterministic run engine
+│   ├── runner.py                # Plans (exploration/wifi_capture/ble_gatt/subghz/nfc)
+│   └── logger.py                # RunLogger (run.json + events.jsonl)
+│
+├── reports/                     # HTML report generation (top-level EVIDENCE section)
+│
+├── cli/                         # `python -m cli.phase2` command suite
+│
+├── tests/                       # 13 stdlib-runnable suites (431 tests)
+│
+├── scripts/                     # 2 Node smoke scripts (event-stream + wiring contracts)
+│
+└── suryafool-cli/               # Ink/React cyberpunk TUI (v0.1.0)
+    ├── bin/                     # suryafool.js CLI entry
+    └── src/                     # app, components, animations, backend, state, styles
 ```
 
 ---
