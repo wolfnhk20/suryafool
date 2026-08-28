@@ -2,12 +2,9 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { useState, useDispatch } from '../state/context.js';
+import { themes } from '../styles/theme.js';
 
 function ModalLayer({ theme = 'cyberpunk' }) {
-  const themes = {
-    cyberpunk: { primary: '#00ffff', text: '#e0e0ff', muted: '#444466', border: '#1a1a3a', background: '#0a0a1a', error: '#ff0040' },
-    clean: { primary: '#4a9eff', text: '#d0d0e0', muted: '#7f8c8d', border: '#3a3a5a', background: '#1e1e2e', error: '#e74c3c' },
-  };
   const t = themes[theme] || themes.cyberpunk;
   const state = useState();
   const dispatch = useDispatch();
@@ -19,6 +16,8 @@ function ModalLayer({ theme = 'cyberpunk' }) {
     dispatch({ type: 'CLEAR_MODAL' });
   };
 
+  const titleColor = modal.type === 'error' ? t.error : modal.type === 'warning' ? t.warning : t.primary;
+
   return (
     <Box
       position="absolute"
@@ -26,23 +25,20 @@ function ModalLayer({ theme = 'cyberpunk' }) {
       left="20%"
       width="60%"
       flexDirection="column"
-      padding={2}
+      paddingX={2}
+      paddingY={1}
+      borderStyle="round"
+      borderColor={titleColor}
       backgroundColor={t.background}
     >
-      <Text color={modal.type === 'error' ? t.error : t.primary} bold marginBottom={1}>
-        {modal.title || 'MODAL'}
-      </Text>
-      <Text color={t.text} marginBottom={2}>{modal.message || ''}</Text>
+      <Box marginBottom={1}>
+        <Text color={titleColor} bold>{modal.title || 'NOTICE'}</Text>
+      </Box>
+      <Box marginBottom={1}>
+        <Text color={t.text}>{modal.message || ''}</Text>
+      </Box>
       <Box flexDirection="row" justifyContent="flex-end">
-        <Text
-          color={t.primary}
-          backgroundColor={t.border}
-          paddingX={2}
-          paddingY={1}
-          onClick={handleClose}
-        >
-          OK
-        </Text>
+        <Text color={t.primary} bold onClick={handleClose}>[ OK ]</Text>
       </Box>
     </Box>
   );

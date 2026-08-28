@@ -20,6 +20,11 @@ This is the foundation layer — keep it lean and stable.
 |---|---|---|
 | `__init__.py` | ✅ Done | Python package marker |
 | `llm.py` | ✅ Done | LLM factory + rate limiter + OpenRouter/OpenCode Zen wrapper |
+| `confidence.py` | ✅ Done | `Confidence` enum (CONFIRMED / LIKELY / POSSIBLE / UNKNOWN) |
+| `observation.py` | ✅ Done | `Entity`, `Observation` dataclasses — structured wireless outputs (Phase 2.7.5: `Observation.evidence: list[EvidenceRecord]`) |
+| `evidence.py` | ✅ Done | Phase 2.7.5 — `EvidenceRecord` dataclass + `KNOWN_EVIDENCE_KINDS`. Durable capture output with provenance; distinct from `Observation`/`Finding` |
+| `mission.py` | ✅ Done | `Run`, `ActionRequest`, `PolicyDecision`, `ActionRecord`, `AuthorizationScope`, `_RISK_SEVERITY` — the canonical run record (Phase 2.7.5: `ActionRecord.evidence` + `Run.evidence`) |
+| `events.py` | ✅ Done | JSONL event emission helpers (CLI ↔ Python wire format); Phase 2.7.5 adds `EVIDENCE_CREATED` |
 
 ---
 

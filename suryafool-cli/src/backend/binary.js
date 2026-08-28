@@ -54,13 +54,13 @@ export class BinaryManager {
   }
 
   run(args = [], options = {}) {
-    const { onEvent, timeout = 0, ...spawnOptions } = options;
-    
+    const { onEvent, timeout = 0, module: moduleName = 'bootstrap.agent', ...spawnOptions } = options;
+
     return new Promise((resolve, reject) => {
       // Try Python module first (primary path)
       const useBinary = this.isInstalled();
       const cmd = useBinary ? this.binaryPath : 'python';
-      const argsToUse = useBinary ? args : ['-m', 'bootstrap.agent', ...args];
+      const argsToUse = useBinary ? args : ['-m', moduleName, ...args];
       
       let proc;
       try {

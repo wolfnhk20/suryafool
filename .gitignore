@@ -37,5 +37,13 @@ node_modules/
 suryafool-cli/dist/
 suryafool-cli/src/bin/
 
-# Graphify regenerable AST cache (keep graph.json + reports)
+# Stray / debugging output
+suryafool-cli/output.txt
+
+# Graphify regenerable AST cache + dated backup snapshots (keep graph.json + reports)
 graphify-out/cache/
+graphify-out/2026-*/
+
+# Agent-workflow scaffolding (superpowers skill artifacts) — not platform source
+.superpowers/
+docs/superpowers/

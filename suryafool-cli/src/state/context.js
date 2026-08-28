@@ -5,8 +5,8 @@ import { reducer, initialState } from './reducer.js';
 export const StateContext = createContext(initialState);
 export const DispatchContext = createContext(() => {});
 
-export function StateProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export function StateProvider({ children, initial }) {
+  const [state, dispatch] = useReducer(reducer, initial || initialState);
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>

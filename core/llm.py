@@ -308,14 +308,4 @@ def llm_call(prompt: str, max_tokens: int = 2000) -> LLMResult:
 
 
 # ── Module-level shared limiter ────────────────────────────────────────────────
-
-def _build_default_limiter() -> SlidingWindowRateLimiter:
-    max_req = int(os.environ.get("SURYAFOOL_RATE_LIMIT", "32"))
-    return SlidingWindowRateLimiter(max_requests=max_req, window_seconds=60.0)
-
-
-_default_limiter: SlidingWindowRateLimiter = _build_default_limiter()
-
-
-def get_rate_limiter() -> SlidingWindowRateLimiter:
-    return _default_limiter
+# (Defined above at lines 68-77; duplicates removed)

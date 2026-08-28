@@ -1,49 +1,79 @@
 // src/backend/parser.js
-// Parse structured JSON output from Python backend into UI events
+// Parse structured JSONL output from backend into application events
+
+import { EventType, isValidEvent } from './events.js';
 
 export class OutputParser {
   constructor() {
     this.buffer = '';
   }
 
-  parse(line) {
-    this.buffer += line;
+  /**
+   * Parse a chunk of output, returning an array of parsed events
+   * Handles both JSONL events and plain text fallback
+   */
+  parse(chunk) {
+    this.buffer += chunk;
     const events = [];
 
-    // Try to parse JSON lines from Python output
+    // Split by newlines, keep incomplete line in buffer
     const lines = this.buffer.split('\n');
     this.buffer = lines.pop(); // Keep incomplete line in buffer
 
-    for (const l of lines) {
-      const trimmed = l.trim();
+    for (const line of lines) {
+      const trimmed = line.trim();
       if (!trimmed) continue;
 
       try {
-        const event = JSON.parse(trimmed);
-        events.push(this.mapEvent(event));
+        const parsed = JSON.parse(trimmed);
+        
+        // If it's a valid structured event, use it directly
+        if (isValidEvent(parsed)) {
+          events.push(parsed);
+        } else {
+          // Unknown JSON structure - treat as generic log
+          events.push({ 
+            type: EventType.LOG, 
+            level: 'info', 
+            message: trimmed, 
+            timestamp: Date.now() 
+          });
+        }
       } catch {
-        // Not JSON — treat as plain text output
-        events.push({ type: 'text', content: l });
+        // Not JSON - treat as plain text output
+        events.push({ 
+          type: EventType.COMMAND_OUTPUT, 
+          line: trimmed, 
+          timestamp: Date.now() 
+        });
       }
     }
 
     return events;
   }
 
-  mapEvent(event) {
-    const mappings = {
-      'scan.progress': (e) => ({ type: 'progress', progress: e.progress, phase: e.phase }),
-      'scan.found': (e) => ({ type: 'device', device: e.device }),
-      'scan.complete': (e) => ({ type: 'scan_complete', findings: e.findings }),
-      'agent.status': (e) => ({ type: 'agent_status', agent: e.agent, status: e.status }),
-      'vuln.found': (e) => ({ type: 'vulnerability', vuln: e.vulnerability }),
-      'log': (e) => ({ type: 'log', level: e.level, message: e.message }),
-      'error': (e) => ({ type: 'error', message: e.message }),
-      'llm.response': (e) => ({ type: 'llm', response: e.response }),
-    };
+  /**
+   * Flush any remaining buffer content
+   * Tries to parse the buffer as a complete JSON line first,
+   * falls back to treating it as plain text
+   */
+  flush() {
+    const remaining = this.buffer.trim();
+    this.buffer = '';
+    if (!remaining) return [];
 
-    const mapper = mappings[event.type];
-    return mapper ? mapper(event) : { type: 'unknown', raw: event };
+    // Try to parse as JSON first
+    try {
+      const parsed = JSON.parse(remaining);
+      if (isValidEvent(parsed)) {
+        return [parsed];
+      }
+      // Unknown JSON structure - treat as generic log
+      return [{ type: EventType.LOG, level: 'info', message: remaining, timestamp: Date.now() }];
+    } catch {
+      // Not JSON - treat as plain text output
+      return [{ type: EventType.COMMAND_OUTPUT, line: remaining, timestamp: Date.now() }];
+    }
   }
 }
 

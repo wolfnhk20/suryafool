@@ -6,6 +6,8 @@ import { themes } from '../styles/theme.js';
 import ScanDashboard from './ScanDashboard.js';
 import AgentsBoard from './AgentsBoard.js';
 import ConfigView from './ConfigView.js';
+import CapabilitiesView from './CapabilitiesView.js';
+import EvidenceFeed from './EvidenceFeed.js';
 
 function TabPanel({ theme = 'cyberpunk' }) {
   const t = themes[theme] || themes.cyberpunk;
@@ -13,10 +15,12 @@ function TabPanel({ theme = 'cyberpunk' }) {
   const dispatch = useDispatch();
 
   const tabs = [
-    { id: 'dashboard', label: 'Main' },
-    { id: 'agents',    label: 'Agents' },
-    { id: 'findings',  label: 'Findings' },
-    { id: 'config',    label: 'Config' },
+    { id: 'dashboard',    label: 'Main' },
+    { id: 'agents',       label: 'Agents' },
+    { id: 'evidence',     label: 'Evidence' },
+    { id: 'findings',     label: 'Findings' },
+    { id: 'capabilities', label: 'Caps' },
+    { id: 'config',       label: 'Config' },
   ];
 
   const activeTab = state.activeTab || 'dashboard';
@@ -67,7 +71,9 @@ function TabPanel({ theme = 'cyberpunk' }) {
       <Box flexDirection="column" flexGrow={1} paddingY={1} borderStyle="single" borderColor={t.border}>
         {activeTab === 'dashboard' && <ScanDashboard theme={theme} />}
         {activeTab === 'agents' && <AgentsBoard theme={theme} />}
+        {activeTab === 'evidence' && <EvidenceFeed theme={theme} />}
         {activeTab === 'findings' && renderFindings()}
+        {activeTab === 'capabilities' && <CapabilitiesView theme={theme} />}
         {activeTab === 'config' && <ConfigView theme={theme} />}
       </Box>
     </Box>

@@ -1,34 +1,45 @@
 // src/styles/theme.js
-// Cyberpunk and Clean theme definitions
+// Restrained sunflower-inspired palette. Gold primary, amber secondary,
+// muted green success, warm white text. Cyan reserved for interaction.
 
 export const themes = {
   cyberpunk: {
-    primary:      '#00ffff',  // Cyan neon
-    secondary:    '#ff00ff',  // Magenta
-    accent:       '#ffff00',  // Yellow warning
-    success:      '#00ff41',  // Matrix green
-    error:        '#ff0040',  // Neon red
-    warning:      '#ffaa00',  // Orange
-    muted:        '#444466',  // Dim purple-gray
-    background:   '#0a0a1a',  // Deep dark
-    border:       '#1a1a3a',  // Subtle border
-    text:         '#e0e0ff',  // Light blue-white
-    highlight:    '#ff6600',  // Orange highlight
-    glow:         'cyan',     // Glow color for effects
+    name:         'Cyberpunk',
+    primary:      '#E8B339',  // Sunflower gold (brand)
+    secondary:    '#D97706',  // Warm amber (status)
+    accent:       '#65A30D',  // Muted green (environment/success)
+    success:      '#65A30D',  // Muted green
+    error:        '#DC2626',  // Restrained red
+    warning:      '#D97706',  // Warm amber
+    info:         '#0891B2',  // Reserved: cyan info (sparingly used)
+    interactive:  '#06B6D4',  // Reserved: active interaction accent
+    muted:        '#78716C',  // Warm gray
+    subtle:       '#292524',  // Dark warm gray
+    background:   '#0C0A09',  // Very dark warm
+    surface:      '#1C1917',  // Warm dark surface
+    border:       '#44403C',  // Warm dark border
+    text:         '#FAFAF9',  // Warm white
+    textDim:      '#A8A29E',  // Muted warm
+    highlight:    '#FBBF24',  // Bright gold (emphasis moments only)
   },
   clean: {
-    primary:      '#4a9eff',  // Blue
-    secondary:    '#9b59b6',  // Purple
-    accent:       '#f39c12',  // Amber
-    success:      '#2ecc71',  // Green
-    error:        '#e74c3c',  // Red
-    warning:      '#f39c12',  // Amber
-    muted:        '#7f8c8d',  // Gray
-    background:   '#1e1e2e',  // Dark
-    border:       '#3a3a5a',  // Border
-    text:         '#d0d0e0',  // Light
-    highlight:    '#e67e22',  // Orange
-    glow:         'blue',     // Glow
+    name:         'Clean',
+    primary:      '#B45309',  // Dark amber-gold (brand)
+    secondary:    '#92400E',  // Warm brown-amber
+    accent:       '#4D7C0F',  // Muted olive green
+    success:      '#4D7C0F',  // Muted olive
+    error:        '#B91C1C',  // Restrained red
+    warning:      '#B45309',  // Warm amber
+    info:         '#0E7490',  // Reserved cyan
+    interactive:  '#0E7490',  // Active interaction
+    muted:        '#78716C',  // Warm gray
+    subtle:       '#F5F5F4',  // Light warm
+    background:   '#FAFAF9',  // Warm white
+    surface:      '#FFFFFF',  // White
+    border:       '#D6D3D1',  // Warm light border
+    text:         '#1C1917',  // Dark warm
+    textDim:      '#57534E',  // Muted warm dark
+    highlight:    '#D97706',  // Bright amber emphasis
   }
 };
 

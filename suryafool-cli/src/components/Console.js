@@ -2,27 +2,61 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { useState } from '../state/context.js';
+import { themes } from '../styles/theme.js';
+
+const MAX_LOGS = 50;
 
 function Console({ theme = 'cyberpunk' }) {
-  const themes = {
-    cyberpunk: { primary: '#00ffff', text: '#e0e0ff', muted: '#444466', border: '#1a1a3a', background: '#0a0a1a' },
-    clean: { primary: '#4a9eff', text: '#d0d0e0', muted: '#7f8c8d', border: '#3a3a5a', background: '#1e1e2e' },
-  };
   const t = themes[theme] || themes.cyberpunk;
   const state = useState();
 
+  const getLogColor = (level) => {
+    switch (level) {
+      case 'success': return t.success;
+      case 'error':   return t.error;
+      case 'warning': return t.warning;
+      case 'info':    return t.textDim;
+      default:        return t.textDim;
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    if (!timestamp) return '--:--';
+    const d = new Date(timestamp);
+    return d.toTimeString().substring(0, 5);
+  };
+
+  const formatLog = (log) => {
+    if (typeof log === 'string') return log;
+    return log?.message || JSON.stringify(log);
+  };
+
+  const logs = (state.logs || []).slice(-MAX_LOGS);
+
   return (
-    <Box flexGrow={1} flexDirection="column" padding={1}>
-      <Box marginBottom={1}>
-        <Text color={t.primary} bold>CONSOLE</Text>
+    <Box flexDirection="column" flexGrow={1} width="100%">
+      <Box flexDirection="row" paddingX={1} height={3} alignItems="center">
+        <Text color={t.textDim} dimColor>MISSION LOG</Text>
       </Box>
-      <Box flexGrow={1} borderStyle="single" borderColor={t.border} padding={1}>
-        {state.logs.length > 0 ? (
-          state.logs.map((log, i) => (
-            <Text key={i} color={t.text}>{log}</Text>
+      <Box
+        flexDirection="column"
+        flexGrow={1}
+        paddingX={1}
+        paddingY={1}
+        borderStyle="single"
+        borderColor={t.border}
+      >
+        {logs.length > 0 ? (
+          logs.map((log, i) => (
+            <Box key={i} flexDirection="row">
+              <Text color={t.muted}>{formatTime(log?.timestamp)}  </Text>
+              <Text color={getLogColor(log?.level)}>
+                {formatLog(log)}
+              </Text>
+            </Box>
           ))
         ) : (
-          <Text color={t.muted}>  No output yet</Text>
+          <Text color={t.muted}>  No mission activity yet</Text>
         )}
       </Box>
     </Box>

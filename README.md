@@ -26,7 +26,57 @@ Suryafool sits between autonomous AI agents and heterogeneous wireless hardware 
 | Bootstrap agent loop (`agent.py`) | ✅ Done |
 | LLM factory + rate limiter (`core/llm.py`) | ✅ Done |
 | **Cyberpunk CLI** (`suryafool-cli/`) | ✅ Done (v0.1.0) |
+| **Phase 2 deterministic core** (`capabilities/`, `simulator/`, `policy/`, `engine/`, `reports/`, `cli/`) | ✅ Done |
+| **Phase 2.5 Marauder hardware backend** | 🟡 Architectural reference only (removed in Phase 2.7.4) |
 | Mission agents (12 planned) | 🔲 TODO |
+
+---
+
+## Phase 2 — Deterministic Core & Simulator
+
+Run the full mission loop **without hardware or an LLM**:
+
+```bash
+# From the repo root
+python -m cli.phase2 capabilities            # capability catalogue
+python -m cli.phase2 providers                # list backends (simulator only)
+python -m cli.phase2 scenarios               # simulator scenarios
+python -m cli.phase2 run --scenario home     # deterministic run → logs + report
+python -m cli.phase2 run --scenario lab --seed 7 --json   # JSONL event stream (TUI)
+python -m cli.phase2 show <run-id>           # summarize a stored run
+python -m cli.phase2 report <run-id>         # regenerate HTML report
+```
+
+Flow: `ActionRequest → CapabilityRegistry.resolve() → PolicyEngine.validate() → provider.execute() → Observation → Run record`.
+
+Artifacts are stored under `~/.suryafool/runs/<run-id>/` (`SURYAFOOL_RUNS_DIR` overrides):
+
+```
+run.json        # full structured run record
+events.jsonl    # append-only JSONL audit trail
+report.html     # standalone HTML report
+```
+
+Tests (stdlib-only runner, no pytest needed):
+
+```bash
+python -m tests.test_phase2_core
+```
+
+---
+
+## Phase 2.5 — Marauder Hardware Spike (Architectural Reference)
+
+> **Phase 2.7.4 removed `backends/` from the runtime.** The ESP32 Marauder
+> project ([github.com/justcallmekoko/ESP32Marauder](https://github.com/justcallmekoko/ESP32Marauder))
+> remains an **architectural reference** for future firmware design — it is
+> NOT a runtime dependency, provider, or CLI option.
+>
+> The spike proved the `CapabilityProvider` ABC serves real hardware with no
+> core changes. That proof informed the decision to keep the ABC generic
+> (in `capabilities/base.py`) and remove the Marauder-specific plumbing
+> (transport, parser, provider, CLI flags, tests). The simulator is now the
+> only runtime provider.
 
 ---
 

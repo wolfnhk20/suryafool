@@ -1,0 +1,1 @@
+# tests package — Phase 2 test suite (runnable without pytest)
