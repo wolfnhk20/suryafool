@@ -263,26 +263,29 @@ DEFAULT_CAPABILITIES: list[Capability] = [
                output_entity_type="subghz_signal",
                mutates_state=True,
                produces_evidence=True),
-    # ── Phase 2.8.0 — multi-domain foundation ────────────────────────────────
+    # ── Phase 2.8.0 multi-domain foundation / Phase 2.8.3 Infrared slice ────
     # Infrared (flat `infrared` namespace — domain-auto-derived by
-    # __post_init__). These entries are catalogue-staked but explicitly
-    # UNSUPPORTED until Phase 2.8.3 adds handlers: registry.resolve() returns
-    # supported=False and the policy gate rejects BEFORE the provider, so the
-    # surface exists without pretending to work. `infrared.transmit` is a
-    # replay-style SENSITIVE_ACTIVE interaction requiring a prior capture
-    # (cross-namespace prereq, parallel to ble.gatt.pair requires connect).
+    # __post_init__). Staked in Phase 2.8.0; Phase 2.8.3 adds the simulator
+    # handlers that make all three resolve supported=True. `infrared.transmit`
+    # is a replay-style SENSITIVE_ACTIVE interaction requiring a prior capture
+    # (cross-action prereq, parallel to ble.gatt.pair requires connect) and a
+    # prior analyze on the SAME capture_id (per-target gate in the simulator).
+    # analyze + transmit produce evidence (kind ir_analysis / ir_transmit);
+    # capture stays PASSIVE + observational (no evidence) like discover/scan.
     Capability("IR Capture",   "infrared", "capture",  ActionRisk.PASSIVE,
                "Passively capture ambient infrared signals.",
                domain="infrared", output_entity_type="ir_signal"),
     Capability("IR Analyze",   "infrared", "analyze",  ActionRisk.SAFE_ACTIVE,
                "Decode the protocol of a captured infrared signal.",
                domain="infrared", requires_args=("capture_id",),
-               output_entity_type="ir_signal", mutates_state=True),
+               output_entity_type="ir_signal", mutates_state=True,
+               produces_evidence=True),
     Capability("IR Transmit",  "infrared", "transmit", ActionRisk.SENSITIVE_ACTIVE,
                "Re-transmit a previously captured infrared signal (authorized interaction only).",
                domain="infrared", requires_args=("capture_id",),
                output_entity_type="ir_signal",
-               requires=("infrared.capture",), mutates_state=True),
+               requires=("infrared.capture",), mutates_state=True,
+               produces_evidence=True),
     # Ethernet / wired networking.
     Capability("Ethernet Discovery", "ethernet.discovery", "discover", ActionRisk.PASSIVE,
                "Discover hosts on the local wired Ethernet segment.",

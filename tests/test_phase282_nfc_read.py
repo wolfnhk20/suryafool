@@ -727,13 +727,15 @@ class TestPhaseRegression:
         # read now produces nfc_read evidence (Phase 2.8.2).
         assert by_key["nfc.discovery.read"].produces_evidence is True
 
-    def test_seven_evidence_kinds_frozen(self):
-        # Phase 2.7 (4) + Phase 2.8.1 (2) + Phase 2.8.2 (1) = 7.
+    def test_evidence_kinds_frozen(self):
+        # Phase 2.7 (4) + Phase 2.8.1 (2) + Phase 2.8.2 (1) + Phase 2.8.3 (2)
+        # = 9. Phase 2.8.3 (infrared) appended `ir_analysis` + `ir_transmit`.
         assert KNOWN_EVIDENCE_KINDS == frozenset({
             "wifi_eapol_handshake", "wifi_pmkid",
             "ble_pairing", "ble_secure_write",
             "subghz_capture", "subghz_analysis",
             "nfc_read",
+            "ir_analysis", "ir_transmit",  # Phase 2.8.3
         })
 
     def test_nfc_workflow_plan_shape(self):

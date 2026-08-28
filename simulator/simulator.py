@@ -92,6 +92,19 @@ def _subghz_entities(env: Environment) -> list[Entity]:
     return out
 
 
+def _ir_entities(env: Environment) -> list[Entity]:
+    out: list[Entity] = []
+    for s in env.ir:
+        out.append(Entity(
+            id=s.capture_id,
+            type="ir_signal",
+            label=f"{s.capture_id} ({s.carrier_khz:.1f} kHz)",
+            confidence=Confidence.CONFIRMED,
+            attributes=s.to_dict(),
+        ))
+    return out
+
+
 # ── Action implementations ────────────────────────────────────────────────────
 
 def action_wifi_discover(env: Environment, args: dict[str, Any]) -> Observation:
@@ -921,6 +934,185 @@ def _classify_subghz(s: SubGhzSignal) -> str:
     return "unclassified"
 
 
+# Phase 2.8.3 — heuristic protocol label for a captured IR burst, derived from
+# (carrier, burst length). This is NOT a real IR decoder: the simulator has no
+# modulation frames to parse. It returns a deterministic best-guess hint based
+# on common consumer-IR knowledge so the evidence metadata carries something
+# more useful than "unknown". The field name ends in `_hint` to make that
+# explicit — tests assert it's a hint, not an authoritative decode.
+def _ir_protocol_hint(s: IrSignal) -> str:
+    key = (round(s.carrier_khz, 1), int(s.length_ms))
+    # NEC(TV) is a ~38 kHz carrier with a comparatively long leading burst;
+    # RC5 is ~36 kHz; Sony SIRC ~40 kHz. Anything the heuristic can't map
+    # stays "" (honest "not confidently identified").
+    if key[0] == 38.0 and key[1] >= 700:
+        return "NEC"
+    if key[0] == 36.0 and key[1] < 700:
+        return "RC5"
+    if key[0] == 40.0:
+        return "SIRC"
+    return ""
+
+
+def _ir_classification(s: IrSignal) -> str:
+    """Trivial IR classifier used by the analyze action. A hint, not a decode."""
+    hint = s.decoded_protocol_hint
+    if hint in ("NEC", "RC5", "SIRC"):
+        return f"likely {hint} consumer-IR frame"
+    return "unclassified IR burst"
+
+
+def action_ir_capture(env: Environment, args: dict[str, Any]) -> Observation:
+    """Observational (PASSIVE): enumerate the IR bursts sensed in the
+    environment. No state mutation, no evidence — exactly parallel to the
+    passive `discover`/`scan`/`spectrum` actions in other domains."""
+    entities = _ir_entities(env)
+    return Observation(
+        capability="infrared", action="capture",
+        entities=entities, raw_data={"count": len(entities)},
+        summary=f"Captured {len(entities)} IR burst(s) in view.",
+    )
+
+
+def action_ir_analyze(env: Environment, args: dict[str, Any]) -> Observation:
+    """SAFE_ACTIVE, produces `ir_analysis` evidence, mutates IrSignal.
+
+    Per-target prereq: `capture_id` must reference an IR signal present in
+    the environment (mirrors subghz.capture.signal requiring a known
+    frequency). On success sets `analyzed=True` + a deterministic
+    `decoded_protocol_hint` (heuristic, not a decode), stamps
+    `env.notes["ir_analyzed:<capture_id>"]`, and builds one `ir_analysis`
+    EvidenceRecord. Unknown/malformed capture_id → structured failure,
+    evidence=[] , no mutation.
+    """
+    capture_id = args.get("capture_id")
+    if not isinstance(capture_id, str) or not capture_id:
+        return Observation(
+            capability="infrared", action="analyze",
+            entities=[], raw_data={"capture_id": capture_id},
+            summary="Invalid capture_id argument — nothing analyzed.",
+        )
+    for s in env.ir:
+        if s.capture_id == capture_id:
+            if not s.decoded_protocol_hint:
+                s.decoded_protocol_hint = _ir_protocol_hint(s)
+            s.analyzed = True
+            env.notes[f"ir_analyzed:{capture_id}"] = time.time()
+            classification = _ir_classification(s)
+            ent = Entity(
+                id=s.capture_id,
+                type="ir_signal",
+                label=f"{s.capture_id} ({s.carrier_khz:.1f} kHz)",
+                confidence=Confidence.LIKELY,
+                attributes={
+                    **s.to_dict(),
+                    "analyzed": True,
+                    "classification": classification,
+                },
+            )
+            evidence = [EvidenceRecord(
+                source_capability="infrared",
+                source_action="analyze",
+                target_entity_id=ent.id,
+                target_entity_type="ir_signal",
+                kind="ir_analysis",
+                summary=(
+                    f"Analyzed IR burst {s.capture_id} "
+                    f"({s.carrier_khz:.1f} kHz / {s.length_ms:.0f} ms): {classification}."
+                ),
+                metadata={
+                    "capture_id": s.capture_id,
+                    "carrier_khz": s.carrier_khz,
+                    "length_ms": s.length_ms,
+                    "decoded_protocol_hint": s.decoded_protocol_hint,
+                    "classification": classification,
+                },
+                captured_at=time.time(),
+            )]
+            return Observation(
+                capability="infrared", action="analyze",
+                entities=[ent], raw_data=s.to_dict(),
+                summary=f"Analyzed IR burst {s.capture_id}.",
+                evidence=evidence,
+            )
+    return Observation(
+        capability="infrared", action="analyze",
+        entities=[], raw_data={"capture_id": capture_id},
+        summary=f"No captured IR burst with id {capture_id}.",
+    )
+
+
+def action_ir_transmit(env: Environment, args: dict[str, Any]) -> Observation:
+    """SENSITIVE_ACTIVE, produces `ir_transmit` evidence, mutates IrSignal.
+
+    Per-target prereq: the SAME capture_id must have been analyzed
+    (`IrSignal.analyzed=True`) first — exactly the same-address/same-bssid
+    gate used by ble.gatt.write (needs pair on same address) and
+    wifi.capture.pmkid (needs handshake on same bssid). The catalogue-level
+    `requires=("infrared.capture",)` only proves *some* capture ran
+    somewhere; the handler gate answers "is precisely THIS burst ready to
+    replay?". Unknown capture_id / not-yet-analyzed target → structured
+    failure Observation with evidence=[] and no mutation.
+    """
+    capture_id = args.get("capture_id")
+    if not isinstance(capture_id, str) or not capture_id:
+        return Observation(
+            capability="infrared", action="transmit",
+            entities=[], raw_data={"capture_id": capture_id},
+            summary="Invalid capture_id argument — nothing transmitted.",
+        )
+    for s in env.ir:
+        if s.capture_id == capture_id:
+            if not s.analyzed:
+                return Observation(
+                    capability="infrared", action="transmit",
+                    entities=[], raw_data={"capture_id": capture_id, "analyzed": False},
+                    summary=(
+                        f"IR burst {s.capture_id} not analyzed yet; "
+                        f"call infrared.analyze first."
+                    ),
+                )
+            s.transmitted = True
+            env.notes[f"ir_transmit:{capture_id}"] = time.time()
+            ent = Entity(
+                id=s.capture_id,
+                type="ir_signal",
+                label=f"{s.capture_id} ({s.carrier_khz:.1f} kHz)",
+                confidence=Confidence.CONFIRMED,
+                attributes=s.to_dict(),
+            )
+            evidence = [EvidenceRecord(
+                source_capability="infrared",
+                source_action="transmit",
+                target_entity_id=ent.id,
+                target_entity_type="ir_signal",
+                kind="ir_transmit",
+                summary=(
+                    f"Replayed analyzed IR burst {s.capture_id} "
+                    f"({s.carrier_khz:.1f} kHz / {s.length_ms:.0f} ms)."
+                ),
+                metadata={
+                    "capture_id": s.capture_id,
+                    "carrier_khz": s.carrier_khz,
+                    "length_ms": s.length_ms,
+                    "decoded_protocol_hint": s.decoded_protocol_hint,
+                    "analyze_prereq": True,
+                },
+                captured_at=time.time(),
+            )]
+            return Observation(
+                capability="infrared", action="transmit",
+                entities=[ent], raw_data=s.to_dict(),
+                summary=f"Transmitted IR burst {s.capture_id}.",
+                evidence=evidence,
+            )
+    return Observation(
+        capability="infrared", action="transmit",
+        entities=[], raw_data={"capture_id": capture_id},
+        summary=f"No captured IR burst with id {capture_id}.",
+    )
+
+
 # ── Dispatcher ────────────────────────────────────────────────────────────────
 
 HANDLERS = {
@@ -940,6 +1132,14 @@ HANDLERS = {
     ("subghz.discovery", "spectrum"): action_subghz_spectrum,
     ("subghz.discovery", "analyze"):  action_subghz_analyze,
     ("subghz.capture",   "signal"):   action_subghz_capture_signal,
+    # Phase 2.8.3 — Infrared. Registering the handlers makes the three IR
+    # catalogue entries resolve supported=True; they now run through the
+    # unchanged policy gate (capture PASSIVE always allowed; analyze
+    # SAFE_ACTIVE; transmit SENSITIVE_ACTIVE — both REJECTed below SAFE_ACTIVE
+    # / SENSITIVE_ACTIVE scopes).
+    ("infrared",       "capture"):    action_ir_capture,
+    ("infrared",       "analyze"):    action_ir_analyze,
+    ("infrared",       "transmit"):   action_ir_transmit,
 }
 
 
@@ -962,6 +1162,9 @@ _NOTE_PREFIX_TO_CAPABILITY_KEY: dict[str, str] = {
     "wifi_pmkid:":        "wifi.capture.pmkid",
     "ble_paired:":        "ble.gatt.pair",
     "ble_secure_write:":  "ble.gatt.write",
+    # Phase 2.8.3 — Infrared stateful actions.
+    "ir_analyzed:":       "infrared.analyze",
+    "ir_transmit:":       "infrared.transmit",
 }
 
 

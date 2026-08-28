@@ -26,7 +26,8 @@ Suryafool sits between autonomous AI agents and heterogeneous wireless hardware 
 | **Phase 2.8.0 multi-domain foundation** (catalogue 23: wifi, ble, subghz, nfc, infrared, ethernet, usb) | ✅ Done |
 | **Phase 2.8.1 Sub-GHz/RF capture slice** | ✅ Done |
 | **Phase 2.8.2 NFC/RFID read slice** | ✅ Done |
-| Phase 2.8.3–2.8.8 (Infrared / Ethernet / USB / cross-domain workflows / evidence generalization / freeze) | 🔲 TODO |
+| **Phase 2.8.3 Infrared (IR) slice** | ✅ Done |
+| Phase 2.8.4–2.8.8 (Ethernet / USB / cross-domain workflows / evidence generalization / freeze) | 🔲 TODO |
 | Phase 2.5 Marauder hardware backend | 🟡 Architectural reference only (removed in Phase 2.7.4) |
 | Mission agents (12 planned) | 🔲 TODO |
 
@@ -76,7 +77,7 @@ Evidence flows end-to-end: simulation success → `EvidenceRecord` → `run.json
 python -m tests.test_phase2_core
 ```
 
-All **13 Python suites (431 tests)** + **55 Node tests** + 2 Node smokes + esbuild build are green.
+All **14 Python suites (472 tests)** + **58 Node tests** + 2 Node smokes + esbuild build are green.
 
 ---
 
@@ -317,7 +318,7 @@ suryafool/
 │
 ├── cli/                         # `python -m cli.phase2` command suite
 │
-├── tests/                       # 13 stdlib-runnable suites (431 tests)
+├── tests/                       # 14 stdlib-runnable suites (472 tests)
 │
 ├── scripts/                     # 2 Node smoke scripts (event-stream + wiring contracts)
 │

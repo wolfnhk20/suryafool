@@ -620,10 +620,13 @@ class TestRegression:
         # subghz.discovery.analyze produces_evidence True. Phase 2.8.2 added
         # nfc.discovery.read (the nfc.discovery.select step is PASSIVE — a
         # discovery step, not a capture — so it does NOT produce evidence).
+        # Phase 2.8.3 added infrared.analyze + infrared.transmit (infrared.
+        # capture is PASSIVE observational — no evidence).
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
         evidence_caps = [k for k, c in by_key.items() if c.produces_evidence]
         assert sorted(evidence_caps) == [
             "ble.gatt.pair", "ble.gatt.write",
+            "infrared.analyze", "infrared.transmit",
             "nfc.discovery.read",
             "subghz.capture.signal", "subghz.discovery.analyze",
             "wifi.capture.handshake", "wifi.capture.pmkid",

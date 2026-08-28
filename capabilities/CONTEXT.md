@@ -215,7 +215,10 @@ that Phase 2.7.6/2.7.7 generalize.
 | `ble.gatt.write`         | `SENSITIVE_ACTIVE` | **`True`** ✅ (Phase 2.7.7) |
 | `subghz.capture.signal`  | `SAFE_ACTIVE` | **`True`** ✅ (Phase 2.8.1, kind `subghz_capture`) |
 | `subghz.discovery.analyze` | `SAFE_ACTIVE` | **`True`** ✅ (Phase 2.8.1, kind `subghz_analysis`) |
-| all other 16 entries | — | `False` (unchanged) |
+| `nfc.discovery.read`     | `SAFE_ACTIVE` | **`True`** ✅ (Phase 2.8.2, kind `nfc_read`) |
+| `infrared.analyze`       | `SAFE_ACTIVE` | **`True`** ✅ (Phase 2.8.3, kind `ir_analysis`) |
+| `infrared.transmit`      | `SENSITIVE_ACTIVE` | **`True`** ✅ (Phase 2.8.3, kind `ir_transmit`) |
+| all other 14 entries     | — | `False` (unchanged) |
 
 `produces_evidence` is a **flag** the catalogue exposes — it does not gate
 execution. The actual evidence production happens in the simulator's success
@@ -316,3 +319,40 @@ No `produces_evidence=True` additions (no real evidence behavior yet — the
 changes. `tests/test_phase280_multidomain.py` — 29 stdlib-runnable tests
 covering registration, metadata validity, risks, resolution, unsupported
 behavior, prereq metadata, and Phase 2.7 freeze regression.
+
+---
+
+## Phase 2.8.3 — Infrared slice (no new catalogue entries)
+
+Phase 2.8.3 implements the three Phase 2.8.0 `infrared.*` entries — **NO new
+catalogue entries**; the catalogue stays at 23. The three entries flip from
+registered-but-unsupported to supported once the simulator registers their
+`HANDLERS`, and their `produces_evidence` flags flip for the two evidence
+producers.
+
+| Capability key | Risk | `requires_args` | `requires` | `produces_evidence` |
+|---|---|---|---|---|
+| `infrared.capture` | `PASSIVE` | `()` | `()` | `False` (observational, no evidence — parallels discover/scan) |
+| `infrared.analyze` | `SAFE_ACTIVE` | `("capture_id",)` | `()` | **`True`** ✅ (Phase 2.8.3, kind `ir_analysis`) |
+| `infrared.transmit` | `SENSITIVE_ACTIVE` | `("capture_id",)` | `("infrared.capture",)` | **`True`** ✅ (Phase 2.8.3, kind `ir_transmit`) |
+
+**Change summary (all on the frozen Phase 2.7 stack + 2.8.0 substrate):**
+
+- `infrared.analyze` + `infrared.transmit`: `produces_evidence` `False`→`True`
+  (identical to the 2.8.1/2.8.2 flag flips) — no other metadata changed.
+- `infrared.analyze` keeps `requires=()` (its per-target capture_id gate lives
+  in the simulator handler, exactly like `subghz.discovery.analyze` — the
+  handler decides whether the capture_id is valid, so no catalogue-level
+  prereq is needed).
+- `infrared.transmit` keeps its Phase 2.8.0 `requires=("infrared.capture",)`
+  (mission-shape idle chain; the SIMULATOR additionally gates on the SAME
+  capture_id being analyzed=True — strictly stronger, mirroring the
+  same-bssid/same-address conventions).
+- `infrared.capture` stays `PASSIVE` + `mutates_state=False` +
+  `produces_evidence=False` — it is observational by design.
+
+`KNOWN_EVIDENCE_KINDS` grows 7 → 9 (`+ir_analysis`, `ir_transmit`).
+`ir_workflow_plan()`: capture → analyze@ir-lab-remote → transmit@ir-lab-remote
+→ analyze@ir-lab-tv (4 actions, 3 evidence). SEE
+[`simulator/CONTEXT.md`](../simulator/CONTEXT.md) for handler/heuristic details
+and [`tests/CONTEXT.md`](../tests/CONTEXT.md) for `test_phase283_ir.py`.

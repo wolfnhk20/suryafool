@@ -273,6 +273,48 @@ def nfc_workflow_plan() -> list[ActionRequest]:
     ]
 
 
+def ir_workflow_plan() -> list[ActionRequest]:
+    """Phase 2.8.3 deterministic plan: complete stateful Infrared
+    capture -> analyze -> transmit lifecycle over the lab scenario IR bursts
+    (ir=[ir-lab-remote NEC 38.0 kHz / 900 ms, ir-lab-tv RC5 36.0 kHz / 560 ms]).
+
+        infrared.capture        (PASSIVE, enumerates the 2 lab IR bursts, no mutation)
+        infrared.analyze  @ ir-lab-remote (SAFE_ACTIVE, sets analyzed=True + NEC hint; produces 1 ir_analysis)
+        infrared.transmit @ ir-lab-remote (SENSITIVE_ACTIVE, per-target analyze prereq met; produces 1 ir_transmit)
+        infrared.analyze  @ ir-lab-tv     (SAFE_ACTIVE, sets analyzed=True + RC5 hint; produces 1 ir_analysis)
+
+    Final result: 4 actions, 3 evidence (2 x ir_analysis + 1 x ir_transmit).
+    `infrared.transmit` only succeeds on the SAME capture_id that was first
+    analyzed — the per-target gate in the handler (parallel to
+    wifi.capture.pmkid needing handshake on the SAME bssid and
+    ble.gatt.write needing pair on the SAME address). Each request.risk
+    equals the authoritative catalogue cap.risk (RiskDeclarationRule rejects
+    mismatches both ways). The plan targets the lab scenario's literal
+    capture_ids, so it is seed-independent for those targets. Against a
+    non-lab scenario the active analyze/transmit find no matching burst and
+    return structured 'unknown target' failure Observations (no crash). Under
+    a PASSIVE-only AuthorizationScope, analyze + transmit are REJECTED at the
+    policy gate before the provider is invoked — 3 errors recorded, run
+    COMPLETED, environment unchanged, zero evidence. Under SENSITIVE_ACTIVE
+    scope the full chain completes and ir-lab-remote reaches analyzed=True +
+    transmitted=True with a NEC protocol hint, ir-lab-tv reaches
+    analyzed=True with an RC5 hint, and 3 evidence records are produced.
+    """
+    return [
+        ActionRequest(capability="infrared", action="capture",
+                      risk=ActionRisk.PASSIVE),
+        ActionRequest(capability="infrared", action="analyze",
+                      args={"capture_id": "ir-lab-remote"},
+                      risk=ActionRisk.SAFE_ACTIVE),
+        ActionRequest(capability="infrared", action="transmit",
+                      args={"capture_id": "ir-lab-remote"},
+                      risk=ActionRisk.SENSITIVE_ACTIVE),
+        ActionRequest(capability="infrared", action="analyze",
+                      args={"capture_id": "ir-lab-tv"},
+                      risk=ActionRisk.SAFE_ACTIVE),
+    ]
+
+
 class RunEngine:
     def __init__(self,
                  registry: CapabilityRegistry,

@@ -10,7 +10,7 @@ Each builder returns a fully populated `Environment`.
 from __future__ import annotations
 
 from simulator.environment import Environment
-from simulator.entities import WifiNetwork, BleDevice, NfcTag, SubGhzSignal
+from simulator.entities import WifiNetwork, BleDevice, IrSignal, NfcTag, SubGhzSignal
 from simulator.rng import SeededRNG
 
 
@@ -64,6 +64,16 @@ def _subghz(freq_mhz: float, mod: str, bw: float, rssi: int = -70,
     )
 
 
+def _ir(capture_id: str, carrier_khz: float, length_ms: float,
+        protocol: str = "") -> IrSignal:
+    return IrSignal(
+        capture_id=capture_id,
+        carrier_khz=carrier_khz,
+        length_ms=length_ms,
+        protocol=protocol,
+    )
+
+
 # ── Scenarios ─────────────────────────────────────────────────────────────────
 
 def scenario_home(seed: int = 42) -> Environment:
@@ -87,6 +97,10 @@ def scenario_home(seed: int = 42) -> Environment:
         ],
         subghz=[
             _subghz(433.92, "OOK", 250, -65, "likely garage-door remote"),
+        ],
+        ir=[
+            _ir("ir-home-tv", 38.0, 900.0, "NEC"),
+            _ir("ir-home-remote", 36.0, 889.0, "RC5"),
         ],
         notes={"description": "Quiet residential environment."},
     )
@@ -117,6 +131,10 @@ def scenario_lab(seed: int = 42) -> Environment:
             _subghz(433.92, "OOK", 250, -55, "lab test transmitter"),
             _subghz(868.30, "FSK", 125, -68, "lab LoRa-like chirp"),
         ],
+        ir=[
+            _ir("ir-lab-remote", 38.0, 900.0, "NEC"),
+            _ir("ir-lab-tv", 36.0, 560.0, "RC5"),
+        ],
         notes={"description": "Authorized Suryafool test lab."},
     )
 
@@ -143,12 +161,17 @@ def scenario_crowded(seed: int = 42) -> Environment:
                 "ambient noise")
         for i, freq in enumerate([315.0, 433.92, 868.30, 915.0])
     ]
+    ir = [
+        _ir(f"ir-crowd-{i}", carrier, rng.randint(400, 1200))
+        for i, carrier in enumerate([38.0, 36.0, 40.0, 56.0])
+    ]
     return Environment(
         name="crowded",
         wifi=wifi,
         ble=ble,
         nfc=[],
         subghz=subghz,
+        ir=ir,
         notes={"description": "Dense urban/coworking RF environment."},
     )
 

@@ -49,6 +49,8 @@ from engine.runner import (
     RunEngine,
     ble_gatt_workflow_plan,
     default_exploration_plan,
+    ir_workflow_plan,
+    nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
 )
@@ -505,12 +507,15 @@ class TestContractAudit:
         # are asserted against the preserved keys, not the absolute count.
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
         assert len(DEFAULT_CAPABILITIES) == 23
-        # Evidence producers after 2.8.1+2.8.2 = the 4 Phase 2.7 producers + 2
-        # Phase 2.8.1 producers (subghz.capture.signal + the analyze flag) +
-        # 1 Phase 2.8.2 producer (nfc.discovery.read). select is PASSIVE
-        # (mutates_state, but not evidence-producing).
+        # Evidence producers after 2.8.1+2.8.2+2.8.3 = the 4 Phase 2.7 producers
+        # + 2 Phase 2.8.1 producers (subghz.capture.signal + the analyze flag) +
+        # 1 Phase 2.8.2 producer (nfc.discovery.read) + 2 Phase 2.8.3 producers
+        # (infrared.analyze ir_analysis + infrared.transmit ir_transmit).
+        # select/capture are PASSIVE (mutates_state / observational, but not
+        # evidence-producing).
         ev = sorted(k for k, c in by_key.items() if c.produces_evidence)
-        assert ev == ["ble.gatt.pair", "ble.gatt.write", "nfc.discovery.read",
+        assert ev == ["ble.gatt.pair", "ble.gatt.write", "infrared.analyze",
+                      "infrared.transmit", "nfc.discovery.read",
                       "subghz.capture.signal", "subghz.discovery.analyze",
                       "wifi.capture.handshake", "wifi.capture.pmkid"]
         # The 14 frozen Phase 2.7 keys are all still present.
@@ -540,12 +545,19 @@ class TestContractAudit:
         # Phase 2.8.2 contribution locked in: new select entry + read evidence flag.
         assert by_key["nfc.discovery.select"].mutates_state is True
         assert by_key["nfc.discovery.read"].produces_evidence is True
+        # Phase 2.8.3 contribution locked in: analyze + transmit evidence flags.
+        assert by_key["infrared.analyze"].risk == ActionRisk.SAFE_ACTIVE
+        assert by_key["infrared.transmit"].risk == ActionRisk.SENSITIVE_ACTIVE
+        assert by_key["infrared.analyze"].produces_evidence is True
+        assert by_key["infrared.transmit"].produces_evidence is True
+        assert by_key["infrared.capture"].produces_evidence is False
 
     def test_evidence_kind_vocabulary_matches_producers(self):
         assert KNOWN_EVIDENCE_KINDS == frozenset({
             "wifi_eapol_handshake", "wifi_pmkid", "ble_pairing", "ble_secure_write",
             "subghz_capture", "subghz_analysis",
-            "nfc_read",  # Phase 2.8.2
+            "nfc_read",             # Phase 2.8.2
+            "ir_analysis", "ir_transmit",  # Phase 2.8.3
         })
 
     def test_evidence_record_contract(self):
@@ -583,7 +595,10 @@ class TestContractAudit:
         assert len(wifi_capture_plan()) == 5
         assert len(ble_gatt_workflow_plan()) == 6
         assert len(subghz_capture_plan()) == 5      # Phase 2.8.1
-        for plan in (wifi_capture_plan(), ble_gatt_workflow_plan(), subghz_capture_plan()):
+        assert len(nfc_workflow_plan()) == 5        # Phase 2.8.2
+        assert len(ir_workflow_plan()) == 4         # Phase 2.8.3
+        for plan in (wifi_capture_plan(), ble_gatt_workflow_plan(),
+                     subghz_capture_plan(), nfc_workflow_plan(), ir_workflow_plan()):
             for req in plan:
                 reg = default_registry(environment=build_scenario("lab", seed=42))
                 cap = reg.capability(req.capability, req.action)

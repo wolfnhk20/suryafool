@@ -65,6 +65,8 @@ from engine.runner import (
     RunEngine,
     ble_gatt_workflow_plan,
     default_exploration_plan,
+    ir_workflow_plan,
+    nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
 )
@@ -626,17 +628,23 @@ class TestPhaseRegression:
         assert by_key["subghz.capture.signal"].produces_evidence is True
         assert by_key["subghz.discovery.analyze"].produces_evidence is True
 
+    def test_phase283_ir_producers_present(self):
+        by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
+        assert by_key["infrared.analyze"].produces_evidence is True
+        assert by_key["infrared.transmit"].produces_evidence is True
+        assert by_key["infrared.capture"].produces_evidence is False
+
     def test_known_evidence_kinds_has_seven(self):
-        # Phase 2.8.2 extends the vocabulary with `nfc_read` (NFC/RFID vertical
-        # slice). The 6 kinds from Phase 2.8.1 are still present; 1 NFC kind
-        # appended. The Phase 2.8.2 suite proves the NFC contribution in detail;
-        # this assertion locks the *count* so a future silent addition or
-        # removal is caught.
+        # The vocabulary extends across Phases 2.8.1 (2), 2.8.2 (nfc_read) and
+        # 2.8.3 (ir_analysis + ir_transmit). All 9 kinds are frozen here so a
+        # future silent addition or removal is caught. The dedicated suites
+        # prove each contribution in detail.
         assert KNOWN_EVIDENCE_KINDS == frozenset({
             "wifi_eapol_handshake", "wifi_pmkid",
             "ble_pairing", "ble_secure_write",
             "subghz_capture", "subghz_analysis",
             "nfc_read",
+            "ir_analysis", "ir_transmit",  # Phase 2.8.3
         })
 
     def test_default_exploration_plan_unchanged(self):
@@ -651,10 +659,12 @@ class TestPhaseRegression:
         assert len(wifi_capture_plan()) == 5
         assert len(ble_gatt_workflow_plan()) == 6
         assert len(subghz_capture_plan()) == 5
+        assert len(nfc_workflow_plan()) == 5        # Phase 2.8.2
+        assert len(ir_workflow_plan()) == 4         # Phase 2.8.3
         # Every plan action's request.risk equals cap.risk.
         reg = default_registry(environment=build_scenario("lab", seed=42))
         for plan in (wifi_capture_plan(), ble_gatt_workflow_plan(),
-                     subghz_capture_plan()):
+                     subghz_capture_plan(), nfc_workflow_plan(), ir_workflow_plan()):
             for req in plan:
                 cap = reg.capability(req.capability, req.action)
                 assert cap is not None and req.risk == cap.risk

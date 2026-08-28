@@ -44,9 +44,10 @@ Same seed → identical environment every time.
 | `wifi.capture` | `handshake` (SAFE_ACTIVE, mutates `WifiNetwork.handshake_captured`+`captured_frames`), `pmkid` (SENSITIVE_ACTIVE, mutates `WifiNetwork.pmkid_captured`; per-target prereq — requires preceding `wifi.capture.handshake` on the SAME bssid) |
 | `ble.discovery` | `discover`, `inspect` (summary surfaces paired + secure-write state when present), `connect` (Phase 2.7 SAFE_ACTIVE — link-layer connect + caches `gatt_services` + inits `characteristics`), `write` (Phase 2.7 SENSITIVE_ACTIVE — unauthenticated characteristic write) |
 | `ble.gatt` | `pair` (Phase 2.7.3 SAFE_ACTIVE — establishes pairing/bonding on a connected device; per-target prereq `b.connected=True`; mutates `BleDevice.paired`+`secure_characteristics`), `write` (Phase 2.7.3 SENSITIVE_ACTIVE — encrypted characteristic write within the paired session; per-target prereq `b.paired=True`; mutates `BleDevice.secure_characteristics[char]`) |
-| `nfc.discovery` | `scan`, `read` (one-shot, marks env state) |
+| `nfc.discovery` | `scan`, `read` (one-shot, marks env state), `select` (Phase 2.8.2 PASSIVE — activates a tag for reading; mutates `NfcTag.selected`) |
 | `subghz.discovery` | `spectrum`, `analyze` (Phase 2.8.1: `analyze` now requires a preceding `capture` on the SAME frequency — sets `decoded_protocol_hint` + emits `subghz_analysis` evidence on success; prereq-missing failure on uncaptured targets) |
 | `subghz.capture` | `signal` (Phase 2.8.1 SAFE_ACTIVE — captures an RF sample at a known frequency; mutates `SubGhzSignal.captured/sample_count/capture_quality`; emits `subghz_capture` evidence) |
+| `infrared` | `capture` (PASSIVE-observational — samples an `IrSignal`; no notes, no evidence), `analyze` (Phase 2.8.3 SAFE_ACTIVE — recognizes the captured signal; per-target capture_id prereq; sets `protocol_hint` + `ir_classification`; emits `ir_analysis` evidence), `transmit` (Phase 2.8.3 SENSITIVE_ACTIVE — replays a previously analyzed signal; per-target SAME-capture_id analyzed=True prereq; sets `transmitted=True`; emits `ir_transmit` evidence) |
 
 `wifi.capture.*` validate that the target network is WPA-encrypted
 (`WPA2`/`WPA3`); `OPEN`/`WEP` returns a structured failure Observation
@@ -87,6 +88,8 @@ and translates their prefixes back into capability keys:
 | `ble_paired:` | `ble.gatt.pair` |
 | `ble_secure_write:` | `ble.gatt.write` |
 | `subghz_capture:` | `subghz.capture.signal` (Phase 2.8.1) |
+| `ir_analyzed:` | `infrared.analyze` (Phase 2.8.3) |
+| `ir_transmit:` | `infrared.transmit` (Phase 2.8.3) |
 
 This is the smallest simulator support needed to prove the Phase 2.7.1
 `Capability.requires` / `prerequisites_met` metadata is actually usable:
@@ -121,8 +124,9 @@ registered but `HANDLERS` deliberately does NOT include them — they resolve
 `supported=False` and the unchanged policy gate REJECTs them before the
 provider ("don't pretend it works"). `performed_capability_keys` needs no
 `_NOTE_PREFIX_TO_CAPABILITY_KEY` additions — no handler stamps notes yet.
-Scenarios stay unpopulated; 2.8.3/2.8.4/2.8.5 add handlers + scenario
-content on this substrate.
+Scenarios stay unpopulated (for ethernet/usb); 2.8.3 adds IR handlers +
+scenario content (lab) on this substrate, and 2.8.4/2.8.5 add ethernet/usb
+handlers.
 
 ---
 
@@ -186,3 +190,66 @@ PASSIVE-only scope rejects both SAFE_ACTIVE actions before provider (zero
 evidence, zero env mutation). `subghz_capture_plan()`: spectrum →
 capture@433.92 → analyze@433.92 → capture@868.30 → analyze@868.30 (5
 actions, 4 evidence).
+
+---
+
+## Phase 2.8.3 — Infrared stateful capture / analyze / transmit
+
+`IrSignal` (Phase 2.8.0 substrate) gains five stateful fields:
+
+| Field | Type | Default | Set by |
+|---|---|---|---|
+| `layout` | `str` | `""` | `infrared.capture` success (`short`/`long`/`unknown` via `_ir_classification` on `length_ms`) |
+| `frequency_khz` | `float` | `0.0` | `infrared.capture` success (from the seed) |
+| `carrier_duty_cycle` | `float` | `0.0` | `infrared.capture` success |
+| `protocol_hint` | `str` | `""` | `infrared.analyze` success on a captured signal (`NEC`/`RC5`/`other` via `_ir_protocol_hint`) |
+| `transmitted` | `bool` | `False` | `infrared.transmit` success |
+
+Three handlers (registering them in `HANDLERS` makes the three Phase 2.8.0
+`infrared.*` catalogue entries **supported**, so `registry.resolve()` now
+returns `supported=True`):
+
+### `action_ir_capture` (new, PASSIVE — observational, no evidence)
+
+Validates `capture_id` is a known lab IR signal; unknown/malformed id returns
+a structured failure Observation. On success it does NOT mutate env beyond
+the entity — it sets the `IrSignal` substrate fields (`layout`,
+`frequency_khz`, `carrier_duty_cycle`). No `env.notes` stamp, no evidence
+(parallels `discover`/`scan`/`spectrum`).
+
+### `action_ir_analyze` (new, SAFE_ACTIVE, produces `ir_analysis` evidence)
+
+Requires `IrSignal` exists for the `capture_id` in env (per-target prereq).
+Unknown/surreptitious capture_id returns a structured failure Observation
+with `evidence=[]` + no env mutation. On success sets a deterministic
+`protocol_hint` via `_ir_protocol_hint` heuristic:
+
+| (frequency_khz, length_ms) | hint |
+|---|---|
+| `(38.0, 900)` | `NEC` |
+| `(36.0, 560)` | `RC5` |
+| anything else | `other` |
+
+plus an `ir_classification` (`short`/`long`/`unknown`); stamps
+`env.notes["ir_analyzed:<id>"]` (→ `performed_capability_keys` =
+`infrared.analyze`) and builds an `ir_analysis` `EvidenceRecord` with concise
+metadata (`capture_id`, `protocol_hint`, `frequency_khz`,
+`carrier_duty_cycle`, `layout`) — no fake protocol blobs. `protocol_hint`
+is a HINT, NOT a decoder (the simulator has no IR payload bytes).
+
+### `action_ir_transmit` (new, SENSITIVE_ACTIVE, produces `ir_transmit` evidence)
+
+Requires the SAME `capture_id` to be analyzed (`env.notes["ir_analyzed:<id>"]`
+present) — a per-target gate exactly parallel to `wifi.capture.pmkid`'s
+same-bssid prereq. Unknown capture_id / not-yet-analyzed target returns a
+structured failure Observation with `evidence=[]` + no env mutation. On
+success sets `IrSignal.transmitted=True`, stamps
+`env.notes["ir_transmit:<id>"]`, and builds an `ir_transmit` `EvidenceRecord`
+(metadata: `capture_id`, `protocol_hint`, `transmitted`). The Phase 2.6
+policy gate is unchanged — PASSIVE-only scope rejects `analyze` + `transmit`
+before provider (zero evidence, zero env mutation).
+
+The `_NOTE_PREFIX_TO_CAPABILITY_KEY` mapping gains `ir_analyzed:` and
+`ir_transmit:` (above). `ir_workflow_plan()`: capture → analyze@ir-lab-remote
+→ transmit@ir-lab-remote → analyze@ir-lab-tv (4 actions, 3 evidence; NEC on
+the remote, RC5 on the TV).

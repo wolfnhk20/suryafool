@@ -132,4 +132,50 @@ describe('formatEvidenceLine (Phase 2.7.8)', () => {
       assert.ok(n.domain !== w.domain && n.domain !== b.domain);
     });
   });
+
+  // Phase 2.8.3 — Infrared evidence kinds flow through the same domain
+  // mapping (no wifi/ble prefix => 'other'), just like Sub-GHz and NFC.
+  describe('formatEvidenceLine (Phase 2.8.3 Infrared)', () => {
+    test('maps an ir_analysis evidence record to domain other', () => {
+      const line = formatEvidenceLine({
+        kind: 'ir_analysis',
+        target_entity_id: 'ir-lab-remote',
+        target_entity_type: 'ir_signal',
+        source_capability: 'infrared',
+        source_action: 'analyze',
+        summary: 'Analyzed IR burst ir-lab-remote (38.0 kHz / 900 ms): likely NEC consumer-IR frame.',
+      });
+      assert.equal(line.kind, 'ir_analysis');
+      assert.equal(line.target, 'ir-lab-remote');
+      assert.equal(line.source, 'infrared.analyze');
+      assert.equal(line.domain, 'other');
+    });
+
+    test('maps an ir_transmit evidence record to domain other', () => {
+      const line = formatEvidenceLine({
+        kind: 'ir_transmit',
+        target_entity_id: 'ir-lab-remote',
+        target_entity_type: 'ir_signal',
+        source_capability: 'infrared',
+        source_action: 'transmit',
+        summary: 'Replayed analyzed IR burst ir-lab-remote (38.0 kHz / 900 ms).',
+      });
+      assert.equal(line.kind, 'ir_transmit');
+      assert.equal(line.target, 'ir-lab-remote');
+      assert.equal(line.source, 'infrared.transmit');
+      assert.equal(line.domain, 'other');
+    });
+
+    test('IR evidence is visually distinct from wifi/ble', () => {
+      const a = formatEvidenceLine({ kind: 'ir_analysis' });
+      const t = formatEvidenceLine({ kind: 'ir_transmit' });
+      const w = formatEvidenceLine({ kind: 'wifi_pmkid' });
+      const b = formatEvidenceLine({ kind: 'ble_pairing' });
+      assert.equal(a.domain, 'other');
+      assert.equal(t.domain, 'other');
+      assert.equal(w.domain, 'wifi');
+      assert.equal(b.domain, 'ble');
+      assert.ok(a.domain !== w.domain && a.domain !== b.domain);
+    });
+  });
 });

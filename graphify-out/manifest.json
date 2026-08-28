@@ -580,8 +580,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1787761127.4812255,
-    "ast_hash": "04626ca595b1a85ecc7397992dc80023",
+    "mtime": 1787932432.5016599,
+    "ast_hash": "d98233c1ee79ed654172103399fc3fae",
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
@@ -590,13 +590,13 @@
     "semantic_hash": ""
   },
   "CONTEXT.md": {
-    "mtime": 1787761173.2976477,
-    "ast_hash": "9692535a15ab76b1acc5fe1aeeeacc8b",
+    "mtime": 1787932452.5734694,
+    "ast_hash": "a12e67ae96cda2961f37d6ac08b0117a",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1787079658.0687175,
-    "ast_hash": "89d9e75227e52a46f8e983ffaf57b05a",
+    "mtime": 1787932599.4577036,
+    "ast_hash": "fec12a13b6ac2b76550ae6f3523da9ac",
     "semantic_hash": ""
   },
   "bootstrap/CONTEXT.md": {
@@ -639,46 +639,6 @@
     "ast_hash": "64da7e7bc95b57acd130e04965d68bd0",
     "semantic_hash": ""
   },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/progress.md": {
-    "mtime": 1786073287.393536,
-    "ast_hash": "e9e378a6c394b95749fa04a711784e07",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-1-brief.md": {
-    "mtime": 1786071059.0853474,
-    "ast_hash": "88156b7a19f37d507fab312473f435ed",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-1-fix1-brief.md": {
-    "mtime": 1786072034.6523895,
-    "ast_hash": "a638cbad9023bc3804be1f0ca4e77565",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-1-fix1-report.md": {
-    "mtime": 1786072579.7927911,
-    "ast_hash": "39ee9784ab8025b2b230dd07723f2cca",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-1-report.md": {
-    "mtime": 1786071578.6452427,
-    "ast_hash": "1fa9c187a0d82e014cc723b06ee0ee54",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-1-review-package.md": {
-    "mtime": 1786071758.6515727,
-    "ast_hash": "4c184b58daf9d6af7b39fa0034d334ab",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-04-cli-upgrade-level1000.md": {
-    "mtime": 1786070748.4572775,
-    "ast_hash": "0d0667ad9441ff1070a0501edf7d8221",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/specs/2026-08-04-cli-upgrade-level1000-design.md": {
-    "mtime": 1785783983.8998327,
-    "ast_hash": "d70c2e7e1bcc6e93114e77ef0b3c5fb5",
-    "semantic_hash": ""
-  },
   "suryafool-cli/src/state/context.js": {
     "mtime": 1786472027.996714,
     "ast_hash": "8d1741e225bc99988220f65291aac3b7",
@@ -692,11 +652,6 @@
   "suryafool-cli/src/state/reducer.test.js": {
     "mtime": 1787163244.3971066,
     "ast_hash": "b4c1cea6878a4702c9f2432e9bd75655",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-2-brief.md": {
-    "mtime": 1786072860.392926,
-    "ast_hash": "4d72b28b23cfb61d24f0ca45c445b40a",
     "semantic_hash": ""
   },
   "suryafool-cli/babel.config.js": {
@@ -769,21 +724,6 @@
     "ast_hash": "93454741df7bf6601c009913515f9176",
     "semantic_hash": ""
   },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-2-report.md": {
-    "mtime": 1786073072.4920459,
-    "ast_hash": "6eac0023fea3dd8582edd4a2ad890dc3",
-    "semantic_hash": ""
-  },
-  ".superpowers/sdd/2026-08-04-cli-upgrade-level1000/task-3-brief.md": {
-    "mtime": 1786074884.1474195,
-    "ast_hash": "4acebae7d2e9a680f68f65bfd42a7136",
-    "semantic_hash": ""
-  },
-  "suryafool-cli/output.txt": {
-    "mtime": 1786386921.6506329,
-    "ast_hash": "b91e0fc24c1af537b309486a1213fee3",
-    "semantic_hash": ""
-  },
   "suryafool-cli/src/app.test.jsx": {
     "mtime": 1786252639.3354187,
     "ast_hash": "a19a16242f236e3fbdf02c110414cfcb",
@@ -834,21 +774,6 @@
     "ast_hash": "50b07080f645037861c121f6c61d76b7",
     "semantic_hash": ""
   },
-  "docs/superpowers/plans/2026-08-10-sunflower-visual-identity.md": {
-    "mtime": 1786382351.1274683,
-    "ast_hash": "f8f4b18847dbf59064d4e69771bb7c1b",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-11-tui-wiring-bootstrap-path.md": {
-    "mtime": 1786470870.3687847,
-    "ast_hash": "0ea8e2604569dae0f37313606ab72c8b",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/specs/2026-08-11-tui-wiring-bootstrap-path-design.md": {
-    "mtime": 1786420300.976331,
-    "ast_hash": "7be961f294b5f47114a5764772d7de86",
-    "semantic_hash": ""
-  },
   "docs/PROJECT.md": {
     "mtime": 1786641516.4024098,
     "ast_hash": "387213a992dbeca719f36b966eefb770",
@@ -860,8 +785,8 @@
     "semantic_hash": ""
   },
   "capabilities/base.py": {
-    "mtime": 1787251581.6370354,
-    "ast_hash": "d14a479671981fda52ef8fac79b2e150",
+    "mtime": 1787931071.9197247,
+    "ast_hash": "f328b45709228df195056837d3c6c144",
     "semantic_hash": ""
   },
   "capabilities/registry.py": {
@@ -875,8 +800,8 @@
     "semantic_hash": ""
   },
   "cli/phase2.py": {
-    "mtime": 1787473652.088092,
-    "ast_hash": "e6ececb9774e9ee357b526aa5910ed1b",
+    "mtime": 1787931205.20813,
+    "ast_hash": "541ce052e5303c60552942fac9af7e83",
     "semantic_hash": ""
   },
   "core/confidence.py": {
@@ -910,8 +835,8 @@
     "semantic_hash": ""
   },
   "engine/runner.py": {
-    "mtime": 1787468959.6757424,
-    "ast_hash": "5b007fc670e089a6e895bfd910af7cdf",
+    "mtime": 1787931161.833308,
+    "ast_hash": "2b539ad954dc1269fbc19f73b67e9110",
     "semantic_hash": ""
   },
   "policy/__init__.py": {
@@ -950,8 +875,8 @@
     "semantic_hash": ""
   },
   "simulator/entities.py": {
-    "mtime": 1787251007.6866932,
-    "ast_hash": "d12563e4ab573e1ad3180e2a1a5394b9",
+    "mtime": 1787930839.3491106,
+    "ast_hash": "187127e0fcc5843b7ce7497112dec48f",
     "semantic_hash": ""
   },
   "simulator/environment.py": {
@@ -965,13 +890,13 @@
     "semantic_hash": ""
   },
   "simulator/scenarios.py": {
-    "mtime": 1786804415.9932725,
-    "ast_hash": "0c6f63766bae9bfb1a7febd881c9f624",
+    "mtime": 1787931145.5968573,
+    "ast_hash": "1148b9600256212c534135c1173d1ad0",
     "semantic_hash": ""
   },
   "simulator/simulator.py": {
-    "mtime": 1787251691.6370618,
-    "ast_hash": "c181c18b47be3a92ede3505c94c6d94e",
+    "mtime": 1787931048.3466835,
+    "ast_hash": "046f6dc820a4288af8a887f006832e6e",
     "semantic_hash": ""
   },
   "suryafool-cli/src/components/CapabilitiesView.js": {
@@ -990,8 +915,8 @@
     "semantic_hash": ""
   },
   "capabilities/CONTEXT.md": {
-    "mtime": 1787248366.4941664,
-    "ast_hash": "a0d8a546f26ec98bc532d69174e264d6",
+    "mtime": 1787932556.008808,
+    "ast_hash": "c1f16895445af1392d3220df15bf7462",
     "semantic_hash": ""
   },
   "cli/CONTEXT.md": {
@@ -1015,18 +940,18 @@
     "semantic_hash": ""
   },
   "simulator/CONTEXT.md": {
-    "mtime": 1787248443.211158,
-    "ast_hash": "4027c238e20a95cb73b884df62a72406",
+    "mtime": 1787932523.284914,
+    "ast_hash": "5a3132e4dcb4a9346e126f79bc2f78d1",
     "semantic_hash": ""
   },
   "tests/CONTEXT.md": {
-    "mtime": 1787761321.0985863,
-    "ast_hash": "fbf8d008c3e32eb9d88a143da379bb06",
+    "mtime": 1787932471.2957616,
+    "ast_hash": "ae7e9b9b271ebc4b0a1e1d37a4f0f9d9",
     "semantic_hash": ""
   },
   "core/evidence.py": {
-    "mtime": 1787251561.586489,
-    "ast_hash": "9bee0a9c1ca184b1579310f9ed3eadcc",
+    "mtime": 1787931119.6654816,
+    "ast_hash": "416aebd0433c4e6073f9d2292baa6314",
     "semantic_hash": ""
   },
   "suryafool-cli/src/components/EvidenceFeed.js": {
@@ -1035,8 +960,8 @@
     "semantic_hash": ""
   },
   "suryafool-cli/src/components/EvidenceFeed.test.js": {
-    "mtime": 1787496618.3035731,
-    "ast_hash": "32ede81e8904aa9c3dc15bfe3a2cb0fc",
+    "mtime": 1787931957.8241534,
+    "ast_hash": "3388974cb97e7a55f47bd7c55ffa945a",
     "semantic_hash": ""
   },
   "suryafool-cli/src/components/evidenceFormat.js": {
@@ -1050,8 +975,8 @@
     "semantic_hash": ""
   },
   "tests/test_phase271_capability_metadata.py": {
-    "mtime": 1787758443.0958624,
-    "ast_hash": "f54a688fd791c3f30a5c2eb47086c28f",
+    "mtime": 1787931660.7290313,
+    "ast_hash": "ea9ea120f8133ed1e87910441068b76a",
     "semantic_hash": ""
   },
   "tests/test_phase272_wifi_capture.py": {
@@ -1065,23 +990,23 @@
     "semantic_hash": ""
   },
   "tests/test_phase275_evidence.py": {
-    "mtime": 1787758550.1057403,
-    "ast_hash": "bc67bdf27c6ef4c0f1ec87b7b130b8a3",
+    "mtime": 1787932209.596525,
+    "ast_hash": "95af98a8224674698c502aaa94bfab92",
     "semantic_hash": ""
   },
   "tests/test_phase276_pmkid_evidence.py": {
-    "mtime": 1787758579.6700478,
-    "ast_hash": "84404cf05ec7730d4d9bff0f4f669e71",
+    "mtime": 1787931412.8893979,
+    "ast_hash": "e9c97a0f63a70d35ab7dcda6694e4498",
     "semantic_hash": ""
   },
   "tests/test_phase277_ble_evidence.py": {
-    "mtime": 1787758630.8139112,
-    "ast_hash": "369a8c273c6af0447cb9fd332053d65c",
+    "mtime": 1787931431.1449044,
+    "ast_hash": "62c0de76e5df0be40d0bdd803f2244a4",
     "semantic_hash": ""
   },
   "tests/test_phase279_integration.py": {
-    "mtime": 1787494908.1276739,
-    "ast_hash": "e8dccb2e9be9ace0a1e8c6848cc338ac",
+    "mtime": 1787931556.9934995,
+    "ast_hash": "763f1445e1ef270ba14e7130848f1f78",
     "semantic_hash": ""
   },
   "tests/test_phase27_active_sim.py": {
@@ -1090,48 +1015,23 @@
     "semantic_hash": ""
   },
   "tests/test_phase280_multidomain.py": {
-    "mtime": 1787760950.3636744,
-    "ast_hash": "88964aff446418e25174af18794b3239",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-16-phase27-active-sim.md": {
-    "mtime": 1786902530.6287303,
-    "ast_hash": "40f2954b97d6e344c5437b004c99c2e1",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-17-phase-2.7.1-capability-contract.md": {
-    "mtime": 1786978758.8139546,
-    "ast_hash": "f80d27943a838e23912886fb37979c4b",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-17-phase-2.7.2-stateful-wifi.md": {
-    "mtime": 1786982618.7691996,
-    "ast_hash": "4246ac4bdbd32042a5010cd30761f9b1",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/plans/2026-08-20-phase-2.8.0-multidomain-foundation.md": {
-    "mtime": 1787241050.944483,
-    "ast_hash": "8ccede93748c834e9b89be205abe4508",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/specs/2026-08-16-phase2.6-authorization-scope-design.md": {
-    "mtime": 1786863224.6560445,
-    "ast_hash": "f969936c0b1bbed04c4f2e1fa138e6f9",
+    "mtime": 1787931387.912137,
+    "ast_hash": "236d6701aee533b06220874d87f7cb69",
     "semantic_hash": ""
   },
   "tests/test_phase281_subghz_capture.py": {
-    "mtime": 1787686370.30794,
-    "ast_hash": "d76c9797a10a0c17cb55d7c9c364c4b3",
-    "semantic_hash": ""
-  },
-  "docs/superpowers/specs/2026-08-20-phase-2.8.1-subghz-capture-slice-design.md": {
-    "mtime": 1787244234.1561792,
-    "ast_hash": "2eb5b5f5234f62ba979023adf97112f5",
+    "mtime": 1787931639.2408602,
+    "ast_hash": "9c5d70922dfd7bcf41f1c4f7b4b83d36",
     "semantic_hash": ""
   },
   "tests/test_phase282_nfc_read.py": {
-    "mtime": 1787757344.9141798,
-    "ast_hash": "84ca5ea367ba9dac995e579879210de4",
+    "mtime": 1787932192.1821802,
+    "ast_hash": "7db139c742027b6167fa48b8e38bda3e",
+    "semantic_hash": ""
+  },
+  "tests/test_phase283_ir.py": {
+    "mtime": 1787931926.945039,
+    "ast_hash": "f14806f912bf167f310d93d9ded94f7e",
     "semantic_hash": ""
   }
 }

@@ -105,6 +105,13 @@ class IrSignal:
     carrier_khz: float                    # typical IR carriers 36–56 kHz
     length_ms: float                      # burst duration in milliseconds
     protocol: str = ""                    # e.g. "NEC", "RC5"; "" = undecoded
+    # Phase 2.8.3 — stateful fields set by the infrared.analyze / transmit
+    # handlers. `analyzed` + `decoded_protocol_hint` are set by analyze; the
+    # hint is a heuristic (the simulator has no real IR decoder), and
+    # `transmitted` is set by the authorized replay.
+    analyzed: bool = False
+    decoded_protocol_hint: str = ""       # e.g. "NEC", "RC5"; "" = not yet analyzed
+    transmitted: bool = False             # True once infrared.transmit replays this burst
 
     def to_dict(self) -> dict[str, Any]:
         return self.__dict__.copy()

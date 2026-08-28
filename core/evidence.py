@@ -21,8 +21,12 @@ against a captured target (per-target prereq, same pipeline). Phase 2.8.2
 extends the pipeline to NFC: the NEW `nfc.discovery.select` activates a
 known tag, and the existing `nfc.discovery.read` is upgraded to produce
 `nfc_read` evidence when run against a selected tag (per-target prereq, same
-pipeline). IR / camera / ethernet / usb evidence stays out of scope until
-2.8.3+.
+pipeline). Phase 2.8.3 extends the pipeline to Infrared: the existing
+`infrared.analyze` is upgraded to produce `ir_analysis` evidence when run
+against a known capture_id, and `infrared.transmit` produces `ir_transmit`
+evidence when replayed against an ANALYZED capture_id (per-target prereq,
+same pipeline). Camera / ethernet / usb evidence stays out of scope until
+2.8.4+.
 """
 
 from __future__ import annotations
@@ -42,8 +46,10 @@ KNOWN_EVIDENCE_KINDS: frozenset[str] = frozenset({
     "ble_pairing",            # produced by ble.gatt.pair          (Phase 2.7.7)
     "ble_secure_write",       # produced by ble.gatt.write         (Phase 2.7.7)
     "subghz_capture",         # produced by subghz.capture.signal  (Phase 2.8.1)
-    "subghz_analysis",         # produced by subghz.discovery.analyze (Phase 2.8.1, when capture prereq met)
-    "nfc_read",                # produced by nfc.discovery.read       (Phase 2.8.2, when select prereq met)
+    "subghz_analysis",        # produced by subghz.discovery.analyze (Phase 2.8.1, when capture prereq met)
+    "nfc_read",               # produced by nfc.discovery.read       (Phase 2.8.2, when select prereq met)
+    "ir_analysis",            # produced by infrared.analyze         (Phase 2.8.3, when capture_id known)
+    "ir_transmit",            # produced by infrared.transmit        (Phase 2.8.3, when analyze prereq met)
 })
 
 

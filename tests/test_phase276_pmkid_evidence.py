@@ -504,11 +504,13 @@ class TestRegression:
 
     def test_only_evidence_capabilities_marked(self):
         # Phase 2.8.1 added subghz_capture/subghz_analysis; Phase 2.8.2 added
-        # nfc_read. The complete 7-producer set is preserved by all phases.
+        # nfc_read; Phase 2.8.3 added infrared.analyze/transmit (ir_analysis /
+        # ir_transmit). The complete 9-producer set is preserved by all phases.
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
         evidence_caps = [k for k, c in by_key.items() if c.produces_evidence]
         assert sorted(evidence_caps) == [
             "ble.gatt.pair", "ble.gatt.write",
+            "infrared.analyze", "infrared.transmit",
             "nfc.discovery.read",
             "subghz.capture.signal", "subghz.discovery.analyze",
             "wifi.capture.handshake", "wifi.capture.pmkid",

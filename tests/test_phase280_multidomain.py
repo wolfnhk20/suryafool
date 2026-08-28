@@ -61,6 +61,7 @@ from engine.runner import (
     RunEngine,
     ble_gatt_workflow_plan,
     default_exploration_plan,
+    ir_workflow_plan,
     nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
@@ -92,9 +93,15 @@ NEW_KEYS = [
 ]
 
 # The Phase 2.8.0 entries are registered-but-unsupported (no simulator handler).
-# Phase 2.8.2 promoted nfc.discovery.select to supported — it stays in NEW_KEYS
-# for metadata/risk assertions but is excluded from the unsupported check.
-UNSUPPORTED_280_KEYS = [k for k in NEW_KEYS if k != "nfc.discovery.select"]
+# Phase 2.8.2 promoted nfc.discovery.select to supported; Phase 2.8.3 promoted
+# the three infrared.* entries to supported. They stay in NEW_KEYS for
+# metadata/risk assertions but are excluded from the unsupported check —
+# only ethernet + usb remain handler-less (2.8.4 / 2.8.5).
+UNSUPPORTED_280_KEYS = [k for k in NEW_KEYS
+                        if k not in ("nfc.discovery.select",
+                                     "infrared.capture",
+                                     "infrared.analyze",
+                                     "infrared.transmit")]
 
 # The authoritative metadata block for the 7 new entries â€” mirrors the
 # catalogue table in the Phase 2.8.0 plan.
@@ -106,11 +113,11 @@ _EXPECTED_BY_KEY: dict[str, dict] = {
     "infrared.analyze":            {"domain": "infrared", "risk": ActionRisk.SAFE_ACTIVE,
                                     "requires_args": ("capture_id",), "output_entity_type": "ir_signal",
                                     "requires": (),                  "mutates_state": True,
-                                    "produces_evidence": False},
+                                    "produces_evidence": True},  # Phase 2.8.3 kind ir_analysis
     "infrared.transmit":           {"domain": "infrared", "risk": ActionRisk.SENSITIVE_ACTIVE,
                                     "requires_args": ("capture_id",), "output_entity_type": "ir_signal",
                                     "requires": ("infrared.capture",), "mutates_state": True,
-                                    "produces_evidence": False},
+                                    "produces_evidence": True},  # Phase 2.8.3 kind ir_transmit
     "ethernet.discovery.discover": {"domain": "ethernet", "risk": ActionRisk.PASSIVE,
                                     "requires_args": (),              "output_entity_type": "ethernet_host",
                                     "requires": (),                  "mutates_state": False,
@@ -211,9 +218,22 @@ class TestNewCapabilityMetadata:
             assert isinstance(d["requires_args"], list)
             assert isinstance(d["requires"], list)
 
-    def test_new_entries_are_not_evidence_producers(self):
+    def test_non_evidence_new_entries_not_marked(self):
+        # Phase 2.8.0 declared NO new evidence producers. Phase 2.8.3 flips
+        # infrared.analyze + infrared.transmit to produces_evidence=True (kinds
+        # ir_analysis / ir_transmit). The rest of the Phase 2.8.0 additions
+        # (infrared.capture + ethernet + usb) stay non-producers.
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
-        assert all(not by_key[k].produces_evidence for k in NEW_KEYS)
+        non_producers = [
+            "infrared.capture",
+            "ethernet.discovery.discover", "ethernet.discovery.inspect",
+            "usb.discovery.enumerate", "usb.discovery.inspect",
+            "nfc.discovery.select",
+        ]
+        for k in non_producers:
+            assert not by_key[k].produces_evidence, f"{k} should not produce evidence"
+        assert by_key["infrared.analyze"].produces_evidence is True
+        assert by_key["infrared.transmit"].produces_evidence is True
 
 
 # â”€â”€ 3. Risk values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -286,9 +306,11 @@ class TestUnsupportedCapabilityBehavior:
         engine, run, logger, env = _engine_with_scope(
             AuthorizationScope.with_cumulative_tier(ActionRisk.SENSITIVE_ACTIVE))
         try:
+            # usb.discovery.enumerate is still handler-less (Phase 2.8.5) —
+            # resolving supported=False and REJECTed before the provider.
             record = engine.execute(ActionRequest(
-                capability="infrared", action="transmit",
-                args={"capture_id": "ir-1"}, risk=ActionRisk.SENSITIVE_ACTIVE))
+                capability="usb.discovery", action="enumerate",
+                risk=ActionRisk.PASSIVE))
             assert record.policy_decision.kind == PolicyDecisionKind.REJECT
             assert "No registered provider supports this capability." in record.policy_decision.reasons[0]
             # Provider never ran: no observation, no evidence, no env touch.
@@ -296,7 +318,7 @@ class TestUnsupportedCapabilityBehavior:
             assert record.evidence == []
             assert run.evidence == []
             assert performed_capability_keys(env) == set()
-            assert any("infrared.transmit" in e and "provider" in e.lower() for e in run.errors), run.errors
+            assert any("usb.discovery.enumerate" in e and "provider" in e.lower() for e in run.errors), run.errors
         finally:
             logger.close()
 
@@ -340,9 +362,10 @@ class TestUnsupportedCapabilityBehavior:
         engine, run, logger, _ = _engine_with_scope(
             AuthorizationScope.with_cumulative_tier(ActionRisk.SENSITIVE_ACTIVE))
         try:
-            engine.execute(ActionRequest(capability="infrared", action="transmit",
-                                        args={"capture_id": "ir-1"},
-                                        risk=ActionRisk.SENSITIVE_ACTIVE))
+            # usb.discovery.enumerate is still unsupported (Phase 2.8.5) —
+            # rejected before the provider, so it emits no evidence.created.
+            engine.execute(ActionRequest(capability="usb.discovery", action="enumerate",
+                                        risk=ActionRisk.PASSIVE))
         finally:
             logger.close()
         from engine.logger import run_dir
@@ -408,17 +431,20 @@ class TestPhase27FreezeRegression:
     def test_known_evidence_kinds_frozen(self):
         # Phase 2.8.1 extended the vocabulary (sanctioned by freeze language:
         # "new evidence kinds / domains by extending KNOWN_EVIDENCE_KINDS ...").
-        # Phase 2.8.2 added `nfc_read`. The 4 Phase 2.7 + 2 Phase 2.8.1 kinds
-        # are still present; 1 NFC kind appended.
+        # Phase 2.8.2 added `nfc_read`; Phase 2.8.3 adds `ir_analysis` +
+        # `ir_transmit`. The prior kinds are all still present.
         phase27_kinds = frozenset({
             "wifi_eapol_handshake", "wifi_pmkid", "ble_pairing", "ble_secure_write",
         })
         phase281_kinds = frozenset({"subghz_capture", "subghz_analysis"})
         phase282_kinds = frozenset({"nfc_read"})
+        phase283_kinds = frozenset({"ir_analysis", "ir_transmit"})
         assert phase27_kinds <= KNOWN_EVIDENCE_KINDS
         assert phase281_kinds <= KNOWN_EVIDENCE_KINDS
         assert phase282_kinds <= KNOWN_EVIDENCE_KINDS
-        assert KNOWN_EVIDENCE_KINDS == phase27_kinds | phase281_kinds | phase282_kinds
+        assert phase283_kinds <= KNOWN_EVIDENCE_KINDS
+        assert KNOWN_EVIDENCE_KINDS == (
+            phase27_kinds | phase281_kinds | phase282_kinds | phase283_kinds)
 
     def test_deterministic_plan_shapes_frozen(self):
         assert len(default_exploration_plan()) == 4
@@ -426,6 +452,7 @@ class TestPhase27FreezeRegression:
         assert len(ble_gatt_workflow_plan()) == 6
         assert len(subghz_capture_plan()) == 5    # Phase 2.8.1
         assert len(nfc_workflow_plan()) == 5      # Phase 2.8.2
+        assert len(ir_workflow_plan()) == 4       # Phase 2.8.3
 
     def test_default_exploration_run_still_clean(self):
         engine, run, logger, env = _engine_with_scope(scenario="lab", seed=7)
