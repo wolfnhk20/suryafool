@@ -506,18 +506,20 @@ class TestContractAudit:
         # success path" rule. The frozen Phase 2.7 keys/risks/requires below
         # are asserted against the preserved keys, not the absolute count.
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
-        assert len(DEFAULT_CAPABILITIES) == 23
-        # Evidence producers after 2.8.1+2.8.2+2.8.3 = the 4 Phase 2.7 producers
-        # + 2 Phase 2.8.1 producers (subghz.capture.signal + the analyze flag) +
-        # 1 Phase 2.8.2 producer (nfc.discovery.read) + 2 Phase 2.8.3 producers
-        # (infrared.analyze ir_analysis + infrared.transmit ir_transmit).
+        assert len(DEFAULT_CAPABILITIES) == 26
+        # Evidence producers after 2.8.1+2.8.2+2.8.3+2.8.4 = the 4 Phase 2.7
+        # producers + 2 Phase 2.8.1 producers (subghz.capture.signal + the
+        # analyze flag) + 1 Phase 2.8.2 producer (nfc.discovery.read) + 2 Phase
+        # 2.8.3 producers (infrared.analyze ir_analysis + infrared.transmit
+        # ir_transmit) + 1 Phase 2.8.4 producer (zigbee.discovery.join).
         # select/capture are PASSIVE (mutates_state / observational, but not
         # evidence-producing).
         ev = sorted(k for k, c in by_key.items() if c.produces_evidence)
         assert ev == ["ble.gatt.pair", "ble.gatt.write", "infrared.analyze",
                       "infrared.transmit", "nfc.discovery.read",
                       "subghz.capture.signal", "subghz.discovery.analyze",
-                      "wifi.capture.handshake", "wifi.capture.pmkid"]
+                      "wifi.capture.handshake", "wifi.capture.pmkid",
+                      "zigbee.discovery.join"]
         # The 14 frozen Phase 2.7 keys are all still present.
         frozen = {
             "wifi.discovery.discover", "wifi.discovery.inspect",
@@ -551,6 +553,12 @@ class TestContractAudit:
         assert by_key["infrared.analyze"].produces_evidence is True
         assert by_key["infrared.transmit"].produces_evidence is True
         assert by_key["infrared.capture"].produces_evidence is False
+        # Phase 2.8.4 contribution locked in: join evidence flag + SAFE_ACTIVE risk.
+        assert by_key["zigbee.discovery.join"].risk == ActionRisk.SAFE_ACTIVE
+        assert by_key["zigbee.discovery.join"].mutates_state is True
+        assert by_key["zigbee.discovery.join"].produces_evidence is True
+        assert by_key["zigbee.discovery.scan"].produces_evidence is False
+        assert by_key["zigbee.discovery.inspect"].produces_evidence is False
 
     def test_evidence_kind_vocabulary_matches_producers(self):
         assert KNOWN_EVIDENCE_KINDS == frozenset({
@@ -558,6 +566,7 @@ class TestContractAudit:
             "subghz_capture", "subghz_analysis",
             "nfc_read",             # Phase 2.8.2
             "ir_analysis", "ir_transmit",  # Phase 2.8.3
+            "zigbee_join",          # Phase 2.8.4
         })
 
     def test_evidence_record_contract(self):

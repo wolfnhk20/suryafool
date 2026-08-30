@@ -69,7 +69,7 @@ working unchanged.
 
 | Field | Type | Default | Meaning |
 |---|---|---|---|
-| `domain` | `str` | auto-derived from `capability.split('.', 1)[0]` | Wireless/network domain (wifi / ble / subghz / nfc / infrared / camera / ethernet / usb). Free-form; see `KNOWN_DOMAINS`. |
+| `domain` | `str` | auto-derived from `capability.split('.', 1)[0]` | Wireless/network domain (wifi / ble / subghz / nfc / infrared / camera / ethernet / usb / zigbee). Free-form; see `KNOWN_DOMAINS`. |
 | `requires_args` | `tuple[str, ...]` | `()` | Required input arg names. Descriptive — providers already validate args structurally; the catalogue stays the single source of truth for the contract. |
 | `output_entity_type` | `str` | `""` | Expected `Entity.type` of the produced Observation (`"wifi_network"`, `"ble_device"`, `"nfc_tag"`, `"subghz_signal"`, ...). `""` = unspecified. |
 | `requires` | `tuple[str, ...]` | `()` | Prerequisite capability keys (e.g. `("ble.discovery.connect",)` for `ble.discovery.write`). Consumed by `Capability.prerequisites_met(observed_keys)`. |
@@ -92,11 +92,12 @@ Two methods are added:
   capability keys, so a future observe → test → observe loop can ask "is X
   now ready to run?" without a separate mission-state machine.
 
-`KNOWN_DOMAINS` is an open-set `frozenset` carrying the eight intended
+`KNOWN_DOMAINS` is an open-set `frozenset` carrying the nine intended
 domains (`wifi`, `ble`, `subghz`, `nfc`, `infrared`, `camera`, `ethernet`,
-`usb`). It is a vocabulary hint for tests, **not** an enforced membership —
-adding a future domain is a catalogue concern, not a dataclass change. Four
-of the eight domains have no actions implemented in Phase 2.7.1; they exist
+`usb`, `zigbee` — Phase 2.8.4). It is a vocabulary hint for tests, **not** an
+enforced membership — adding a future domain is a catalogue concern, not a
+dataclass change. Four
+of the domains have no actions implemented in Phase 2.7.1; they exist
 to make the contract's extensibility visible.
 
 `Capability.to_dict()` carries every new field. Phase 2.7.1's `requires_args`
@@ -356,3 +357,37 @@ producers.
 → analyze@ir-lab-tv (4 actions, 3 evidence). SEE
 [`simulator/CONTEXT.md`](../simulator/CONTEXT.md) for handler/heuristic details
 and [`tests/CONTEXT.md`](../tests/CONTEXT.md) for `test_phase283_ir.py`.
+
+## Phase 2.8.4 — Zigbee mesh slice (3 new catalogue entries)
+
+Phase 2.8.4 stakes a brand-new **Zigbee** wireless-mesh domain with its own
+three entries APPENDED after USB — the catalogue grows 23 → **26**. Unlike the
+2.8.0 registered-but-unsupported entries, the `zigbee` domain resolves
+`supported=True` immediately because its handlers ship in the same phase.
+
+| Capability key | Risk | `requires_args` | `requires` | `produces_evidence` |
+|---|---|---|---|---|
+| `zigbee.discovery.scan` | `PASSIVE` | `()` | `()` | `False` (passive discover — parallels wifi.discover/ble.discover) |
+| `zigbee.discovery.inspect` | `PASSIVE` | `("pan_id",)` | `()` | `False` (passive observe — parallels wifi.discovery.inspect) |
+| `zigbee.discovery.join` | `SAFE_ACTIVE` | `("pan_id", "ieee_address")` | `()` | **`True`** ✅ (Phase 2.8.4, kind `zigbee_join`) |
+
+`KNOWN_DOMAINS` grows 8 → 9 (`+zigbee`; camera stays vocabulary-only).
+`KNOWN_EVIDENCE_KINDS` grows 9 → 10 (`+zigbee_join`); evidence producers
+9 → 10 (`zigbee.discovery.join`).
+
+**Change summary (all on the frozen Phase 2.7 stack + 2.8.0/2.8.1/2.8.2/2.8.3
+foundation):**
+
+- `zigbee.discovery.join` is the single evidence producer — a real mesh
+  transition (node joins a PAN), `mutates_state=True`, `produces_evidence=True`,
+  SAFE_ACTIVE (join is already-authorized admission, not a replay/attack).
+- `zigbee.discovery.join` keeps `requires=()` — its per-target gates (network
+  exists + node exists + NOT already joined) live in the simulator handler,
+  exactly like the pmkid/analyze/read per-target gates.
+- `zigbee.discovery.scan` / `inspect` are PASSIVE + `mutates_state=False` —
+  observational by design.
+
+`zigbee_workflow_plan()`: scan → inspect@0x1A2B → join@0x1A2B/`00:15:8D:00:00:00:00:04`
+→ inspect@0x1A2B (4 actions, 1 evidence). SEE
+[`simulator/CONTEXT.md`](../simulator/CONTEXT.md) for the entity/mesh-handler
+details and [`tests/CONTEXT.md`](../tests/CONTEXT.md) for `test_phase284_zigbee.py`.

@@ -73,6 +73,7 @@ from engine.runner import (
     nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
+    zigbee_workflow_plan,
 )
 from policy.policy import PolicyEngine
 from reports.html_report import render_run
@@ -713,8 +714,9 @@ class TestPhaseRegression:
     def test_catalogue_count_is_23(self):
         # Phase 2.7 = 14; Phase 2.8.0 +7 (ir/ethernet/usb, unsupported) = 21;
         # Phase 2.8.1 +1 (subghz.capture.signal) = 22;
-        # Phase 2.8.2 +1 (nfc.discovery.select) = 23.
-        assert len(DEFAULT_CAPABILITIES) == 23
+        # Phase 2.8.2 +1 (nfc.discovery.select) = 23;
+        # Phase 2.8.4 +3 (zigbee.discovery scan/inspect/join) = 26.
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_nfc_discovery_select_registered(self):
         by_key = {c.key for c in DEFAULT_CAPABILITIES}
@@ -729,13 +731,14 @@ class TestPhaseRegression:
 
     def test_evidence_kinds_frozen(self):
         # Phase 2.7 (4) + Phase 2.8.1 (2) + Phase 2.8.2 (1) + Phase 2.8.3 (2)
-        # = 9. Phase 2.8.3 (infrared) appended `ir_analysis` + `ir_transmit`.
+        # + Phase 2.8.4 (1: zigbee_join) = 10.
         assert KNOWN_EVIDENCE_KINDS == frozenset({
             "wifi_eapol_handshake", "wifi_pmkid",
             "ble_pairing", "ble_secure_write",
             "subghz_capture", "subghz_analysis",
             "nfc_read",
             "ir_analysis", "ir_transmit",  # Phase 2.8.3
+            "zigbee_join",                  # Phase 2.8.4
         })
 
     def test_nfc_workflow_plan_shape(self):
@@ -767,6 +770,7 @@ class TestPhaseRegression:
         assert len(ble_gatt_workflow_plan()) == 6
         assert len(subghz_capture_plan()) == 5
         assert len(nfc_workflow_plan()) == 5
+        assert len(zigbee_workflow_plan()) == 4   # Phase 2.8.4
 
     def test_performed_capability_keys_includes_nfc_select(self):
         env = build_scenario("lab", seed=42)

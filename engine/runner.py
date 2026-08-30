@@ -315,6 +315,52 @@ def ir_workflow_plan() -> list[ActionRequest]:
     ]
 
 
+def zigbee_workflow_plan() -> list[ActionRequest]:
+    """Phase 2.8.4 deterministic plan: complete stateful Zigbee mesh lifecycle
+    over the lab scenario PAN (zigbee_networks=[0x1A2B ch15], nodes include
+    one UNJOINED end-device 00:15:8D:00:00:00:00:04 for the join demo).
+
+        zigbee.discovery.scan     (PASSIVE, enumerates the 1 lab PAN, no mutation)
+        zigbee.discovery.inspect  @ 0x1A2B (PASSIVE, lists nodes + mesh parent links)
+        zigbee.discovery.join     @ 0x1A2B / 00:15:8D:00:00:00:00:04
+                                             (SAFE_ACTIVE, joins the unjoined end-device:
+                                              assigns short 0x0003 + parent router 0x0001,
+                                              produces 1 zigbee_join)
+        zigbee.discovery.inspect  @ 0x1A2B (PASSIVE, re-read — device now joined,
+                                              node_count 3 -> 4)
+
+    Final result: 4 actions, 1 `zigbee_join` evidence. `zigbee.discovery.join`
+    only succeeds on a node that exists, belongs to the PAN, and is NOT already
+    joined — the per-target gate in the handler (a node can only join once,
+    parallel to wifi.capture.pmkid's same-bssid prereq and ble.gatt.write's
+    same-address pair prereq). Each request.risk equals the authoritative
+    catalogue cap.risk (RiskDeclarationRule rejects mismatches both ways).
+    The plan targets the lab scenario's literal pan_id + ieee_address, so it is
+    seed-independent for those targets. Against a non-lab scenario the join
+    finds no matching node and returns a structured 'unknown target' failure
+    Observation (no crash). Under a PASSIVE-only AuthorizationScope, join is
+    REJECTED at the policy gate before the provider is invoked — 1 error
+    recorded, run COMPLETED, environment unchanged, zero evidence. Under
+    SAFE_ACTIVE scope the full chain completes, the end-device reaches
+    joined=True with short 0x0003 + parent 0x0001, and 1 evidence record is
+    produced.
+    """
+    return [
+        ActionRequest(capability="zigbee.discovery", action="scan",
+                      risk=ActionRisk.PASSIVE),
+        ActionRequest(capability="zigbee.discovery", action="inspect",
+                      args={"pan_id": "0x1A2B"},
+                      risk=ActionRisk.PASSIVE),
+        ActionRequest(capability="zigbee.discovery", action="join",
+                      args={"pan_id": "0x1A2B",
+                            "ieee_address": "00:15:8D:00:00:00:00:04"},
+                      risk=ActionRisk.SAFE_ACTIVE),
+        ActionRequest(capability="zigbee.discovery", action="inspect",
+                      args={"pan_id": "0x1A2B"},
+                      risk=ActionRisk.PASSIVE),
+    ]
+
+
 class RunEngine:
     def __init__(self,
                  registry: CapabilityRegistry,

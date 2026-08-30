@@ -69,6 +69,7 @@ from engine.runner import (
     nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
+    zigbee_workflow_plan,
 )
 from policy.policy import PolicyEngine
 from reports.html_report import render_run
@@ -614,7 +615,7 @@ class TestTuiEvidenceFeed:
 
 class TestPhaseRegression:
     def test_catalogue_count_is_22(self):
-        assert len(DEFAULT_CAPABILITIES) == 23
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_four_phase27_producers_subset_preserved(self):
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
@@ -645,6 +646,7 @@ class TestPhaseRegression:
             "subghz_capture", "subghz_analysis",
             "nfc_read",
             "ir_analysis", "ir_transmit",  # Phase 2.8.3
+            "zigbee_join",                  # Phase 2.8.4
         })
 
     def test_default_exploration_plan_unchanged(self):
@@ -661,10 +663,12 @@ class TestPhaseRegression:
         assert len(subghz_capture_plan()) == 5
         assert len(nfc_workflow_plan()) == 5        # Phase 2.8.2
         assert len(ir_workflow_plan()) == 4         # Phase 2.8.3
+        assert len(zigbee_workflow_plan()) == 4     # Phase 2.8.4
         # Every plan action's request.risk equals cap.risk.
         reg = default_registry(environment=build_scenario("lab", seed=42))
         for plan in (wifi_capture_plan(), ble_gatt_workflow_plan(),
-                     subghz_capture_plan(), nfc_workflow_plan(), ir_workflow_plan()):
+                     subghz_capture_plan(), nfc_workflow_plan(), ir_workflow_plan(),
+                     zigbee_workflow_plan()):
             for req in plan:
                 cap = reg.capability(req.capability, req.action)
                 assert cap is not None and req.risk == cap.risk

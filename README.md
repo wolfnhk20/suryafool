@@ -27,7 +27,8 @@ Suryafool sits between autonomous AI agents and heterogeneous wireless hardware 
 | **Phase 2.8.1 Sub-GHz/RF capture slice** | ✅ Done |
 | **Phase 2.8.2 NFC/RFID read slice** | ✅ Done |
 | **Phase 2.8.3 Infrared (IR) slice** | ✅ Done |
-| Phase 2.8.4–2.8.8 (Ethernet / USB / cross-domain workflows / evidence generalization / freeze) | 🔲 TODO |
+| **Phase 2.8.4 Zigbee mesh slice** (`scan`/`inspect`/`join` on `ZigbeeNetwork`/`ZigbeeNode`, catalogue 26) | ✅ Done |
+| Phase 2.8.5–2.8.9 (Ethernet / USB / cross-domain workflows / evidence generalization / freeze) | 🔲 TODO |
 | Phase 2.5 Marauder hardware backend | 🟡 Architectural reference only (removed in Phase 2.7.4) |
 | Mission agents (12 planned) | 🔲 TODO |
 
@@ -39,7 +40,7 @@ Run the full mission loop **without hardware or an LLM**:
 
 ```bash
 # From the repo root
-python -m cli.phase2 capabilities            # capability catalogue (23 entries)
+python -m cli.phase2 capabilities            # capability catalogue (26 entries)
 python -m cli.phase2 providers                # list backends (simulator only)
 python -m cli.phase2 scenarios               # simulator scenarios
 python -m cli.phase2 run --scenario home     # deterministic run → logs + report
@@ -60,14 +61,15 @@ report.html     # standalone HTML report
 
 ### Current capability surface (Phase 2.8)
 
-The catalogue exposes **23 entries** across 7 domains — Wi-Fi (discovery + capture), BLE (discovery + GATT), Sub-GHz (discovery + capture), NFC/RFID (discovery), Infrared (capture/analyze/transmit), Ethernet, and USB. Implemented, stateful, evidence-producing slices:
+The catalogue exposes **26 entries** across 8 domains — Wi-Fi (discovery + capture), BLE (discovery + GATT), Sub-GHz (discovery + capture), NFC/RFID (discovery), Infrared (capture/analyze/transmit), Ethernet, USB, and Zigbee (discovery: scan/inspect/join). Implemented, stateful, evidence-producing slices:
 
 - **Wi-Fi capture**: `wifi.capture.handshake` → `wifi_eapol_handshake`, `wifi.capture.pmkid` → `wifi_pmkid`
 - **BLE GATT**: `ble.gatt.pair` → `ble_pairing`, `ble.gatt.write` → `ble_secure_write`
 - **Sub-GHz**: `subghz.capture.signal` → `subghz_capture`, `subghz.discovery.analyze` → `subghz_analysis`
 - **NFC/RFID**: `nfc.discovery.select` + `nfc.discovery.read` → `nfc_read`
+- **Zigbee mesh**: `zigbee.discovery.join` → `zigbee_join` (end-device joins a PAN; parent/short-address assignment reflected on a later `inspect`)
 
-Deterministic plans selectable via `--plan`: `exploration` (default), `active_inspection`, `wifi_capture`, `ble_gatt_workflow`, `subghz_capture`, `nfc_workflow`.
+Deterministic plans selectable via `--plan`: `exploration` (default), `active_inspection`, `wifi_capture`, `ble_gatt_workflow`, `subghz_capture`, `nfc_workflow`, `ir_workflow`, `zigbee_workflow`.
 
 Evidence flows end-to-end: simulation success → `EvidenceRecord` → `run.json`/`events.jsonl` (`evidence.created`) → HTML report EVIDENCE section → live TUI `Evidence` tab. All failure and policy-rejected paths produce **zero evidence** and no environment mutation.
 
@@ -77,7 +79,7 @@ Evidence flows end-to-end: simulation success → `EvidenceRecord` → `run.json
 python -m tests.test_phase2_core
 ```
 
-All **14 Python suites (472 tests)** + **58 Node tests** + 2 Node smokes + esbuild build are green.
+All **15 Python suites (523 tests)** + **60 Node tests** + 2 Node smokes + esbuild build are green.
 
 ---
 
@@ -298,7 +300,7 @@ suryafool/
 │   ├── CONTEXT.md, llm.py, confidence.py, observation.py
 │   ├── mission.py, evidence.py, events.py
 │
-├── capabilities/                # Capability catalogue + registry (Phase 2.8: 23 entries)
+├── capabilities/                # Capability catalogue + registry (Phase 2.8: 26 entries)
 │   ├── base.py                  # Capability dataclass + DEFAULT_CAPABILITIES
 │   └── registry.py              # CapabilityRegistry + provider binding
 │
@@ -318,7 +320,7 @@ suryafool/
 │
 ├── cli/                         # `python -m cli.phase2` command suite
 │
-├── tests/                       # 14 stdlib-runnable suites (472 tests)
+├── tests/                       # 15 stdlib-runnable suites (523 tests)
 │
 ├── scripts/                     # 2 Node smoke scripts (event-stream + wiring contracts)
 │

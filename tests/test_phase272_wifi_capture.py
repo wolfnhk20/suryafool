@@ -671,7 +671,7 @@ class TestRegression:
 
     def test_catalogue_count_and_risks(self):
         by_key = {c.key: c.risk for c in DEFAULT_CAPABILITIES}
-        assert len(DEFAULT_CAPABILITIES) == 23
+        assert len(DEFAULT_CAPABILITIES) == 26
         # Phase 2.7.2 additions present, with prescribed risks.
         assert by_key["wifi.capture.handshake"] == ActionRisk.SAFE_ACTIVE
         assert by_key["wifi.capture.pmkid"] == ActionRisk.SENSITIVE_ACTIVE

@@ -214,6 +214,19 @@ _EXPECTED_BY_KEY: dict[str, dict] = {
                                     "requires_args": ("path",),     "output_entity_type": "usb_device",
                                     "requires": (),                 "mutates_state": False,
                                     "produces_evidence": False,      "hardware": ""},
+    "zigbee.discovery.scan":     {"domain": "zigbee",  "risk": ActionRisk.PASSIVE,
+                                    "requires_args": (),             "output_entity_type": "zigbee_network",
+                                    "requires": (),                 "mutates_state": False,
+                                    "produces_evidence": False,      "hardware": ""},
+    "zigbee.discovery.inspect":  {"domain": "zigbee",  "risk": ActionRisk.PASSIVE,
+                                    "requires_args": ("pan_id",),   "output_entity_type": "zigbee_node",
+                                    "requires": (),                 "mutates_state": False,
+                                    "produces_evidence": False,      "hardware": ""},
+    "zigbee.discovery.join":     {"domain": "zigbee",  "risk": ActionRisk.SAFE_ACTIVE,
+                                    "requires_args": ("pan_id", "ieee_address"),
+                                    "output_entity_type": "zigbee_node",
+                                    "requires": (),                 "mutates_state": True,
+                                    "produces_evidence": True,       "hardware": ""},
 }
 
 
@@ -236,6 +249,7 @@ class TestContractFields:
         # touching this constant or the dataclass.
         assert KNOWN_DOMAINS == frozenset({
             "wifi", "ble", "subghz", "nfc", "infrared", "camera", "ethernet", "usb",
+            "zigbee",  # Phase 2.8.4
         })
         # All declared domains in the current catalogue must be a subset of
         # KNOWN_DOMAINS â€” guard against inventing a domain outside the
@@ -633,7 +647,7 @@ class TestPolicyRejectDoesNotMutateState:
 
 class TestRegressionContract:
     def test_catalogue_count_unchanged(self):
-        assert len(DEFAULT_CAPABILITIES) == 23
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_per_key_risk_mapping_unchanged(self):
         """Phase 2.7/2.7.2/2.7.3/2.8.1/2.8.2 catalogue regression — the four
@@ -669,6 +683,10 @@ class TestRegressionContract:
             "usb.discovery.inspect":       ActionRisk.PASSIVE,
             # Phase 2.8.1 Sub-GHz/RF capture slice.
             "subghz.capture.signal":      ActionRisk.SAFE_ACTIVE,
+            # Phase 2.8.4 Zigbee mesh slice.
+            "zigbee.discovery.scan":      ActionRisk.PASSIVE,
+            "zigbee.discovery.inspect":   ActionRisk.PASSIVE,
+            "zigbee.discovery.join":      ActionRisk.SAFE_ACTIVE,
         }
 
     def test_positional_constructor_with_original_five_args_still_works(self):

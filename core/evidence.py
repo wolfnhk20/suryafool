@@ -25,8 +25,11 @@ pipeline). Phase 2.8.3 extends the pipeline to Infrared: the existing
 `infrared.analyze` is upgraded to produce `ir_analysis` evidence when run
 against a known capture_id, and `infrared.transmit` produces `ir_transmit`
 evidence when replayed against an ANALYZED capture_id (per-target prereq,
-same pipeline). Camera / ethernet / usb evidence stays out of scope until
-2.8.4+.
+same pipeline). Phase 2.8.4 extends the pipeline to Zigbee: the new
+`zigbee.discovery.join` produces `zigbee_join` evidence when it authorizes an
+unjoined end-device to join a PAN (a real state transition on the node, same
+pipeline). Camera / ethernet / usb evidence stays out of scope until their
+dedicated subphases.
 """
 
 from __future__ import annotations
@@ -50,6 +53,7 @@ KNOWN_EVIDENCE_KINDS: frozenset[str] = frozenset({
     "nfc_read",               # produced by nfc.discovery.read       (Phase 2.8.2, when select prereq met)
     "ir_analysis",            # produced by infrared.analyze         (Phase 2.8.3, when capture_id known)
     "ir_transmit",            # produced by infrared.transmit        (Phase 2.8.3, when analyze prereq met)
+    "zigbee_join",            # produced by zigbee.discovery.join    (Phase 2.8.4, when a node joins a PAN)
 })
 
 

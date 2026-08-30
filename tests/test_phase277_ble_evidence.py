@@ -516,13 +516,15 @@ class TestJsonlAndHtml:
 class TestRegression:
     def test_catalogue_count_at_21(self):
         # Phase 2.8.0 appended the multi-domain foundation (infrared / ethernet
-        # / usb) to the Phase 2.7 catalogue of 14.
-        assert len(DEFAULT_CAPABILITIES) == 23
+        # / usb) to the Phase 2.7 catalogue of 14 (→23). Phase 2.8.4 appended
+        # the three zigbee.discovery.* entries (→26).
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_only_evidence_capabilities_marked(self):
         # Phase 2.8.2 added nfc.discovery.read; Phase 2.8.3 added
-        # infrared.analyze/transmit. The full 9-producer set is preserved
-        # across Phase 2.7.7/2.8.1/2.8.2/2.8.3.
+        # infrared.analyze/transmit; Phase 2.8.4 added zigbee.discovery.join.
+        # The full 10-producer set is preserved
+        # across Phase 2.7.7/2.8.1/2.8.2/2.8.3/2.8.4.
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
         evidence_caps = [k for k, c in by_key.items() if c.produces_evidence]
         assert sorted(evidence_caps) == [
@@ -531,6 +533,7 @@ class TestRegression:
             "nfc.discovery.read",
             "subghz.capture.signal", "subghz.discovery.analyze",
             "wifi.capture.handshake", "wifi.capture.pmkid",
+            "zigbee.discovery.join",
         ]
 
     def test_ble_gatt_plan_unchanged(self):

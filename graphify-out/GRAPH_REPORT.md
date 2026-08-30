@@ -1,16 +1,16 @@
-# Graph Report - suryafool  (2026-08-28)
+# Graph Report - suryafool  (2026-08-30)
 
 ## Corpus Check
-- 180 files · ~133,316 words
+- 181 files · ~139,103 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2655 nodes · 7046 edges · 215 communities (190 shown, 25 thin omitted)
-- Extraction: 74% EXTRACTED · 26% INFERRED · 0% AMBIGUOUS · INFERRED: 1834 edges (avg confidence: 0.5)
+- 2757 nodes · 7479 edges · 221 communities (186 shown, 35 thin omitted)
+- Extraction: 73% EXTRACTED · 27% INFERRED · 0% AMBIGUOUS · INFERRED: 1983 edges (avg confidence: 0.5)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `51ac1d01`
+- Built from commit: `20871abd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,7 +24,7 @@
 - compilerOptions
 - instructions
 - binary.js
-- test_phase282_nfc_read.py
+- _engine_with_scope
 - command
 - agent
 - edit
@@ -65,14 +65,14 @@
 - test-coverage
 - update-codemaps
 - update-docs
-- BleDevice
-- Run
+- TestPhaseRegression
+- build_scenario
 - ECC - OpenCode Instructions
 - Migration Guide: Claude Code to OpenCode
 - projects
-- simulator.py
+- Environment
 - Bootstrap Agent - Initial Implementation
-- ActionRequest
+- test_phase283_ir.py
 - suryafool
 - Eval Command
 - OpenCode ECC Plugin
@@ -123,9 +123,9 @@
 - Capability
 - graphify.js
 - run.mjs
-- RunStatus
+- IrSignal
 - `llm.py` — LLM Factory + Rate Limiter
-- Environment
+- TestUnsupportedCapabilityBehavior
 - CONTEXT.md — bootstrap/
 - dependencies
 - package.json
@@ -133,20 +133,24 @@
 - scripts
 - Suryafool — Bootstrap / Environment Agent
 - 8. Mission Types
-- TestPairHandler
+- default_registry
 - bootstrap-agent-not-installed.md
-- EvidenceRecord
+- Run
 - CONTEXT.md — docs/
-- TestContractMetadataConsumption
+- test_phase284_zigbee.py
 - _engine_with_scope
 - 16. MVP
 - TestRegression
-- TestPolicyRejectDoesNotMutateState
+- TestContractAudit
+- BleDevice
 - _tmp_runs_dir
+- TestPhaseRegression
 - _tmp_runs_dir
-- .with_cumulative_tier
-- scenarios.py
-- RunEngine
+- performed_capability_keys
+- TestPairHandler
+- _engine_with_scope
+- TestJoinFailure
+- ActionRequest
 - _engine_with_scope
 - TestGattWriteHandler
 - phase2.py
@@ -154,7 +158,7 @@
 - _engine_with_scope
 - agent.py
 - animations/index.js
-- default_exploration_plan
+- TestContractFields
 - ecc-hooks.ts
 - TabPanel.js
 - test_phase279_integration.py
@@ -167,66 +171,69 @@
 - CONTEXT.md — cli/
 - CONTEXT.md — engine/
 - CONTEXT.md — simulator/
+- _safe_active_scope
 - format-code.ts
 - lint-check.ts
 - CONTEXT.md — reports/
-- CONTEXT.md — tests/
+- Event
 - git-summary.ts
 - test_phase2_cmds.cjs
 - test_phase2_wiring.cjs
 - setup-pm
-- make_engine
+- default_exploration_plan
+- Confidence
 - reducer.js
 - Scanner
 - app.js
-- wifi_capture_plan
-- _tmp_runs_dir
+- TestFailedCaptureNoFalsePositive
+- Any
 - _engine_with_scope
 - _engine_with_scope
+- TestRegression
+- TestNewDomainRegistration
 - instinct-import
-- .from_dict
-- build_scenario
-- performed_capability_keys
-- opencode.json
-- test_phase280_multidomain.py
+- TestDeterminism
+- TestFailedCaptureNoEvidence
+- TestRegression
+- TestNewCapabilityMetadata
+- TestPhase27FreezeRegression
 - _run_all
-- TestDisjointGrantNonCumulative
-- ActionRisk
-- SimulatorProvider
+- opencode.json
 - Path
-- test_phase271_capability_metadata.py
-- default_registry
+- TestEntitySubstrate
+- learn
+- .with_tiers
+- action_wifi_capture_handshake
+- .enabled
+- _tmp_runs_dir
+- AGENTS.md
+- _tmp_runs_dir
+- _tmp_runs_dir
+- .with_cumulative_tier
+- .test_same_seed_same_observations
 - promote
 - _tmp_runs_dir
 - _tmp_runs_dir
+- _tmp_runs_dir
 - test_phase273_ble_gatt.py
-- evolve
-- .prerequisites_met
+- _tmp_runs_dir
+- _tmp_runs_dir
 - _tmp_runs_dir
 - .snapshot
-- .supports
-- .enabled
-- .test_per_key_risk_mapping_unchanged
-- .test_default_capabilities_to_dict_round_trips_through_json
-- _tmp_runs_dir
-- _tmp_runs_dir
-- .test_same_seed_same_observations
-- .test_catalogue_count_and_risks
-- _tmp_runs_dir
-- Event
+- TestRegressionContract
 - _tmp_runs_dir
 
 ## God Nodes (most connected - your core abstractions)
-1. `ActionRequest` - 314 edges
-2. `Run` - 202 edges
-3. `RunLogger` - 194 edges
-4. `RunEngine` - 194 edges
-5. `PolicyEngine` - 192 edges
-6. `AuthorizationScope` - 191 edges
-7. `Environment` - 182 edges
-8. `ActionRisk` - 179 edges
-9. `RunStatus` - 177 edges
-10. `PolicyDecisionKind` - 174 edges
+1. `ActionRequest` - 332 edges
+2. `Run` - 216 edges
+3. `RunLogger` - 208 edges
+4. `RunEngine` - 208 edges
+5. `PolicyEngine` - 206 edges
+6. `Environment` - 206 edges
+7. `AuthorizationScope` - 205 edges
+8. `ActionRisk` - 192 edges
+9. `RunStatus` - 190 edges
+10. `PolicyDecisionKind` - 187 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `run_full_agent()` --calls--> `Rule`  [INFERRED]
@@ -243,7 +250,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (215 total, 25 thin omitted)
+## Communities (221 total, 35 thin omitted)
 
 ### Community 0 - "checks.py"
 Cohesion: 0.14
@@ -279,15 +286,15 @@ Nodes (15): instructions, AGENTS.md, CONTRIBUTING.md, instructions/INSTRUCTIONS.
 
 ### Community 8 - "binary.js"
 Cohesion: 0.05
-Nodes (40): __dirname, main(), postinstall(), spinnerFrames, startSpinner(), stopSpinner(), postinstall(), spinnerFrames (+32 more)
+Nodes (39): __dirname, main(), postinstall(), spinnerFrames, startSpinner(), stopSpinner(), postinstall(), spinnerFrames (+31 more)
 
-### Community 9 - "test_phase282_nfc_read.py"
-Cohesion: 0.08
-Nodes (15): NfcTag, Any, _engine_with_scope(), fixture, tests/test_phase282_nfc_read.py  Phase 2.8.2 — first real NFC/RFID capability sl, _read(), _safe_active_scope(), _select() (+7 more)
+### Community 9 - "_engine_with_scope"
+Cohesion: 0.12
+Nodes (8): _engine_with_scope(), _read(), _safe_active_scope(), _select(), _tag(), TestEvidenceKindAndProvenance, TestPhaseRegression, TestSelectSuccess
 
 ### Community 10 - "command"
 Cohesion: 0.11
-Nodes (19): description, template, command, checkpoint, eval, instinct-status, learn, skill-create (+11 more)
+Nodes (19): description, template, command, checkpoint, eval, evolve, instinct-status, skill-create (+11 more)
 
 ### Community 11 - "agent"
 Cohesion: 0.22
@@ -445,13 +452,13 @@ Nodes (5): update-codemaps, agent, description, subtask, template
 Cohesion: 0.40
 Nodes (5): update-docs, agent, description, subtask, template
 
-### Community 50 - "BleDevice"
-Cohesion: 0.15
-Nodes (6): BleDevice, Original BleDevice positional constructor still builds cleanly â€”         the P, Phase 2.7.2 wifi_capture_plan is intact â€” the workflow added in         this s, Sanity: BleDevice still constructs with original positional args         (Phase, The four original PASSIVE discovery actions + Phase 2.7 BLE         inspect stil, TestRegression
+### Community 50 - "TestPhaseRegression"
+Cohesion: 0.06
+Nodes (22): A Zigbee personal area network (PAN)., A device on a Zigbee mesh., ZigbeeNetwork, ZigbeeNode, simulator/rng.py  Deterministic, seedable random generator for reproducible scen, Thin wrapper so callers don't import `random` directly., SeededRNG, _ble() (+14 more)
 
-### Community 51 - "Run"
-Cohesion: 0.09
-Nodes (51): AuthorizationScope, PolicyDecisionKind, Enum, str, A complete Suryafool run — the canonical record used for logs/reports., Explicit authorization for a run — separate from Scenario, Capability,     Provi, Run, Writes a run record + event JSONL for a single Run. (+43 more)
+### Community 51 - "build_scenario"
+Cohesion: 0.07
+Nodes (3): build_scenario(), Build a scenario by name. Raises KeyError if unknown., TestJoinSuccess
 
 ### Community 52 - "ECC - OpenCode Instructions"
 Cohesion: 0.06
@@ -465,17 +472,17 @@ Nodes (31): 1. Install OpenCode, 2. Use the ECC OpenCode Configuration, 3. Run O
 Cohesion: 0.67
 Nodes (3): projects, description, template
 
-### Community 55 - "simulator.py"
-Cohesion: 0.10
-Nodes (38): Entity, A logical wireless entity (network, device, tag, signal)., action_ble_connect(), action_ble_discover(), action_ble_inspect(), action_ble_write(), action_ir_analyze(), action_ir_capture() (+30 more)
+### Community 55 - "Environment"
+Cohesion: 0.07
+Nodes (61): Entity, Observation, A logical wireless entity (network, device, tag, signal)., A single structured observation produced by a capability.      `evidence` is the, Environment, action_ble_connect(), action_ble_discover(), action_ble_inspect() (+53 more)
 
 ### Community 56 - "Bootstrap Agent - Initial Implementation"
 Cohesion: 0.12
 Nodes (16): ✅ Automatic Repair for Broken Installations, ✅ Automatic UTF-16LE Decoding, Bootstrap Agent - Initial Implementation, Changelog, CLI v0.1.0 — Cyberpunk TUI (Ink/React), Design Principles Maintained, Features Implemented, Features Implemented (+8 more)
 
-### Community 57 - "ActionRequest"
+### Community 57 - "test_phase283_ir.py"
 Cohesion: 0.08
-Nodes (41): CapabilityProvider, ABC, capabilities/base.py  Capability, CapabilityProvider, and the simulator-backed p, Backend that knows how to execute a set of capability actions., CapabilityRegistry, capabilities/registry.py  Capability registry — the central source of truth for, Registry of capabilities + ordered list of providers., core/events.py  JSONL event types emitted by the Python backend to the CLI. Thes (+33 more)
+Nodes (35): ABC, capabilities/base.py  Capability, CapabilityProvider, and the simulator-backed p, capabilities/registry.py  Capability registry — the central source of truth for, Enum, core/confidence.py  Confidence levels for observations and hypotheses., core/events.py  JSONL event types emitted by the Python backend to the CLI. Thes, core/evidence.py  Structured evidence record — the durable output of a capabilit, core/mission.py  Mission, Action, Decision, and Run data structures.  These are (+27 more)
 
 ### Community 62 - "Eval Command"
 Cohesion: 0.12
@@ -638,8 +645,8 @@ Cohesion: 0.50
 Nodes (3): Behavior Notes, Instinct Status Command, Your Task
 
 ### Community 102 - "_engine_with_scope"
-Cohesion: 0.11
-Nodes (9): ir_workflow_plan(), Phase 2.8.3 deterministic plan: complete stateful Infrared     capture -> analyz, _analyze(), _capture(), _engine_with_scope(), _sensitive_active_scope(), _signal(), TestPhaseRegression (+1 more)
+Cohesion: 0.17
+Nodes (7): _analyze(), _capture(), _engine_with_scope(), _sensitive_active_scope(), _signal(), TestEvidenceKindAndProvenance, _transmit()
 
 ### Community 103 - "9. Multi-Agent Architecture"
 Cohesion: 0.15
@@ -650,24 +657,20 @@ Cohesion: 0.67
 Nodes (3): instinct-export, description, template
 
 ### Community 107 - "_engine_with_scope"
-Cohesion: 0.07
-Nodes (24): active_inspection_plan(), Phase 2.7 deterministic plan: a complete active BLE lifecycle over the     `lab`, Phase 2.7 active_inspection_plan is intact â€” the workflow added         in thi, _device(), _engine_with_scope(), The SimulatorProvider from a sim-backed engine (for direct handler tests)., Active/inspection actions validate targets and args structurally â€” no crash., Valid known target, but not connected yet -> 'not connected' failure. (+16 more)
+Cohesion: 0.08
+Nodes (22): _device(), _engine_with_scope(), The SimulatorProvider from a sim-backed engine (for direct handler tests)., Active/inspection actions validate targets and args structurally â€” no crash., Valid known target, but not connected yet -> 'not connected' failure., A malformed action (missing address) under an ALLOWING scope must         produc, Cumulative grant STOPS at SAFE_ACTIVE: write (SENSITIVE_ACTIVE) is         still, write is catalogue SENSITIVE_ACTIVE; a request claiming SAFE_ACTIVE         is r (+14 more)
 
 ### Community 108 - "Capability"
-Cohesion: 0.09
-Nodes (12): Capability, Describes a single capability action.      Phase 2.7.1 metadata (opt-in, all wit, _expect_value_error(), Every default catalogue entry exposes the Phase 2.7.1 contract., Assert that `build_callable()` raises ValueError. Used when pytest is     not in, A Capability constructed positionally with only the original five         args (, TestContractFields, TestDomainAutoDerivation (+4 more)
+Cohesion: 0.05
+Nodes (27): Capability, Any, True iff every capability key in `requires` is present in the         observed-c, Execute the action and return a structured Observation., Backend that delegates everything to the wireless simulator., Describes a single capability action.      Phase 2.7.1 metadata (opt-in, all wit, SimulatorProvider, CapabilityRegistry (+19 more)
 
-### Community 111 - "RunStatus"
-Cohesion: 0.16
-Nodes (19): RunStatus, IrSignal, A captured infrared burst. `protocol` is the decode target of a future     `infr, _ir_protocol_hint(), tests/test_phase283_ir.py  Phase 2.8.3 — first real Infrared (IR) vertical slice, TestAnalyzeFailure, TestAnalyzeSuccess, TestCaptureObservation (+11 more)
+### Community 111 - "IrSignal"
+Cohesion: 0.32
+Nodes (3): IrSignal, A captured infrared burst. `protocol` is the decode target of a future     `infr, _ir_protocol_hint()
 
 ### Community 112 - "`llm.py` — LLM Factory + Rate Limiter"
 Cohesion: 0.18
 Nodes (10): CONTEXT.md — core/, Files, `llm.py` — LLM Factory + Rate Limiter, LLMResult, Provider Selection, Public API, Purpose, Rate Limiter (+2 more)
-
-### Community 113 - "Environment"
-Cohesion: 0.17
-Nodes (18): simulator/entities.py  Structured simulated wireless entities.  Each Entity subc, SubGhzSignal, Environment, simulator/environment.py  The simulated wireless environment state.  Mutable con, TestPerformedCapabilityKeysExtended, tests/test_phase281_subghz_capture.py  Phase 2.8.1 â€” first real Sub-GHz/RF cap, TestAnalyzeRequiresCapture, TestAnalyzeSuccess (+10 more)
 
 ### Community 114 - "CONTEXT.md — bootstrap/"
 Cohesion: 0.20
@@ -697,49 +700,57 @@ Nodes (9): 1. Purpose, 2. Critical design rule, 3. Architecture, 4. Dependency m
 Cohesion: 0.22
 Nodes (9): 8.1 Explore, 8.2 Investigate, 8.3 Compare, 8.4 Understand, 8.5 Diagnose, 8.6 Automate, 8.7 Security Research, 8.8 Autonomous Penetration Testing (+1 more)
 
-### Community 122 - "TestPairHandler"
-Cohesion: 0.22
-Nodes (8): action_ble_gatt_pair(), _device(), Direct simulator handler calls â€” bypass the engine/policy gate so we     isola, Even if you somehow reached a non-connectable device over BLE,         pairing i, Per-target prereq: ble.discovery.connect must have run on THIS         address f, The happy path: link-layer connect (Phase 2.7) establishes         b.connected=T, Repeated pair calls on an already-paired device succeed without         crashing, TestPairHandler
+### Community 122 - "default_registry"
+Cohesion: 0.12
+Nodes (9): default_registry(), _null_env(), Return a registry pre-loaded with default capabilities and the     simulator pro, ir_workflow_plan(), nfc_workflow_plan(), Phase 2.8.1 deterministic plan: a complete stateful Sub-GHz/RF     capture lifec, Phase 2.8.2 deterministic plan: complete stateful NFC/RFID scan ->     select ->, Phase 2.8.3 deterministic plan: complete stateful Infrared     capture -> analyz (+1 more)
 
 ### Community 123 - "bootstrap-agent-not-installed.md"
 Cohesion: 0.25
 Nodes (7): Current Handling, Description, Error Message, Notes, Related Files, Root Cause, Workaround for Development
 
-### Community 124 - "EvidenceRecord"
-Cohesion: 0.19
-Nodes (7): Enum, core/confidence.py  Confidence levels for observations and hypotheses., EvidenceRecord, Any, core/evidence.py  Structured evidence record — the durable output of a capabilit, A single piece of evidence captured by a capability action.      Provenance fiel, core/observation.py  Structured observation types — the output of any capability
+### Community 124 - "Run"
+Cohesion: 0.08
+Nodes (109): EvidenceRecord, Any, A single piece of evidence captured by a capability action.      Provenance fiel, ActionRisk, AuthorizationScope, PolicyDecisionKind, Enum, str (+101 more)
 
 ### Community 125 - "CONTEXT.md — docs/"
 Cohesion: 0.29
 Nodes (6): [`ARCHITECTURE.md`](ARCHITECTURE.md), CONTEXT.md — docs/, Files, [`PRD.md`](PRD.md), Purpose, Rules for This Directory
 
-### Community 126 - "TestContractMetadataConsumption"
-Cohesion: 0.33
-Nodes (3): ble.gatt.pair declares requires=('ble.discovery.connect',).         In a fresh l, ble.gatt.write declares requires=('ble.gatt.pair',). After the         full conn, TestContractMetadataConsumption
+### Community 126 - "test_phase284_zigbee.py"
+Cohesion: 0.12
+Nodes (16): Path, Return the directory where run artifacts are stored., run_dir(), runs_root(), Phase 2.8.4 deterministic plan: complete stateful Zigbee mesh lifecycle     over, zigbee_workflow_plan(), _engine_with_scope(), _inspect() (+8 more)
 
 ### Community 127 - "_engine_with_scope"
-Cohesion: 0.13
-Nodes (6): _engine_with_scope(), _handshake_req(), All simulator failure paths for wifi.capture.handshake MUST return an     Observ, _safe_active_scope(), _sensitive_active_scope(), TestFailedCaptureNoFalsePositive
+Cohesion: 0.16
+Nodes (5): _engine_with_scope(), _handshake_req(), _safe_active_scope(), _sensitive_active_scope(), TestJsonlAndHtmlSmoke
 
 ### Community 128 - "16. MVP"
 Cohesion: 0.40
 Nodes (5): 16. MVP, 1. Agents can perceive the wireless environment., 2. Agents can autonomously investigate., 3. Agents can safely interact with authorized targets., 4. Agents can perform an autonomous authorized security investigation.
 
-### Community 130 - "TestPolicyRejectDoesNotMutateState"
-Cohesion: 0.40
-Nodes (3): Phase 2.7.1 spec: 'Policy must remain before execution. Rejected     actions mus, Under SAFE_ACTIVE scope, connect+pair ALLOW but ble.gatt.write         REJECTs a, TestPolicyRejectDoesNotMutateState
+### Community 131 - "BleDevice"
+Cohesion: 0.10
+Nodes (16): BleDevice, Original BleDevice positional constructor still builds cleanly â€”         the P, Phase 2.7.1 spec: 'Policy must remain before execution. Rejected     actions mus, Sanity: BleDevice still constructs with original positional args         (Phase, TestBleDeviceNewFields, TestContractMetadataConsumption, TestDeterminism, TestGattWriteAuthorizationGate (+8 more)
 
-### Community 139 - ".with_cumulative_tier"
+### Community 134 - "_tmp_runs_dir"
+Cohesion: 0.67
+Nodes (3): fixture, Isolate run artifacts under a temp dir for every test., _tmp_runs_dir()
+
+### Community 135 - "performed_capability_keys"
+Cohesion: 0.12
+Nodes (5): performed_capability_keys(), Return the set of capability keys that have been performed on `env`,     derived, wifi.discovery.discover is observation-only: the simulator's passive         act, TestPerformedCapabilityKeys, Under a PASSIVE-only default scope, capture.handshake and         capture.pmkid
+
+### Community 138 - "TestPairHandler"
+Cohesion: 0.21
+Nodes (7): action_ble_gatt_pair(), Direct simulator handler calls â€” bypass the engine/policy gate so we     isola, Even if you somehow reached a non-connectable device over BLE,         pairing i, Per-target prereq: ble.discovery.connect must have run on THIS         address f, The happy path: link-layer connect (Phase 2.7) establishes         b.connected=T, Repeated pair calls on an already-paired device succeed without         crashing, TestPairHandler
+
+### Community 139 - "_engine_with_scope"
+Cohesion: 0.07
+Nodes (14): CapabilityDecision, Any, Result of capability resolution — which provider handles it., PASSIVE only — the conservative default. Equivalent to the         historical Ph, Any, A run.json blob produced before Phase 2.6 (no 'authorization' key,         no 'a, _connect_action(), _engine_with_scope() (+6 more)
+
+### Community 142 - "ActionRequest"
 Cohesion: 0.06
-Nodes (19): Find a provider that supports (capability, action)., CapabilityDecision, Any, Result of capability resolution — which provider handles it., PASSIVE only — the conservative default. Equivalent to the         historical Ph, Allowed set = all tiers at or below `max_tier` severity-wise.         This is wh, _engine_with_scope(), A run.json blob produced before Phase 2.6 (no 'authorization' key,         no 'a (+11 more)
-
-### Community 141 - "scenarios.py"
-Cohesion: 0.15
-Nodes (15): simulator/rng.py  Deterministic, seedable random generator for reproducible scen, Thin wrapper so callers don't import `random` directly., SeededRNG, _ble(), _ir(), _nfc(), simulator/scenarios.py  Predefined wireless scenarios — seeded deterministic env, An authorized Suryafool test lab with multiple targets. (+7 more)
-
-### Community 142 - "RunEngine"
-Cohesion: 0.06
-Nodes (31): ActionRecord, A fully resolved action — request, decision, outcome., RunEngine, _default_engine(), Build a registry that has ONE extra test-only capability at `risk`,     backed b, With scenario='lab' and the default PASSIVE-only scope, an         nfc.discovery, RiskDeclarationRule rejects any request.risk < cap.risk mismatch., nfc.discovery.read is SAFE_ACTIVE in the catalogue. A request         claiming r (+23 more)
+Nodes (47): CapabilityProvider, Backend that knows how to execute a set of capability actions., Return True if this provider can execute (capability, action)., ActionRecord, ActionRequest, A request from the orchestrator to execute a capability action., A fully resolved action — request, decision, outcome., PolicyContext (+39 more)
 
 ### Community 143 - "_engine_with_scope"
 Cohesion: 0.11
@@ -750,8 +761,8 @@ Cohesion: 0.21
 Nodes (6): action_ble_gatt_write(), Per-target prereq: ble.gatt.pair must have run on THIS address         first. A, Even when paired, writing to a characteristic the GATT service         table doe, The happy path: connect (link) -> pair (session) -> secure write.         b.secu, Mirror Phase 2.7's ble.discovery.write semantics: any non-None         value is, TestGattWriteHandler
 
 ### Community 145 - "phase2.py"
-Cohesion: 0.12
-Nodes (27): ArgumentParser, available_providers(), Names of providers the registry factory knows how to construct., _authorization_status_line(), _build_authorization(), build_parser(), _build_run(), cmd_capabilities() (+19 more)
+Cohesion: 0.14
+Nodes (25): ArgumentParser, available_providers(), Names of providers the registry factory knows how to construct., _authorization_status_line(), build_parser(), _build_run(), cmd_capabilities(), cmd_providers() (+17 more)
 
 ### Community 146 - "run_full_agent"
 Cohesion: 0.12
@@ -769,21 +780,17 @@ Nodes (17): load_manifest(), main(), print_results_table(), propose_remediation_
 Cohesion: 0.25
 Nodes (9): glitchLines(), glitchText(), MatrixRain, neonFlicker(), neonPulse(), typewrite(), typewriteLines(), typewriteWithCursor() (+1 more)
 
-### Community 150 - "default_exploration_plan"
-Cohesion: 0.11
-Nodes (12): default_exploration_plan(), A simple, deterministic plan: discover across all four protocols.      Future ph, _attr_table(), _badge(), _fmt_ts(), Any, Path, reports/html_report.py  Generate a standalone HTML report from a Run record.  Th (+4 more)
-
 ### Community 151 - "ecc-hooks.ts"
 Cohesion: 0.20
 Nodes (11): metadata, ECCHooksPlugin(), ECCHooksPluginFn, FileEvent, getECCVersion(), PermissionEvent, TodoEvent, ToolArgs (+3 more)
 
 ### Community 152 - "TabPanel.js"
-Cohesion: 0.23
-Nodes (12): AgentsBoard(), ConfigView(), Console(), EvidenceFeed(), formatEvidenceLine(), ModalLayer(), ScanDashboard(), TabPanel() (+4 more)
+Cohesion: 0.21
+Nodes (13): AgentsBoard(), CapabilitiesView(), ConfigView(), Console(), EvidenceFeed(), formatEvidenceLine(), ModalLayer(), ScanDashboard() (+5 more)
 
 ### Community 153 - "test_phase279_integration.py"
-Cohesion: 0.13
-Nodes (17): _ble_discover(), _ble_inspect(), _connect(), _engine_with_scope(), _events_of(), _evidence_kinds(), _gatt_write(), _handshake() (+9 more)
+Cohesion: 0.10
+Nodes (21): ble_gatt_workflow_plan(), Phase 2.7.2 deterministic plan: a complete Wi-Fi capture lifecycle     over the, Phase 2.7.3 deterministic plan: a complete stateful BLE GATT     lifecycle over, wifi_capture_plan(), Phase 2.7.2 wifi_capture_plan is intact â€” the workflow added in         this s, _ble_discover(), _ble_inspect(), _connect() (+13 more)
 
 ### Community 155 - "security-audit.ts"
 Cohesion: 0.29
@@ -803,7 +810,7 @@ Nodes (6): ElevationType, _is_windows_admin_required(), _is_wsl_sudo_required(),
 
 ### Community 159 - "CONTEXT.md — capabilities/"
 Cohesion: 0.12
-Nodes (16): Adding a real hardware backend later, CONTEXT.md — capabilities/, Files, Phase 2.7.1 — capability contract metadata, Phase 2.7.1 regression, Phase 2.7.2 regression, Phase 2.7.2 — stateful Wi-Fi capture entries, Phase 2.7.3 regression (+8 more)
+Nodes (17): Adding a real hardware backend later, CONTEXT.md — capabilities/, Files, Phase 2.7.1 — capability contract metadata, Phase 2.7.1 regression, Phase 2.7.2 regression, Phase 2.7.2 — stateful Wi-Fi capture entries, Phase 2.7.3 regression (+9 more)
 
 ### Community 160 - "CONTEXT.md — cli/"
 Cohesion: 0.25
@@ -814,8 +821,12 @@ Cohesion: 0.29
 Nodes (6): Artifacts (per run), CONTEXT.md — engine/, Files, Flow, Purpose, Rules
 
 ### Community 162 - "CONTEXT.md — simulator/"
-Cohesion: 0.13
-Nodes (15): `action_ir_analyze` (new, SAFE_ACTIVE, produces `ir_analysis` evidence), `action_ir_capture` (new, PASSIVE — observational, no evidence), `action_ir_transmit` (new, SENSITIVE_ACTIVE, produces `ir_transmit` evidence), `action_subghz_analyze` (upgraded — `produces_evidence` False→True), `action_subghz_capture_signal` (new, SAFE_ACTIVE, produces `subghz_capture` evidence), Action surface, CONTEXT.md — simulator/, Files (+7 more)
+Cohesion: 0.12
+Nodes (16): `action_ir_analyze` (new, SAFE_ACTIVE, produces `ir_analysis` evidence), `action_ir_capture` (new, PASSIVE — observational, no evidence), `action_ir_transmit` (new, SENSITIVE_ACTIVE, produces `ir_transmit` evidence), `action_subghz_analyze` (upgraded — `produces_evidence` False→True), `action_subghz_capture_signal` (new, SAFE_ACTIVE, produces `subghz_capture` evidence), Action surface, CONTEXT.md — simulator/, Files (+8 more)
+
+### Community 163 - "_safe_active_scope"
+Cohesion: 0.22
+Nodes (5): request.risk=PASSIVE but cap.risk=SAFE_ACTIVE â€” caller         self-disclosed, SAFE_ACTIVE scope does NOT include SENSITIVE_ACTIVE, so the         secure write, Under SAFE_ACTIVE scope, connect+pair ALLOW but ble.gatt.write         REJECTs a, ble.gatt.pair declares requires=('ble.discovery.connect',).         In a fresh l, _safe_active_scope()
 
 ### Community 164 - "format-code.ts"
 Cohesion: 0.33
@@ -829,9 +840,9 @@ Nodes (3): lintCheckTool, Linter, LintResult
 Cohesion: 0.33
 Nodes (5): CONTEXT.md — reports/, Files, Purpose, Rules, Sections
 
-### Community 167 - "CONTEXT.md — tests/"
-Cohesion: 0.40
-Nodes (5): CONTEXT.md — tests/, Files, Purpose, Rules, Running
+### Community 167 - "Event"
+Cohesion: 0.32
+Nodes (5): emit(), Event, Any, Emit a JSONL event to a writable stream. Safe no-op if stream is None., Any
 
 ### Community 169 - "test_phase2_cmds.cjs"
 Cohesion: 0.40
@@ -845,9 +856,13 @@ Nodes (4): path, proc, repoRoot, { spawn }
 Cohesion: 0.67
 Nodes (3): setup-pm, description, template
 
-### Community 180 - "make_engine"
-Cohesion: 0.15
-Nodes (4): make_engine(), A caller declaring risk=RESTRICTED on a catalogue-PASSIVE action         (wifi.d, Selecting scenario='home' (or 'lab') no longer grants any risk tier.         nfc, Callers cannot claim a lower risk than the catalogue declares.          nfc.disc
+### Community 179 - "default_exploration_plan"
+Cohesion: 0.25
+Nodes (3): default_exploration_plan(), A simple, deterministic plan: discover across all four protocols.      Future ph, The original simulator exploration plan is intact: 4 PASSIVE actions.
+
+### Community 180 - "Confidence"
+Cohesion: 0.11
+Nodes (12): Confidence, str, _FakeTmpPath, make_engine(), A caller declaring risk=RESTRICTED on a catalogue-PASSIVE action         (wifi.d, Selecting scenario='home' (or 'lab') no longer grants any risk tier.         nfc, Callers cannot claim a lower risk than the catalogue declares.          nfc.disc, XSS regression: adversarial strings in run/entity data must be escaped. (+4 more)
 
 ### Community 181 - "reducer.js"
 Cohesion: 0.47
@@ -857,61 +872,45 @@ Nodes (4): StateProvider(), handlers, initialState, reducer()
 Cohesion: 0.18
 Nodes (11): BLOOM_FRAMES, runBloom(), App(), AppContent(), PHASE2_COMMANDS, CommandBar(), Footer(), Glyph() (+3 more)
 
-### Community 184 - "wifi_capture_plan"
-Cohesion: 0.21
-Nodes (8): ble_gatt_workflow_plan(), nfc_workflow_plan(), Phase 2.7.2 deterministic plan: a complete Wi-Fi capture lifecycle     over the, Phase 2.7.3 deterministic plan: a complete stateful BLE GATT     lifecycle over, Phase 2.8.1 deterministic plan: a complete stateful Sub-GHz/RF     capture lifec, Phase 2.8.2 deterministic plan: complete stateful NFC/RFID scan ->     select ->, subghz_capture_plan(), wifi_capture_plan()
-
 ### Community 186 - "_engine_with_scope"
 Cohesion: 0.14
 Nodes (8): _engine_with_scope(), request.risk=PASSIVE but cap.risk=SAFE_ACTIVE -> the caller         self-disclos, request.risk=SENSITIVE_ACTIVE but cap.risk=SAFE_ACTIVE -> the         caller sel, SAFE_ACTIVE scope does NOT include SENSITIVE_ACTIVE, so pmkid is         REJECTe, Run discover -> inspect (initial) -> handshake -> pmkid ->         inspect (fina, Build a simulator-backed RunEngine authorized with `scope`     (default PASSIVE), _safe_active_scope(), _sensitive_active_scope()
 
 ### Community 187 - "_engine_with_scope"
 Cohesion: 0.11
-Nodes (14): _engine_with_scope(), Run the ble_gatt_workflow_plan under SENSITIVE_ACTIVE scope and         confirm, Build a simulator-backed RunEngine authorized with `scope` (default     PASSIVE), request.risk=PASSIVE but cap.risk=SAFE_ACTIVE â€” caller         self-disclosed, request.risk=SENSITIVE_ACTIVE but cap.risk=SAFE_ACTIVE â€” caller         self-d, SAFE_ACTIVE scope does NOT include SENSITIVE_ACTIVE, so the         secure write, Under a PASSIVE-only default scope, all three active steps (connect,         pai, The cumulative tier boundary is observed precisely: SAFE_ACTIVE         scope pe (+6 more)
+Nodes (12): _device(), _engine_with_scope(), Run the ble_gatt_workflow_plan under SENSITIVE_ACTIVE scope and         confirm, Build a simulator-backed RunEngine authorized with `scope` (default     PASSIVE), request.risk=SENSITIVE_ACTIVE but cap.risk=SAFE_ACTIVE â€” caller         self-d, Under a PASSIVE-only default scope, all three active steps (connect,         pai, The cumulative tier boundary is observed precisely: SAFE_ACTIVE         scope pe, Run the full chain: discover -> inspect (initial) -> connect ->         pair -> (+4 more)
 
 ### Community 190 - "instinct-import"
 Cohesion: 0.67
 Nodes (3): instinct-import, description, template
 
-### Community 192 - "build_scenario"
-Cohesion: 0.08
-Nodes (8): build_scenario(), Build a scenario by name. Raises KeyError if unknown., action_wifi_capture_handshake(), action_wifi_capture_pmkid(), _device_by_addr(), Prereq enforced at the per-bssid level: no wifi_handshake:<bssid>         note m, The per-target prereq is keyed by bssid: capturing the handshake         on one, TestFailedCaptureNoEvidence
-
-### Community 193 - "performed_capability_keys"
-Cohesion: 0.15
-Nodes (5): performed_capability_keys(), Return the set of capability keys that have been performed on `env`,     derived, wifi.discovery.discover is observation-only: the simulator's passive         act, TestPerformedCapabilityKeys, Under a PASSIVE-only default scope, capture.handshake and         capture.pmkid
+### Community 196 - "_run_all"
+Cohesion: 0.40
+Nodes (3): Path, Run every test_* method in every Test* class without pytest.      Exits 1 on the, _run_all()
 
 ### Community 197 - "opencode.json"
 Cohesion: 0.18
 Nodes (10): default_agent, permission, mcp_*, plugin, $schema, skills, paths, .opencode/plugins/graphify.js (+2 more)
 
-### Community 199 - "test_phase280_multidomain.py"
-Cohesion: 0.07
-Nodes (14): EthernetHost, A host observed on a wired Ethernet segment., A USB device present on the host's bus., UsbDevice, _engine_with_scope(), tests/test_phase280_multidomain.py  Phase 2.8.0 â€” multi-domain deterministic e, TestEntitySubstrate, TestNewCapabilityMetadata (+6 more)
+### Community 199 - "TestEntitySubstrate"
+Cohesion: 0.23
+Nodes (5): EthernetHost, A host observed on a wired Ethernet segment., A USB device present on the host's bus., UsbDevice, TestEntitySubstrate
 
-### Community 200 - "_run_all"
-Cohesion: 0.40
-Nodes (3): Path, Run every test_* method in every Test* class without pytest.      Exits 1 on the, _run_all()
+### Community 200 - "learn"
+Cohesion: 0.67
+Nodes (3): learn, description, template
 
-### Community 201 - "TestDisjointGrantNonCumulative"
-Cohesion: 0.33
-Nodes (4): Explicit disjoint grant: only the listed tiers plus PASSIVE.         Used when c, with_tiers(*tiers) is the explicit non-cumulative constructor — it grants     ex, with_tiers(SAFE_ACTIVE, RESTRICTED) allows PASSIVE, SAFE_ACTIVE,         and RES, TestDisjointGrantNonCumulative
+### Community 202 - "action_wifi_capture_handshake"
+Cohesion: 0.28
+Nodes (4): action_wifi_capture_handshake(), _device_by_addr(), Direct simulator handler calls â€” bypass the engine/policy gate so we     isola, TestHandshakeHandler
 
-### Community 202 - "ActionRisk"
-Cohesion: 0.10
-Nodes (37): Confidence, str, ActionRisk, Observation, A single structured observation produced by a capability.      `evidence` is the, WifiNetwork, tests/test_phase272_wifi_capture.py  Phase 2.7.2 regression suite â€” stateful W, Direct simulator handler calls â€” bypass the engine/policy gate so we     isola (+29 more)
+### Community 205 - "AGENTS.md"
+Cohesion: 0.22
+Nodes (5): CONTEXT.md — tests/, Files, Purpose, Rules, Running
 
-### Community 203 - "SimulatorProvider"
-Cohesion: 0.20
-Nodes (4): Any, Execute the action and return a structured Observation., Backend that delegates everything to the wireless simulator., SimulatorProvider
-
-### Community 208 - "test_phase271_capability_metadata.py"
-Cohesion: 0.11
-Nodes (13): _engine_with_scope(), fixture, tests/test_phase271_capability_metadata.py  Phase 2.7.1 regression suite â€” cap, The Catalogue metadata and the live env agree on prerequisite state., ble.discovery.write declares requires=('ble.discovery.connect',).         In a f, After running the active_inspection plan under SENSITIVE_ACTIVE         scope, e, A successful PASSIVE action execution does NOT cause         performed_capabilit, Under a SAFE_ACTIVE-only scope connect ALLOWs (mutates env notes) but         wr (+5 more)
-
-### Community 209 - "default_registry"
-Cohesion: 0.14
-Nodes (3): default_registry(), _null_env(), Return a registry pre-loaded with default capabilities and the     simulator pro
+### Community 208 - ".with_cumulative_tier"
+Cohesion: 0.13
+Nodes (11): _build_authorization(), Translate the CLI --allow-risk + --authorization-label pair into an     Authoriz, Allowed set = all tiers at or below `max_tier` severity-wise.         This is wh, _engine_with_scope(), ble.discovery.write declares requires=('ble.discovery.connect',).         In a f, After running the active_inspection plan under SENSITIVE_ACTIVE         scope, e, A successful PASSIVE action execution does NOT cause         performed_capabilit, Under a SAFE_ACTIVE-only scope connect ALLOWs (mutates env notes) but         wr (+3 more)
 
 ### Community 210 - "promote"
 Cohesion: 0.67
@@ -926,44 +925,40 @@ Cohesion: 0.67
 Nodes (3): fixture, Isolate run artifacts under a temp dir for every test., _tmp_runs_dir()
 
 ### Community 214 - "test_phase273_ble_gatt.py"
-Cohesion: 0.20
-Nodes (6): _connect_target(), fixture, tests/test_phase273_ble_gatt.py  Phase 2.7.3 regression suite â€” stateful BLE G, Run the legacy Phase 2.7 ble.discovery.connect so later gatt tests     start fro, Isolate run artifacts under a temp dir for every test., _tmp_runs_dir()
-
-### Community 215 - "evolve"
-Cohesion: 0.67
-Nodes (3): evolve, description, template
+Cohesion: 0.13
+Nodes (9): active_inspection_plan(), Phase 2.7 deterministic plan: a complete active BLE lifecycle over the     `lab`, _connect_target(), fixture, tests/test_phase273_ble_gatt.py  Phase 2.7.3 regression suite â€” stateful BLE G, Run the legacy Phase 2.7 ble.discovery.connect so later gatt tests     start fro, Isolate run artifacts under a temp dir for every test., Phase 2.7 active_inspection_plan is intact â€” the workflow added         in thi (+1 more)
 
 ### Community 217 - "_tmp_runs_dir"
 Cohesion: 0.67
 Nodes (3): fixture, Isolate run artifacts under a temp dir for every test., _tmp_runs_dir()
 
-### Community 231 - "Event"
-Cohesion: 0.24
-Nodes (7): _make_run_logger(), Wrap RunLogger so every appended event is also emitted to `stream` (if given)., emit(), Event, Any, Emit a JSONL event to a writable stream. Safe no-op if stream is None., Any
+### Community 221 - "TestRegressionContract"
+Cohesion: 0.25
+Nodes (4): Phase 2.7/2.7.2/2.7.3/2.8.1/2.8.2 catalogue regression — the four         origin, Every catalogue entry serializes to JSON cleanly (the run record         and rep, Phase 2.6 invariant preserved: authoritative_risk is resolved on         the Act, TestRegressionContract
 
 ### Community 233 - "_tmp_runs_dir"
 Cohesion: 0.67
 Nodes (3): fixture, Isolate run artifacts under a temp dir for every test., _tmp_runs_dir()
 
 ## Knowledge Gaps
-- **815 isolated node(s):** `metadata`, `$schema`, `default_agent`, `AGENTS.md`, `CONTRIBUTING.md` (+810 more)
+- **817 isolated node(s):** `metadata`, `$schema`, `default_agent`, `AGENTS.md`, `CONTRIBUTING.md` (+812 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ActionRequest` connect `ActionRequest` to `TestRegression`, `TestPolicyRejectDoesNotMutateState`, `test_phase282_nfc_read.py`, `.with_cumulative_tier`, `RunEngine`, `_engine_with_scope`, `TestGattWriteHandler`, `_engine_with_scope`, `default_exploration_plan`, `test_phase279_integration.py`, `BleDevice`, `Run`, `make_engine`, `wifi_capture_plan`, `_engine_with_scope`, `_engine_with_scope`, `build_scenario`, `performed_capability_keys`, `test_phase280_multidomain.py`, `TestDisjointGrantNonCumulative`, `ActionRisk`, `test_phase271_capability_metadata.py`, `test_phase273_ble_gatt.py`, `_engine_with_scope`, `_engine_with_scope`, `Capability`, `RunStatus`, `Environment`, `TestPairHandler`, `EvidenceRecord`, `TestContractMetadataConsumption`, `_engine_with_scope`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `Rule` connect `ActionRequest` to `run_full_agent`, `Run`, `RunStatus`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Why does `run_full_agent()` connect `run_full_agent` to `checks.py`, `ActionRequest`, `agent.py`?**
-  _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Are the 156 inferred relationships involving `ActionRequest` (e.g. with `Confidence` and `EvidenceRecord`) actually correct?**
-  _`ActionRequest` has 156 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 149 inferred relationships involving `Run` (e.g. with `Confidence` and `EvidenceRecord`) actually correct?**
-  _`Run` has 149 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 147 inferred relationships involving `RunLogger` (e.g. with `Event` and `Run`) actually correct?**
-  _`RunLogger` has 147 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 153 inferred relationships involving `RunEngine` (e.g. with `CapabilityRegistry` and `ActionRecord`) actually correct?**
-  _`RunEngine` has 153 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `ActionRequest` connect `ActionRequest` to `TestRegression`, `TestContractAudit`, `BleDevice`, `TestPhaseRegression`, `performed_capability_keys`, `_engine_with_scope`, `TestPairHandler`, `_engine_with_scope`, `TestJoinFailure`, `_engine_with_scope`, `TestGattWriteHandler`, `_engine_with_scope`, `TestContractFields`, `test_phase279_integration.py`, `_safe_active_scope`, `TestPhaseRegression`, `default_exploration_plan`, `Confidence`, `build_scenario`, `Environment`, `TestFailedCaptureNoFalsePositive`, `test_phase283_ir.py`, `_engine_with_scope`, `_engine_with_scope`, `TestRegression`, `TestNewDomainRegistration`, `TestDeterminism`, `TestFailedCaptureNoEvidence`, `TestRegression`, `TestNewCapabilityMetadata`, `TestPhase27FreezeRegression`, `TestEntitySubstrate`, `action_wifi_capture_handshake`, `.with_cumulative_tier`, `test_phase273_ble_gatt.py`, `TestRegressionContract`, `_engine_with_scope`, `_engine_with_scope`, `Capability`, `TestUnsupportedCapabilityBehavior`, `default_registry`, `Run`, `test_phase284_zigbee.py`, `_engine_with_scope`?**
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+- **Why does `Rule` connect `Capability` to `test_phase283_ir.py`, `run_full_agent`, `Run`, `ActionRequest`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+- **Why does `run_full_agent()` connect `run_full_agent` to `checks.py`, `Capability`, `agent.py`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+- **Are the 168 inferred relationships involving `ActionRequest` (e.g. with `Confidence` and `EvidenceRecord`) actually correct?**
+  _`ActionRequest` has 168 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 161 inferred relationships involving `Run` (e.g. with `Confidence` and `EvidenceRecord`) actually correct?**
+  _`Run` has 161 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 159 inferred relationships involving `RunLogger` (e.g. with `Event` and `Run`) actually correct?**
+  _`RunLogger` has 159 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 165 inferred relationships involving `RunEngine` (e.g. with `CapabilityRegistry` and `ActionRecord`) actually correct?**
+  _`RunEngine` has 165 INFERRED edges - model-reasoned connections that need verification._

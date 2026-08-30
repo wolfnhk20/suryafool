@@ -48,6 +48,7 @@ Same seed → identical environment every time.
 | `subghz.discovery` | `spectrum`, `analyze` (Phase 2.8.1: `analyze` now requires a preceding `capture` on the SAME frequency — sets `decoded_protocol_hint` + emits `subghz_analysis` evidence on success; prereq-missing failure on uncaptured targets) |
 | `subghz.capture` | `signal` (Phase 2.8.1 SAFE_ACTIVE — captures an RF sample at a known frequency; mutates `SubGhzSignal.captured/sample_count/capture_quality`; emits `subghz_capture` evidence) |
 | `infrared` | `capture` (PASSIVE-observational — samples an `IrSignal`; no notes, no evidence), `analyze` (Phase 2.8.3 SAFE_ACTIVE — recognizes the captured signal; per-target capture_id prereq; sets `protocol_hint` + `ir_classification`; emits `ir_analysis` evidence), `transmit` (Phase 2.8.3 SENSITIVE_ACTIVE — replays a previously analyzed signal; per-target SAME-capture_id analyzed=True prereq; sets `transmitted=True`; emits `ir_transmit` evidence) |
+| `zigbee.discovery` | `scan` (Phase 2.8.4 PASSIVE — lists Zigbee PANs; `node_count` recomputed LIVE from joined nodes so a re-scan reflects a join), `inspect` (Phase 2.8.4 PASSIVE — per-PAN node list + mesh topology via `parent_short_address`), `join` (Phase 2.8.4 SAFE_ACTIVE — authorizes an unjoined end-device onto a PAN; per-target gates network-exists + node-exists + not-already-joined; assigns next short `0x0003`, parent first-router-else-coordinator `0x0001`, `lqi=220`, `joined=True`; stamps `env.notes["zigbee_joined:<ieee>"]`; emits `zigbee_join` evidence) |
 
 `wifi.capture.*` validate that the target network is WPA-encrypted
 (`WPA2`/`WPA3`); `OPEN`/`WEP` returns a structured failure Observation
@@ -90,6 +91,7 @@ and translates their prefixes back into capability keys:
 | `subghz_capture:` | `subghz.capture.signal` (Phase 2.8.1) |
 | `ir_analyzed:` | `infrared.analyze` (Phase 2.8.3) |
 | `ir_transmit:` | `infrared.transmit` (Phase 2.8.3) |
+| `zigbee_joined:` | `zigbee.discovery.join` (Phase 2.8.4) |
 
 This is the smallest simulator support needed to prove the Phase 2.7.1
 `Capability.requires` / `prerequisites_met` metadata is actually usable:
@@ -253,3 +255,46 @@ The `_NOTE_PREFIX_TO_CAPABILITY_KEY` mapping gains `ir_analyzed:` and
 `ir_transmit:` (above). `ir_workflow_plan()`: capture → analyze@ir-lab-remote
 → transmit@ir-lab-remote → analyze@ir-lab-tv (4 actions, 3 evidence; NEC on
 the remote, RC5 on the TV).
+
+## Phase 2.8.4 — Zigbee wireless-mesh scan / inspect / join
+
+Phase 2.8.4 stakes the **`zigbee`** domain with its own two entities — an
+honest wireless mesh as real simulator state, not decorative data:
+
+- `ZigbeeNetwork` — `pan_id`, `extended_pan_id`, `channel`, `rssi`, `prefix`,
+  `node_count`.
+- `ZigbeeNode` — `ieee_address`, `short_address`, `role`
+  (`coordinator`/`router`/`end_device`), `network`, `parent_short_address`
+  (the child→parent mesh link), `lqi`, `joined`.
+
+`Environment` gains `zigbee_networks` + `zigbee_nodes` (populated in
+`scenarios.py`; the lab carries a full mesh — PAN `0x1A2B` on ch15:
+coordinator `...:01`/`0x0000`, router `...:02`/`0x0001`→`0x0000`, lamp
+`...:03`/`0x0002`→`0x0001`, plus the **UNJOINED** join target
+`...:04`/no-short, `node_count=3`; home a smaller PAN `0x2C3D`).
+
+Three handlers, all registered in `HANDLERS` (so `zigbee` resolves
+`supported=True` immediately — NOT the 2.8.0 unsupported-then-flip route):
+
+- `action_zigbee_scan` (PASSIVE) — lists PANs via `_zigbee_network_entities`,
+  which **recomputes `node_count` LIVE from the joined `ZigbeeNode`s** so a
+  later `scan`/`inspect` reflects a join.
+- `action_zigbee_inspect` (PASSIVE, `pan_id`) — per-PAN node list + topology
+  ("4 node(s), 3 joined" before join → "4 node(s), 4 joined" after).
+- `action_zigbee_join` (SAFE_ACTIVE, `pan_id`+`ieee_address`) — per-target
+  gates: network exists + node exists + `not node.joined`. On success it
+  assigns the next short address (`_zigbee_next_short` → `0x0003`), sets the
+  parent to the first router else the coordinator (`_zigbee_parent` → `0x0001`),
+  `lqi=220`, `joined=True`, stamps `env.notes["zigbee_joined:<ieee>"]`, and
+  builds a `zigbee_join` `EvidenceRecord` (metadata: `ieee_address`, `network`,
+  `assigned_short_address`, `parent_short_address`, `role`, `lqi` — a real
+  transition, no fake blob).
+
+Failure paths (unknown PAN, unknown node, already-joined node, missing/malformed
+args, PASSIVE/SAFE_ACTIVE policy rejection) produce a structured failure
+Observation with **zero evidence and zero env mutation**. The Phase 2.6 policy
+gate is unchanged — PASSIVE-only scope rejects `join` before provider.
+
+The `_NOTE_PREFIX_TO_CAPABILITY_KEY` mapping gains `zigbee_joined:` (above).
+`zigbee_workflow_plan()`: scan → inspect@0x1A2B → join@0x1A2B/`00:15:8D:00:00:00:00:04`
+→ inspect@0x1A2B (4 actions, 1 `zigbee_join` evidence).

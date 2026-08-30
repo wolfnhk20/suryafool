@@ -65,6 +65,7 @@ from engine.runner import (
     nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
+    zigbee_workflow_plan,
 )
 from policy.policy import PolicyEngine
 from simulator.environment import Environment
@@ -162,10 +163,12 @@ def _engine_with_scope(scope=None, scenario="lab", seed=42):
 
 class TestNewDomainRegistration:
     def test_catalogue_now_has_22_entries(self):
-        # Phase 2.8.0 appended 7 (21); Phase 2.8.1 appended 1 (22) + flipped
-        # the existing subghz.discovery.analyze produces_evidence flag (an
-        # existing entry, not a new count). The new entry's handler exists.
-        assert len(DEFAULT_CAPABILITIES) == 23
+        # Phase 2.8.0 appended 7 (21); 2.8.1 +1 (22); 2.8.2 +1 (23);
+        # 2.8.3 flipped existing infrared flags (no count change). Phase 2.8.0
+        # additionally flipped the existing subghz.discovery.analyze
+        # produces_evidence flag (an existing entry, not a new count). The new
+        # entry's handler exists.
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_all_new_keys_registered(self):
         by_key = {c.key for c in DEFAULT_CAPABILITIES}
@@ -439,12 +442,15 @@ class TestPhase27FreezeRegression:
         phase281_kinds = frozenset({"subghz_capture", "subghz_analysis"})
         phase282_kinds = frozenset({"nfc_read"})
         phase283_kinds = frozenset({"ir_analysis", "ir_transmit"})
+        phase284_kinds = frozenset({"zigbee_join"})
         assert phase27_kinds <= KNOWN_EVIDENCE_KINDS
         assert phase281_kinds <= KNOWN_EVIDENCE_KINDS
         assert phase282_kinds <= KNOWN_EVIDENCE_KINDS
         assert phase283_kinds <= KNOWN_EVIDENCE_KINDS
+        assert phase284_kinds <= KNOWN_EVIDENCE_KINDS
         assert KNOWN_EVIDENCE_KINDS == (
-            phase27_kinds | phase281_kinds | phase282_kinds | phase283_kinds)
+            phase27_kinds | phase281_kinds | phase282_kinds | phase283_kinds
+            | phase284_kinds)
 
     def test_deterministic_plan_shapes_frozen(self):
         assert len(default_exploration_plan()) == 4
@@ -453,6 +459,7 @@ class TestPhase27FreezeRegression:
         assert len(subghz_capture_plan()) == 5    # Phase 2.8.1
         assert len(nfc_workflow_plan()) == 5      # Phase 2.8.2
         assert len(ir_workflow_plan()) == 4       # Phase 2.8.3
+        assert len(zigbee_workflow_plan()) == 4   # Phase 2.8.4
 
     def test_default_exploration_run_still_clean(self):
         engine, run, logger, env = _engine_with_scope(scenario="lab", seed=7)

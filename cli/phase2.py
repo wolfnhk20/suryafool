@@ -43,6 +43,7 @@ from engine.runner import (
     nfc_workflow_plan,
     subghz_capture_plan,
     wifi_capture_plan,
+    zigbee_workflow_plan,
 )
 from policy.policy import PolicyEngine
 from reports.html_report import write_report
@@ -124,6 +125,8 @@ def _build_run(scenario: str, seed: int, objective: str,
         plan = nfc_workflow_plan()
     elif plan == "ir_workflow":  # Phase 2.8.3
         plan = ir_workflow_plan()
+    elif plan == "zigbee_workflow":  # Phase 2.8.4
+        plan = zigbee_workflow_plan()
     elif plan == "exploration":
         plan = default_exploration_plan()
     else:
@@ -332,7 +335,7 @@ def build_parser() -> argparse.ArgumentParser:
     prun.add_argument("--scenario", required=True, choices=["home", "lab", "crowded"],
                       help="Scenario name (home/lab/crowded).")
     prun.add_argument("--seed", type=int, default=42, help="RNG seed (default: 42).")
-    prun.add_argument("--plan", choices=["exploration", "active_inspection", "wifi_capture", "ble_gatt_workflow", "subghz_capture", "nfc_workflow", "ir_workflow"], default="exploration",
+    prun.add_argument("--plan", choices=["exploration", "active_inspection", "wifi_capture", "ble_gatt_workflow", "subghz_capture", "nfc_workflow", "ir_workflow", "zigbee_workflow"], default="exploration",
                       help="Deterministic plan to execute (default: exploration). "
                            "'active_inspection' runs the Phase 2.7 BLE active lifecycle "
                            "(discover->inspect->connect->write->inspect); pair with "

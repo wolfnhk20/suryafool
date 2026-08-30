@@ -601,8 +601,9 @@ class TestJsonlAndHtmlSmoke:
 class TestRegression:
     def test_catalogue_count_at_21(self):
         # Phase 2.8.0 appended the multi-domain foundation (infrared / ethernet
-        # / usb) to the Phase 2.7 catalogue of 14.
-        assert len(DEFAULT_CAPABILITIES) == 23
+        # / usb) to the Phase 2.7 catalogue of 14 (→23). Phase 2.8.4 appended
+        # the three zigbee.discovery.* entries (→26).
+        assert len(DEFAULT_CAPABILITIES) == 26
 
     def test_handshake_marked_produces_evidence_in_catalogue(self):
         by_key = {c.key: c for c in DEFAULT_CAPABILITIES}
@@ -630,6 +631,7 @@ class TestRegression:
             "nfc.discovery.read",
             "subghz.capture.signal", "subghz.discovery.analyze",
             "wifi.capture.handshake", "wifi.capture.pmkid",
+            "zigbee.discovery.join",
         ]
 
     def test_default_exploration_plan_unchanged(self):

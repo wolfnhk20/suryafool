@@ -964,7 +964,7 @@ class TestRegression:
 
     def test_catalogue_count_and_risks(self):
         by_key = {c.key: c.risk for c in DEFAULT_CAPABILITIES}
-        assert len(DEFAULT_CAPABILITIES) == 23
+        assert len(DEFAULT_CAPABILITIES) == 26
         # Phase 2.7.3 additions present, with prescribed risks.
         assert by_key["ble.gatt.pair"] == ActionRisk.SAFE_ACTIVE
         assert by_key["ble.gatt.write"] == ActionRisk.SENSITIVE_ACTIVE

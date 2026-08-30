@@ -178,4 +178,32 @@ describe('formatEvidenceLine (Phase 2.7.8)', () => {
       assert.ok(a.domain !== w.domain && a.domain !== b.domain);
     });
   });
+
+  // Phase 2.8.4 — Zigbee mesh evidence kinds flow through the same domain
+  describe('formatEvidenceLine (Phase 2.8.4 Zigbee)', () => {
+    test('maps a zigbee_join evidence record to domain other', () => {
+      const line = formatEvidenceLine({
+        kind: 'zigbee_join',
+        target_entity_id: '00:15:8D:00:00:00:00:04',
+        target_entity_type: 'zigbee_node',
+        source_capability: 'zigbee.discovery',
+        source_action: 'join',
+        summary: 'Device 00:15:8D:00:00:00:00:04 joined PAN 0x1A2B as 0x0003.',
+      });
+      assert.equal(line.kind, 'zigbee_join');
+      assert.equal(line.target, '00:15:8D:00:00:00:00:04');
+      assert.equal(line.source, 'zigbee.discovery.join');
+      assert.equal(line.domain, 'other');
+    });
+
+    test('zigbee evidence is visually distinct from wifi/ble', () => {
+      const z = formatEvidenceLine({ kind: 'zigbee_join' });
+      const w = formatEvidenceLine({ kind: 'wifi_pmkid' });
+      const b = formatEvidenceLine({ kind: 'ble_pairing' });
+      assert.equal(z.domain, 'other');
+      assert.equal(w.domain, 'wifi');
+      assert.equal(b.domain, 'ble');
+      assert.ok(z.domain !== w.domain && z.domain !== b.domain);
+    });
+  });
 });

@@ -10,7 +10,10 @@ Each builder returns a fully populated `Environment`.
 from __future__ import annotations
 
 from simulator.environment import Environment
-from simulator.entities import WifiNetwork, BleDevice, IrSignal, NfcTag, SubGhzSignal
+from simulator.entities import (
+    BleDevice, IrSignal, NfcTag, SubGhzSignal, WifiNetwork,
+    ZigbeeNetwork, ZigbeeNode,
+)
 from simulator.rng import SeededRNG
 
 
@@ -74,6 +77,33 @@ def _ir(capture_id: str, carrier_khz: float, length_ms: float,
     )
 
 
+# ── Phase 2.8.4 — Zigbee mesh helpers ─────────────────────────────────────────
+
+def _zigbee_network(pan_id: str, extended_pan_id: str, channel: int, rssi: int,
+                    prefix: str, node_count: int) -> ZigbeeNetwork:
+    return ZigbeeNetwork(
+        pan_id=pan_id,
+        extended_pan_id=extended_pan_id,
+        channel=channel,
+        rssi=rssi,
+        prefix=prefix,
+        node_count=node_count,
+    )
+
+
+def _zigbee_node(ieee: str, short: str, role: str, network: str,
+                 parent: str = "", lqi: int = 0, joined: bool = False) -> ZigbeeNode:
+    return ZigbeeNode(
+        ieee_address=ieee,
+        short_address=short,
+        role=role,
+        network=network,
+        parent_short_address=parent,
+        lqi=lqi,
+        joined=joined,
+    )
+
+
 # ── Scenarios ─────────────────────────────────────────────────────────────────
 
 def scenario_home(seed: int = 42) -> Environment:
@@ -101,6 +131,13 @@ def scenario_home(seed: int = 42) -> Environment:
         ir=[
             _ir("ir-home-tv", 38.0, 900.0, "NEC"),
             _ir("ir-home-remote", 36.0, 889.0, "RC5"),
+        ],
+        zigbee_networks=[
+            _zigbee_network("0x2C3D", "00:15:8D:00:00:00:2C:3D", 20, -60, "zb-home-", 1),
+        ],
+        zigbee_nodes=[
+            _zigbee_node("00:15:8D:00:00:00:00:11", "0x0000", "coordinator", "0x2C3D",
+                         parent="", lqi=230, joined=True),
         ],
         notes={"description": "Quiet residential environment."},
     )
@@ -134,6 +171,22 @@ def scenario_lab(seed: int = 42) -> Environment:
         ir=[
             _ir("ir-lab-remote", 38.0, 900.0, "NEC"),
             _ir("ir-lab-tv", 36.0, 560.0, "RC5"),
+        ],
+        # Phase 2.8.4 — a small authorized Zigbee mesh:
+        #   PAN 0x1A2B: coordinator (0x0000) → router (0x0001) → lamp end-device.
+        #             ... plus one UNJOINED end-device (0x0004) — the join target.
+        zigbee_networks=[
+            _zigbee_network("0x1A2B", "00:15:8D:00:00:00:1A:2B", 15, -52, "zb-lab-", 3),
+        ],
+        zigbee_nodes=[
+            _zigbee_node("00:15:8D:00:00:00:00:01", "0x0000", "coordinator", "0x1A2B",
+                         parent="", lqi=255, joined=True),
+            _zigbee_node("00:15:8D:00:00:00:00:02", "0x0001", "router", "0x1A2B",
+                         parent="0x0000", lqi=240, joined=True),
+            _zigbee_node("00:15:8D:00:00:00:00:03", "0x0002", "end_device", "0x1A2B",
+                         parent="0x0001", lqi=210, joined=True),
+            _zigbee_node("00:15:8D:00:00:00:00:04", "", "end_device", "0x1A2B",
+                         parent="", lqi=0, joined=False),
         ],
         notes={"description": "Authorized Suryafool test lab."},
     )

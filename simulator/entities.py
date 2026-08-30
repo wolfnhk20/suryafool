@@ -140,3 +140,50 @@ class UsbDevice:
 
     def to_dict(self) -> dict[str, Any]:
         return self.__dict__.copy()
+
+
+# ── Phase 2.8.4 — Zigbee wireless mesh substrate ───────────────────────────────
+# A Zigbee mesh is a PAN (personal area network) of devices linked in a
+# parent→child routing tree rooted at a coordinator. We model TWO entities so
+# the mesh RELATIONSHIP is real, inspectable simulator state (not decorative
+# fake data):
+#   ZigbeeNetwork  — the PAN itself (64-bit extended PAN id, 16-bit PAN id,
+#                    channel, RSSI, coordinator role).
+#   ZigbeeNode     — a device on the mesh, carrying `network` (the PAN it
+#                    belongs to) and `parent_short_address` (its mesh parent,
+#                    the routing link used to reach the coordinator). This is
+#                    the honest representation of a Zigbee mesh: each non-root
+#                    node has exactly one parent; the coordinator (short
+#                    address 0x0000) has none.
+
+@dataclass
+class ZigbeeNetwork:
+    """A Zigbee personal area network (PAN)."""
+    pan_id: str                           # 16-bit PAN id, e.g. "0x1A2B"
+    extended_pan_id: str                  # 64-bit extended PAN id (EUI-64)
+    channel: int                          # IEEE 802.15.4 channel (11–26)
+    rssi: int                             # coordinator beacon RSSI (dBm)
+    prefix: str = ""                      # logical join prefix used to name nodes
+    node_count: int = 0                   # count of nodes currently joined to the PAN
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.__dict__.copy()
+
+
+@dataclass
+class ZigbeeNode:
+    """A device on a Zigbee mesh."""
+    ieee_address: str                     # 64-bit long (EUI-64) address
+    short_address: str                    # 16-bit assigned short address; "0x0000" = coordinator; "" = unjoined
+    role: str                             # "coordinator" | "router" | "end_device"
+    network: str                          # pan_id of the PAN it belongs to
+    parent_short_address: str = ""        # mesh parent short addr; "" for the root/coordinator or unjoined
+    lqi: int = 0                          # link quality indicator (0–255)
+    # Phase 2.8.4 join state — set by zigbee.discovery.join. An unjoined
+    # end-device transitions to joined=True with an assigned short address +
+    # a mesh parent; a later zigbee.discovery.inspect reflects the change
+    # (state → observation loop, exactly parallel to the other domains).
+    joined: bool = False
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.__dict__.copy()

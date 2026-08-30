@@ -33,6 +33,7 @@ from core.observation import Observation
 # catalogue's job, not the dataclass's.
 KNOWN_DOMAINS: frozenset[str] = frozenset({
     "wifi", "ble", "subghz", "nfc", "infrared", "camera", "ethernet", "usb",
+    "zigbee",
 })
 
 
@@ -302,4 +303,26 @@ DEFAULT_CAPABILITIES: list[Capability] = [
                "Inspect a specific USB device.",
                domain="usb", requires_args=("path",),
                output_entity_type="usb_device"),
+    # ── Phase 2.8.4 — Zigbee wireless mesh slice ─────────────────────────────
+    # A brand-new domain staked as a full vertical slice: a stateful wireless
+    # MESH environment (PAN + nodes with parent-child routing links) running
+    # through the unchanged gate. scan + inspect are observational (PASSIVE,
+    # no evidence — parallel to wifi/ble discover/inspect); join is the single
+    # controlled SAFE_ACTIVE interaction that mutates a node's membership
+    # (joined=True + assigned short address + mesh parent) and produces real
+    # `zigbee_join` evidence. No SENSITIVE_ACTIVE/RESTRICTED zigbee action —
+    # active-join is the honest minimum for this slice.
+    Capability("Zigbee Scan",     "zigbee.discovery", "scan",    ActionRisk.PASSIVE,
+               "Scan for Zigbee wireless mesh PANs (personal area networks).",
+               domain="zigbee", output_entity_type="zigbee_network"),
+    Capability("Zigbee Inspect",  "zigbee.discovery", "inspect", ActionRisk.PASSIVE,
+               "Inspect a Zigbee PAN's node list and mesh topology.",
+               domain="zigbee", requires_args=("pan_id",),
+               output_entity_type="zigbee_node"),
+    Capability("Zigbee Join",     "zigbee.discovery", "join",    ActionRisk.SAFE_ACTIVE,
+               "Authorize an unjoined end-device to join a known Zigbee PAN (mutates node membership + mesh parent).",
+               domain="zigbee", requires_args=("pan_id", "ieee_address"),
+               output_entity_type="zigbee_node",
+               mutates_state=True,
+               produces_evidence=True),
 ]

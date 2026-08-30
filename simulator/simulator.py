@@ -36,7 +36,10 @@ from core.confidence import Confidence
 from core.evidence import EvidenceRecord
 from core.observation import Entity, Observation
 from simulator.environment import Environment
-from simulator.entities import WifiNetwork, BleDevice, NfcTag, SubGhzSignal
+from simulator.entities import (
+    BleDevice, NfcTag, SubGhzSignal, WifiNetwork,
+    ZigbeeNetwork, ZigbeeNode,
+)
 
 
 def _wifi_entities(env: Environment) -> list[Entity]:
@@ -101,6 +104,48 @@ def _ir_entities(env: Environment) -> list[Entity]:
             label=f"{s.capture_id} ({s.carrier_khz:.1f} kHz)",
             confidence=Confidence.CONFIRMED,
             attributes=s.to_dict(),
+        ))
+    return out
+
+
+# ── Phase 2.8.4 — Zigbee mesh entity projections ──────────────────────────────
+
+def _zigbee_network_entities(env: Environment) -> list[Entity]:
+    """Project each PAN as a ZigbeeNetwork entity. `node_count` is recomputed
+    LIVE from the environment's joined nodes (not the scenario's static seed),
+    so a later `zigbee.discovery.join` is reflected by a re-scan — the
+    state→observation loop operates on the network too."""
+    for n in env.zigbee_networks:
+        n.node_count = sum(
+            1 for node in env.zigbee_nodes
+            if node.network == n.pan_id and node.joined
+        )
+    return [
+        Entity(
+            id=n.pan_id,
+            type="zigbee_network",
+            label=f"Zigbee PAN {n.pan_id} (ch {n.channel})",
+            confidence=Confidence.CONFIRMED,
+            attributes=n.to_dict(),
+        )
+        for n in env.zigbee_networks
+    ]
+
+
+def _zigbee_node_entities(env: Environment, pan_id: str) -> list[Entity]:
+    """Project all nodes of a PAN, exposing the mesh parent-child routing
+    links via `parent_short_address` + `network`. Unjoined nodes carry an
+    empty short address and no parent — their pending state is visible."""
+    out: list[Entity] = []
+    for node in env.zigbee_nodes:
+        if node.network != pan_id:
+            continue
+        out.append(Entity(
+            id=node.ieee_address,
+            type="zigbee_node",
+            label=f"{node.role} {node.ieee_address}",
+            confidence=Confidence.CONFIRMED if node.joined else Confidence.LIKELY,
+            attributes=node.to_dict(),
         ))
     return out
 
@@ -1113,6 +1158,166 @@ def action_ir_transmit(env: Environment, args: dict[str, Any]) -> Observation:
     )
 
 
+# ── Phase 2.8.4 — Zigbee mesh handlers ────────────────────────────────────────
+
+def action_zigbee_scan(env: Environment, args: dict[str, Any]) -> Observation:
+    """Observational (PASSIVE): enumerate the Zigbee PANs in view. Recomputes
+    `node_count` live from the joined nodes (see _zigbee_network_entities), so
+    a re-scan reflects earlier joins. No state mutation, no evidence — the
+    observational counterpart to wifi/ble discover."""
+    networks = _zigbee_network_entities(env)
+    return Observation(
+        capability="zigbee.discovery", action="scan",
+        entities=networks, raw_data={"count": len(networks)},
+        summary=f"Discovered {len(networks)} Zigbee PAN(s).",
+    )
+
+
+def action_zigbee_inspect(env: Environment, args: dict[str, Any]) -> Observation:
+    """Observational (PASSIVE): inspect one PAN's node list + mesh topology.
+    Returns the nodes (with `parent_short_address` routing links) of the PAN.
+    Unknown pan_id → structured failure, no evidence."""
+    pan_id = args.get("pan_id")
+    if not isinstance(pan_id, str) or not pan_id:
+        return Observation(
+            capability="zigbee.discovery", action="inspect",
+            entities=[], raw_data={"pan_id": pan_id},
+            summary="Invalid or missing 'pan_id' argument — nothing inspected.",
+        )
+    matching = [n for n in env.zigbee_networks if n.pan_id == pan_id]
+    if not matching:
+        return Observation(
+            capability="zigbee.discovery", action="inspect",
+            entities=[], raw_data={"pan_id": pan_id},
+            summary=f"No Zigbee PAN with pan_id {pan_id}.",
+        )
+    nodes = _zigbee_node_entities(env, pan_id)
+    joined = sum(1 for n in nodes if n.attributes.get("joined"))
+    return Observation(
+        capability="zigbee.discovery", action="inspect",
+        entities=nodes, raw_data={"pan_id": pan_id, "node_count": len(nodes), "joined": joined},
+        summary=f"Inspected Zigbee PAN {pan_id}: {len(nodes)} node(s), {joined} joined.",
+    )
+
+
+def _zigbee_next_short(env: Environment, pan_id: str) -> str:
+    """Deterministically assign the next free short address for a PAN by
+    taking max(existing short ints among joined nodes) + 1. `0x0000` is the
+    coordinator; the unjoined attendance already carries its network."""
+    used = []
+    for node in env.zigbee_nodes:
+        if node.network == pan_id and node.joined and node.short_address:
+            try:
+                used.append(int(node.short_address, 16))
+            except ValueError:
+                continue
+    if not used:
+        return "0x0001"
+    return f"0x{(max(used) + 1):04X}"
+
+
+def _zigbee_parent(env: Environment, pan_id: str) -> str:
+    """Return the mesh parent short address for a newly-joined node: the
+    first router in the PAN, else its coordinator. Deterministic and honest —
+    a real Zigbee join associates through a router/coordinator parent."""
+    for node in env.zigbee_nodes:
+        if node.network == pan_id and node.joined and node.role == "router":
+            return node.short_address or "0x0000"
+    for node in env.zigbee_nodes:
+        if node.network == pan_id and node.joined and node.role == "coordinator":
+            return node.short_address or "0x0000"
+    return ""
+
+
+def action_zigbee_join(env: Environment, args: dict[str, Any]) -> Observation:
+    """SAFE_ACTIVE, produces `zigbee_join` evidence, mutates ZigbeeNode.
+
+    Authorizes an unjoined end-device to join a known PAN: sets
+    `joined=True`, assigns a short address + a mesh parent (router →
+    coordinator), stamps env.notes["zigbee_joined:<ieee_address>"], and builds
+    one `zigbee_join` EvidenceRecord. Per-target gates: the PAN must exist,
+    the ieee_address must reference a node, and it must NOT already be joined
+    (a node can only join once — no double-join). Failed/unknown/invalid
+    paths return a structured failure Observation with evidence=[] and no
+    env mutation. PASSIVE-only scopes REJECT this before the provider (zero
+    evidence, zero mutation).
+    """
+    pan_id = args.get("pan_id")
+    ieee = args.get("ieee_address")
+    if not isinstance(pan_id, str) or not pan_id:
+        return Observation(
+            capability="zigbee.discovery", action="join",
+            entities=[], raw_data={"pan_id": pan_id, "ieee_address": ieee},
+            summary="Invalid or missing 'pan_id' argument — join aborted.",
+        )
+    if not isinstance(ieee, str) or not ieee:
+        return Observation(
+            capability="zigbee.discovery", action="join",
+            entities=[], raw_data={"pan_id": pan_id, "ieee_address": ieee},
+            summary="Invalid or missing 'ieee_address' argument — join aborted.",
+        )
+    if not any(n.pan_id == pan_id for n in env.zigbee_networks):
+        return Observation(
+            capability="zigbee.discovery", action="join",
+            entities=[], raw_data={"pan_id": pan_id, "ieee_address": ieee},
+            summary=f"No Zigbee PAN with pan_id {pan_id}.",
+        )
+    node = next((n for n in env.zigbee_nodes
+                 if n.network == pan_id and n.ieee_address == ieee), None)
+    if node is None:
+        return Observation(
+            capability="zigbee.discovery", action="join",
+            entities=[], raw_data={"pan_id": pan_id, "ieee_address": ieee},
+            summary=f"No Zigbee node with ieee {ieee} in PAN {pan_id}.",
+        )
+    if node.joined:
+        return Observation(
+            capability="zigbee.discovery", action="join",
+            entities=[], raw_data={"pan_id": pan_id, "ieee_address": ieee, "joined": True},
+            summary=f"Zigbee node {ieee} is already joined to PAN {pan_id}.",
+        )
+    short = _zigbee_next_short(env, pan_id)
+    parent = _zigbee_parent(env, pan_id)
+    node.joined = True
+    node.short_address = short
+    node.parent_short_address = parent
+    node.lqi = 220  # deterministic post-join link-quality indicator
+    env.notes[f"zigbee_joined:{ieee}"] = time.time()
+    ent = Entity(
+        id=node.ieee_address,
+        type="zigbee_node",
+        label=f"{node.role} {node.ieee_address}",
+        confidence=Confidence.CONFIRMED,
+        attributes=node.to_dict(),
+    )
+    evidence = [EvidenceRecord(
+        source_capability="zigbee.discovery",
+        source_action="join",
+        target_entity_id=ent.id,
+        target_entity_type="zigbee_node",
+        kind="zigbee_join",
+        summary=(
+            f"Zigbee end-device {node.ieee_address} joined PAN {pan_id} "
+            f"as {node.short_address} via {parent}."
+        ),
+        metadata={
+            "ieee_address": node.ieee_address,
+            "network": pan_id,
+            "assigned_short_address": node.short_address,
+            "parent_short_address": node.parent_short_address,
+            "role": node.role,
+            "lqi": node.lqi,
+        },
+        captured_at=time.time(),
+    )]
+    return Observation(
+        capability="zigbee.discovery", action="join",
+        entities=[ent], raw_data=node.to_dict(),
+        summary=f"Zigbee node {node.ieee_address} joined PAN {pan_id} as {short}.",
+        evidence=evidence,
+    )
+
+
 # ── Dispatcher ────────────────────────────────────────────────────────────────
 
 HANDLERS = {
@@ -1140,6 +1345,13 @@ HANDLERS = {
     ("infrared",       "capture"):    action_ir_capture,
     ("infrared",       "analyze"):    action_ir_analyze,
     ("infrared",       "transmit"):   action_ir_transmit,
+    # Phase 2.8.4 — Zigbee. Registering the handlers makes the three zigbee
+    # catalogue entries resolve supported=True; they run through the unchanged
+    # policy gate (scan/inspect PASSIVE; join SAFE_ACTIVE — REJECTed below
+    # safe_active scopes). join mutates ZigbeeNode state + builds evidence.
+    ("zigbee.discovery", "scan"):    action_zigbee_scan,
+    ("zigbee.discovery", "inspect"): action_zigbee_inspect,
+    ("zigbee.discovery", "join"):    action_zigbee_join,
 }
 
 
@@ -1165,6 +1377,8 @@ _NOTE_PREFIX_TO_CAPABILITY_KEY: dict[str, str] = {
     # Phase 2.8.3 — Infrared stateful actions.
     "ir_analyzed:":       "infrared.analyze",
     "ir_transmit:":       "infrared.transmit",
+    # Phase 2.8.4 — Zigbee stateful action.
+    "zigbee_joined:":     "zigbee.discovery.join",
 }
 
 

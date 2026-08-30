@@ -616,7 +616,7 @@ class TestRegression:
         risks. Phase 2.8.0 appended the multi-domain foundation (21 total);
         the 14 Phase 2.7 risks below remain unchanged."""
         by_key = {c.key: c.risk for c in DEFAULT_CAPABILITIES}
-        assert len(DEFAULT_CAPABILITIES) == 23
+        assert len(DEFAULT_CAPABILITIES) == 26
         # originals unchanged
         assert by_key["wifi.discovery.discover"] == ActionRisk.PASSIVE
         assert by_key["wifi.discovery.inspect"] == ActionRisk.PASSIVE
